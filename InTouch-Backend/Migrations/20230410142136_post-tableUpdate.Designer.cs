@@ -4,6 +4,7 @@ using InTouch_Backend;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InTouch_Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230410142136_post-tableUpdate")]
+    partial class posttableUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -87,21 +90,6 @@ namespace InTouch_Backend.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("InTouch_Backend.Data.Models.UserPostLike", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PostId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "PostId");
-
-                    b.HasIndex("PostId");
-
-                    b.ToTable("Likes");
-                });
-
             modelBuilder.Entity("InTouch_Backend.Data.Models.Post", b =>
                 {
                     b.HasOne("InTouch_Backend.Data.Models.User", "User")
@@ -113,34 +101,8 @@ namespace InTouch_Backend.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("InTouch_Backend.Data.Models.UserPostLike", b =>
-                {
-                    b.HasOne("InTouch_Backend.Data.Models.Post", "Post")
-                        .WithMany("Likes")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("InTouch_Backend.Data.Models.User", "User")
-                        .WithMany("Likes")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Post");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("InTouch_Backend.Data.Models.Post", b =>
-                {
-                    b.Navigation("Likes");
-                });
-
             modelBuilder.Entity("InTouch_Backend.Data.Models.User", b =>
                 {
-                    b.Navigation("Likes");
-
                     b.Navigation("Posts");
                 });
 #pragma warning restore 612, 618

@@ -13,5 +13,6 @@
 
         //Navigation Properties
         public List<Post> Posts { get; set; }
+        public List<UserPostLike> Likes { get; set; }
     }
 }

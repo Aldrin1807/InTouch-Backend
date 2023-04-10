@@ -18,7 +18,8 @@ namespace InTouch_Backend.Data.Services
             {
                 Content=post.Content,
                 ImageURL=post.ImageURL,
-                userID=post.userID
+                PostDate=post.PostDate,
+                userID =post.userID
             };
             _context.Posts.Add(_post);
             _context.SaveChanges();
