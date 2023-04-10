@@ -1,4 +1,7 @@
 
+using InTouch_Backend.Data.Services;
+using Microsoft.EntityFrameworkCore;
+
 namespace InTouch_Backend
 {
     public class Program
@@ -8,11 +11,15 @@ namespace InTouch_Backend
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
+            //Lidhja me Databaze
+            builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(
+            builder.Configuration.GetConnectionString("DefaultConnectionString")));
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddScoped<UserService>();
+            builder.Services.AddScoped<PostService>();
 
             var app = builder.Build();
 
