@@ -12,13 +12,13 @@ namespace InTouch_Backend
         {
 
             //MANY to MANY per tabelen e Likes
-            modelBuilder.Entity<UserPostLike>()
+            modelBuilder.Entity<Likes>()
                 .HasKey(up => new { up.UserId, up.PostId });
-            modelBuilder.Entity<UserPostLike>()
+            modelBuilder.Entity<Likes>()
                 .HasOne(u => u.User)
                 .WithMany(p => p.Likes)
                 .HasForeignKey(u => u.UserId);
-            modelBuilder.Entity<UserPostLike>()
+            modelBuilder.Entity<Likes>()
                 .HasOne(u => u.Post)
                 .WithMany(p => p.Likes)
                 .HasForeignKey(u => u.PostId);
@@ -67,7 +67,7 @@ namespace InTouch_Backend
         }
         public DbSet<User> Users { get; set; }
         public DbSet<Post> Posts { get;set; }  
-        public DbSet<UserPostLike> Likes { get; set; }
+        public DbSet<Likes> Likes { get; set; }
         public DbSet<Comments> Comments { get; set; }
 
         public DbSet<Follows> Follows { get; set; }

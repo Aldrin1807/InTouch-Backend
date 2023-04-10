@@ -2,7 +2,7 @@
 
 namespace InTouch_Backend.Data.Models
 {
-    public class UserPostLike
+    public class Likes
     {
        
         public int UserId { get; set; }
