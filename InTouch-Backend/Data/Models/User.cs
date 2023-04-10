@@ -14,5 +14,10 @@
         //Navigation Properties
         public List<Post> Posts { get; set; }
         public List<UserPostLike> Likes { get; set; }
+        public List<Comments> Comments { get; set; }
+        public List<Reports> Reports { get; set; }
+
+        public List<Follows> Followers { get; set; } 
+        public List<Follows> Following { get; set; }
     }
 }

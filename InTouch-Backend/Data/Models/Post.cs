@@ -11,5 +11,7 @@
         public int userID { get; set; }
         public User User { get; set; }
         public List<UserPostLike> Likes { get; set; }
+        public List<Comments> Comments { get; set; }
+        public List<Reports> Reports { get; set; }
     }
 }
