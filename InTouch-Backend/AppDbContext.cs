@@ -10,6 +10,13 @@ namespace InTouch_Backend
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //Passwordi dhe username unique
+            modelBuilder.Entity<User>()
+            .HasIndex(u => u.Email)
+            .IsUnique();
+            modelBuilder.Entity<User>()
+            .HasIndex(u => u.Username)
+            .IsUnique();
 
             //MANY to MANY per tabelen e Likes
             modelBuilder.Entity<Likes>()

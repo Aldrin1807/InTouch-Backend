@@ -9,16 +9,40 @@ namespace InTouch_Backend.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        public UserService _service;
-        public UsersController(UserService service)
+        public UsersService _service;
+        public UsersController(UsersService service)
         {
             _service = service;
         }
-        [HttpPost("add-user")]
-        public IActionResult addUser([FromBody]UserVM user)
+        [HttpPost("register")]
+        public IActionResult register([FromBody] UserVM user)
         {
-            _service.addUser(user);
-            return Ok();
+            try
+            {
+                _service.register(user);
+                return Ok(new Response
+                { Status = "Success", Message = "User Successfully registered." });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Response
+                { Status = "Error", Message = ex.Message });
+            }
+        }
+        [HttpPost("login")]
+        public IActionResult login([FromBody]Login user)
+        {
+            var log = _service.login(user);
+            if (log)
+            {
+                return Ok(new Response
+                { Status = "Success", Message = "Successful Login." });
+            }
+            else
+            {
+                return Ok(new Response
+                { Status = "Error", Message = "Username or Email not found." });
+            }
         }
 
         [HttpGet("get-users")]

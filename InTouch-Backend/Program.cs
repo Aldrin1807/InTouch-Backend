@@ -18,10 +18,19 @@ namespace InTouch_Backend
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            builder.Services.AddScoped<UserService>();
-            builder.Services.AddScoped<PostService>();
+            //
+            builder.Services.AddTransient<UsersService>();
+            builder.Services.AddTransient<PostService>();
+            builder.Services.AddTransient<ReportsService>();
+            builder.Services.AddTransient<LikesService>();
+            builder.Services.AddTransient<FollowsService>();
+            builder.Services.AddTransient<CommentsService>();
+
+
+            builder.Services.AddCors();
 
             var app = builder.Build();
+           
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -29,6 +38,14 @@ namespace InTouch_Backend
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            //Konfigurimi per lejimin e thirrjeve te api endpoint nga hosta te ndryshem
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+            });
 
             app.UseHttpsRedirection();
 
