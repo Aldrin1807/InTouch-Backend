@@ -38,7 +38,7 @@ namespace InTouch_Backend.Data.Services
             _context.Users.Add(_user);
             _context.SaveChanges();
         }
-        public bool login(Login user)
+        public int login(Login user)
         {
             var _user = _context.Users.SingleOrDefault(u => u.Email == user.EmailorUsername || u.Username == user.EmailorUsername);
 
@@ -49,11 +49,13 @@ namespace InTouch_Backend.Data.Services
 
                 if (result == PasswordVerificationResult.Success)
                 {
-                    return true;
+                    return _user.Id;
                 }
             }
-            return false;
+            return 0;
         }
         public List<User> getUsers() => _context.Users.ToList();
+
+       
     }
 }

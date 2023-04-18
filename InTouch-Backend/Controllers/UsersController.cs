@@ -33,15 +33,14 @@ namespace InTouch_Backend.Controllers
         public IActionResult login([FromBody]Login user)
         {
             var log = _service.login(user);
-            if (log)
+            if (log!=0)
             {
-                return Ok(new Response
-                { Status = "Success", Message = "Successful Login." });
+                return Ok(log);
             }
             else
             {
                 return Ok(new Response
-                { Status = "Error", Message = "Username or Email not found." });
+                { Status = "Error", Message = "Credentials wrong." });
             }
         }
 
@@ -49,5 +48,7 @@ namespace InTouch_Backend.Controllers
         public IActionResult GetUsers() {
             return Ok(_service.getUsers());
         }
+
+        
     }
 }
