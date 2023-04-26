@@ -9,16 +9,17 @@ namespace InTouch_Backend.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        public UsersService _service;
+        private readonly UsersService _service;
         public UsersController(UsersService service)
         {
             _service = service;
+          
         }
         [HttpPost("register")]
-        public IActionResult register([FromBody] UserVM user)
+        public IActionResult register([FromForm] UserDTO user)
         {
             try
-            {
+            {   
                 _service.register(user);
                 return Ok(new Response
                 { Status = "Success", Message = "User Successfully registered." });
@@ -29,10 +30,12 @@ namespace InTouch_Backend.Controllers
                 { Status = "Error", Message = ex.Message });
             }
         }
+       
+       
         [HttpPost("login")]
         public IActionResult login([FromBody]Login user)
         {
-            var log = _service.login(user);
+            int log = _service.login(user);
             if (log!=0)
             {
                 return Ok(log);

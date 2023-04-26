@@ -15,10 +15,20 @@ namespace InTouch_Backend.Controllers
             _service = service; 
         }
         [HttpPost("make-post")]
-        public IActionResult makePost([FromBody]PostVM post)
+        public IActionResult makePost([FromForm]PostDTO post)
         {
-            _service.makePost(post);
-            return Ok();
+            try
+            {
+                _service.makePost(post);
+                return Ok(new Response
+                { Status = "Success", Message = "Post made succesfully." });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Response
+                { Status = "Error", Message = ex.Message });
+            }
+            
         }
     }
 }

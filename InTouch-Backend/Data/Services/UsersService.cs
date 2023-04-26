@@ -1,6 +1,8 @@
 ﻿using InTouch_Backend.Data.Models;
 using InTouch_Backend.Data.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Hosting.Internal;
+using System;
 using System.Data;
 
 namespace InTouch_Backend.Data.Services
@@ -8,13 +10,16 @@ namespace InTouch_Backend.Data.Services
     public class UsersService
     {
         public AppDbContext _context;
+
+ 
         public UsersService(AppDbContext context)
         {
             _context = context;
+    
         }
-        public void register(UserVM user)
+        public void register(UserDTO user)
         {
-            // Check if email or username already exists
+           
             bool emailExists = _context.Users.Any(u => u.Email == user.Email);
             bool usernameExists = _context.Users.Any(u => u.Username == user.Username);
 
@@ -29,18 +34,42 @@ namespace InTouch_Backend.Data.Services
                 LastName = user.LastName,
                 Username = user.Username,
                 Email = user.Email,
-                profile_img = user.profile_img,
-                role = user.role
+                Role = user.Role
             };
 
             var passwordHasher = new PasswordHasher<string>();
             _user.Password = passwordHasher.HashPassword(null, user.Password);
+
+            if (user.Image != null && user.Image.Length > 0)
+            {
+                string uniqueFileName = Guid.NewGuid().ToString() + "_" + user.Image.FileName;
+                string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Images");
+
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                string filePath = Path.Combine(folderPath, uniqueFileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    user.Image.CopyTo(fileStream);
+                }
+
+                _user.ImagePath = uniqueFileName;
+            }
+
             _context.Users.Add(_user);
             _context.SaveChanges();
+
+          
         }
+
+
+
         public int login(Login user)
         {
-            var _user = _context.Users.SingleOrDefault(u => u.Email == user.EmailorUsername || u.Username == user.EmailorUsername);
+            var _user = _context.Users.FirstOrDefault(u => u.Email == user.EmailorUsername || u.Username == user.EmailorUsername);
 
             if (_user != null)
             {

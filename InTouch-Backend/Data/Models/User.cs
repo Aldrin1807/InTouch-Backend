@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace InTouch_Backend.Data.Models
 {
@@ -11,8 +13,12 @@ namespace InTouch_Backend.Data.Models
         public string Username { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public string profile_img { get; set; }
-        public int role { get; set; } = 0;//Default 0 per user, per admin 1
+
+        public string ImagePath { get; set; }
+
+        [NotMapped]
+        public IFormFile Image { get; set; }
+        public int Role { get; set; } = 0;//Default 0 per user, per admin 1
 
 
         //Navigation Properties

@@ -1,6 +1,6 @@
 ﻿namespace InTouch_Backend.Data.ViewModels
 {
-    public class FollowsVM
+    public class ReportsDTO
     {
     }
 }

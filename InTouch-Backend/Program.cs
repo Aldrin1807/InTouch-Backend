@@ -1,6 +1,7 @@
 
 using InTouch_Backend.Data.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 namespace InTouch_Backend
 {
@@ -51,7 +52,18 @@ namespace InTouch_Backend
 
             app.UseAuthorization();
 
-
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                Path.Combine(Directory.GetCurrentDirectory(), "User Images")),
+                RequestPath = "/User Images"
+            });
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+            Path.Combine(Directory.GetCurrentDirectory(), "Post Images")),
+                RequestPath = "/Post Images"
+            });
             app.MapControllers();
 
             app.Run();

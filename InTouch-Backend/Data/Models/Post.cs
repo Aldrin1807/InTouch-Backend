@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace InTouch_Backend.Data.Models
 {
@@ -6,13 +8,20 @@ namespace InTouch_Backend.Data.Models
     {
 
         public int Id { get; set; }
-        public string Content { get; set; }  
-        public string ImageURL { get; set; }
+        public string Content { get; set; }
+
+        public string? ImagePath { get; set; }
+
+        [NotMapped]
+        public IFormFile? Image { get; set; }
+
         public DateTime PostDate { get; set; }
 
-        //Navigation Properties
-        [JsonIgnore]
         public int userID { get; set; }
+
+        //Navigation Properties
+
+
         [JsonIgnore]
         public User User { get; set; }
         [JsonIgnore]

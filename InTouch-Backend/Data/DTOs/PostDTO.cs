@@ -1,9 +1,9 @@
 ﻿namespace InTouch_Backend.Data.ViewModels
 {
-    public class PostVM
+    public class PostDTO
     {
         public string Content { get; set; }
-        public string ImageURL { get; set; }
+        public IFormFile? Image { get; set; }
 
 
         //Navigation Properties
