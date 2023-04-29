@@ -1,4 +1,5 @@
-﻿using InTouch_Backend.Data.Services;
+﻿using InTouch_Backend.Data.Models;
+using InTouch_Backend.Data.Services;
 using InTouch_Backend.Data.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +30,13 @@ namespace InTouch_Backend.Controllers
                 { Status = "Error", Message = ex.Message });
             }
             
+        }
+        [HttpGet("get-posts")]
+        public IActionResult getFollowedPosts(int id)
+        {
+            List<Post> Posts = _service.getFollowedPosts(id);
+            Posts.Reverse();
+            return Ok(Posts);
         }
     }
 }

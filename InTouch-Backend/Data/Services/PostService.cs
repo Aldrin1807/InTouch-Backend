@@ -1,5 +1,6 @@
 ﻿using InTouch_Backend.Data.Models;
 using InTouch_Backend.Data.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace InTouch_Backend.Data.Services
 {
@@ -48,6 +49,22 @@ namespace InTouch_Backend.Data.Services
 
             _context.Posts.Add(_post);
             _context.SaveChanges();
-        }
+        } 
+       
+            public List<Post> getFollowedPosts(int userId)
+            {
+                var followedUserIds = _context.Follows
+                    .Where(f => f.FollowerId == userId || f.FollowingId == userId)
+                    .Select(f => f.FollowerId == userId ? f.FollowingId : f.FollowerId)
+                    .ToList();
+
+                var posts = _context.Posts
+                    .Where(p => followedUserIds.Contains(p.userID))
+                    .ToList();
+                return posts;
+            }
+
+        
     }
 }
+ 
