@@ -43,7 +43,7 @@ namespace InTouch_Backend.Data.Services
             if (user.Image != null && user.Image.Length > 0)
             {
                 string uniqueFileName = Guid.NewGuid().ToString() + "_" + user.Image.FileName;
-                string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Images");
+                string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "User Images");
 
                 if (!Directory.Exists(folderPath))
                 {
