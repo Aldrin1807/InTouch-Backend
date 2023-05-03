@@ -38,5 +38,12 @@ namespace InTouch_Backend.Controllers
             Posts.Reverse();
             return Ok(Posts);
         }
+
+        [HttpGet("get-user-post-info")]
+
+        public IActionResult getUserPostInfo(int postId)
+        {
+            return Ok(_service.getUserPostInfo(postId));
+        }
     }
 }

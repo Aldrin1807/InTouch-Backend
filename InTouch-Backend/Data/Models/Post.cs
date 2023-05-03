@@ -15,7 +15,7 @@ namespace InTouch_Backend.Data.Models
         [NotMapped]
         public IFormFile? Image { get; set; }
 
-        public DateTime PostDate { get; set; }
+        public string PostDate { get; set; }
 
         public int userID { get; set; }
 
@@ -30,5 +30,7 @@ namespace InTouch_Backend.Data.Models
         public List<Comments> Comments { get; set; }
         [JsonIgnore]
         public List<Reports> Reports { get; set; }
+
+       
     }
 }

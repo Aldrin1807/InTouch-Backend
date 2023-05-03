@@ -52,6 +52,11 @@ namespace InTouch_Backend.Controllers
             return Ok(_service.getUsers());
         }
 
-        
+        [HttpGet("get-username")]
+        public IActionResult GetUsername(int id) {
+            return Ok(_service.getUsername(id));
+        }
+       
+
     }
 }

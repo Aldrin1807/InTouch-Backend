@@ -65,8 +65,6 @@ namespace InTouch_Backend.Data.Services
           
         }
 
-
-
         public int login(Login user)
         {
             var _user = _context.Users.FirstOrDefault(u => u.Email == user.EmailorUsername || u.Username == user.EmailorUsername);
@@ -86,5 +84,11 @@ namespace InTouch_Backend.Data.Services
         public List<User> getUsers() => _context.Users.ToList();
 
        
+
+       public string getUsername(int id)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+            return user.Username;
+        }
     }
 }

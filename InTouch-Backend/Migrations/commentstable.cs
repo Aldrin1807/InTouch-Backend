@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -14,13 +15,14 @@ namespace InTouch_Backend.Migrations
                 name: "Comments",
                 columns: table => new
                 {
+                    Id = table.Column<int>(type:"int",nullable:false).Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     PostId = table.Column<int>(type: "int", nullable: false),
                     comment = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Comments", x => new { x.UserId, x.PostId });
+                    table.PrimaryKey("PK_Comments", x => new {x.Id, x.UserId, x.PostId });
                     table.ForeignKey(
                         name: "FK_Comments_Posts_PostId",
                         column: x => x.PostId,
