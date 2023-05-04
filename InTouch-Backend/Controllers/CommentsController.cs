@@ -29,5 +29,11 @@ namespace InTouch_Backend.Controllers
             _commentsService.makeComment(comment);
             return Ok();
         }
+
+        [HttpGet("get-nr-comments")]
+        public IActionResult getNrComments(int postId)
+        {
+            return Ok(_commentsService.getNrComments(postId));
+        }
     }
 }

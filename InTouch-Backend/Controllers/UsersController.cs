@@ -52,11 +52,16 @@ namespace InTouch_Backend.Controllers
             return Ok(_service.getUsers());
         }
 
-        [HttpGet("get-username")]
-        public IActionResult GetUsername(int id) {
-            return Ok(_service.getUsername(id));
+        [HttpGet("get-user-info")]
+        public IActionResult GetUserInfo(int id) {
+            return Ok(_service.getUserInfo(id));
         }
-       
 
+        [HttpGet("get-user-followers-follows")]
+
+        public IActionResult getFollows_and_Followers(int userId)
+        {
+            return Ok(_service.getFollows_and_Followers(userId));
+        }
     }
 }

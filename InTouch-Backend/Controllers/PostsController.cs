@@ -45,5 +45,20 @@ namespace InTouch_Backend.Controllers
         {
             return Ok(_service.getUserPostInfo(postId));
         }
+
+        [HttpGet("get-user-post")]
+
+        public IActionResult getUserPosts(int userId)
+        {
+            return Ok(_service.getUserPosts(userId));
+        }
+
+        [HttpDelete("delete-post")]
+
+        public IActionResult deletePost(int postId)
+        {
+            _service.deletePost(postId);
+            return Ok();
+        }
     }
 }

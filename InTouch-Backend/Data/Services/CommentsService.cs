@@ -46,6 +46,16 @@ namespace InTouch_Backend.Data.Services
 
             return comments.Cast<object>().ToList();
         }
+        public int getNrComments(int postId)
+        {
+            int count = 0;
+            List<Comments> comments = _context.Comments.Where(p => p.PostId == postId).ToList();
+            for (int i = 0; i < comments.Count; i++)
+            {
+                count++;
+            }
+            return count;
+        }
 
     }
 }

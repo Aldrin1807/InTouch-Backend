@@ -35,8 +35,12 @@ namespace InTouch_Backend
 
             //MANY to MANY per tabelen e Commenteve
 
-            
-        modelBuilder.Entity<Comments>()
+            modelBuilder.Entity<Comments>()
+                .Property(c => c.Id)
+                .ValueGeneratedOnAdd();
+
+
+            modelBuilder.Entity<Comments>()
               .HasKey(up => new { up.Id, up.UserId, up.PostId });
             modelBuilder.Entity<Comments>()
                 .HasOne(u => u.User)

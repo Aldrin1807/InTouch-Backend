@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InTouch_Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230503143900_commmentsTest")]
-    partial class commmentsTest
+    [Migration("20230503150648_ModifiedCommentsTable")]
+    partial class ModifiedCommentsTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

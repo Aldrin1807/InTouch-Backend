@@ -73,6 +73,23 @@ namespace InTouch_Backend.Data.Services
             return UserInfo;
         }
 
+        public List<Post> getUserPosts(int userId)
+        {
+            var posts = _context.Posts.Where(p=> p.userID==userId).ToList();
+            posts.Reverse();
+            return posts;
+        }
+
+        public void deletePost(int postId)
+        {
+            var post= _context.Posts.FirstOrDefault(p => p.Id == postId);
+
+            if (post != null)
+            {
+                _context.Posts.Remove(post);
+            }
+            _context.SaveChanges();
+        }
 
     }
 }

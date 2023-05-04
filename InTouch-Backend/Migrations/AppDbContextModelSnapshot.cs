@@ -42,7 +42,7 @@ namespace InTouch_Backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments", (string)null);
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("InTouch_Backend.Data.Models.Follows", b =>
@@ -57,7 +57,7 @@ namespace InTouch_Backend.Migrations
 
                     b.HasIndex("FollowingId");
 
-                    b.ToTable("Follows", (string)null);
+                    b.ToTable("Follows");
                 });
 
             modelBuilder.Entity("InTouch_Backend.Data.Models.Likes", b =>
@@ -72,7 +72,7 @@ namespace InTouch_Backend.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("Likes", (string)null);
+                    b.ToTable("Likes");
                 });
 
             modelBuilder.Entity("InTouch_Backend.Data.Models.Post", b =>
@@ -101,7 +101,7 @@ namespace InTouch_Backend.Migrations
 
                     b.HasIndex("userID");
 
-                    b.ToTable("Posts", (string)null);
+                    b.ToTable("Posts");
                 });
 
             modelBuilder.Entity("InTouch_Backend.Data.Models.Reports", b =>
@@ -116,7 +116,7 @@ namespace InTouch_Backend.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("Reports", (string)null);
+                    b.ToTable("Reports");
                 });
 
             modelBuilder.Entity("InTouch_Backend.Data.Models.User", b =>
@@ -162,7 +162,7 @@ namespace InTouch_Backend.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("InTouch_Backend.Data.Models.Comments", b =>

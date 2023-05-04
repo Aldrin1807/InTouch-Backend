@@ -17,11 +17,20 @@ namespace InTouch_Backend.Controllers
             _reportsService= reportsService;
         }
 
-        [HttpPost]
-        public IActionResult report([FromBody]ReportsDTO report)
+        [HttpPost("make-report")]
+        public IActionResult makeReport([FromBody]ReportsDTO report)
         {
-            _reportsService.makeReport(report);
-            return Ok();
+            try
+            {
+                _reportsService.makeReport(report);
+                return Ok(new Response
+                { Status = "Success", Message = "Post reported succesfully." });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Response
+                { Status = "Error", Message ="You already reported this" });
+            }
         }
     }
 }

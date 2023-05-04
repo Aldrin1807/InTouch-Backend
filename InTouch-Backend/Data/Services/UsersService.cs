@@ -85,10 +85,27 @@ namespace InTouch_Backend.Data.Services
 
        
 
-       public string getUsername(int id)
+       public User getUserInfo(int id)
         {
             var user = _context.Users.FirstOrDefault(u => u.Id == id);
-            return user.Username;
+            return user;
         }
+
+        public int[] getFollows_and_Followers(int userId)
+        {
+
+            var follows= _context.Follows.Where(f=> f.FollowerId==userId).ToList();
+            var followers=_context.Follows.Where(f=>f.FollowingId==userId).ToList();
+
+            int countFollows = follows.Count;
+            int countFollowers = followers.Count;
+
+            int[] temp = { countFollows, countFollowers };
+
+            return temp;
+        }
+
+        
+        
     }
 }
