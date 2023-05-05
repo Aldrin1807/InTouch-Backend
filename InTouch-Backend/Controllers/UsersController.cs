@@ -1,4 +1,5 @@
-﻿using InTouch_Backend.Data.Services;
+﻿using InTouch_Backend.Data.Models;
+using InTouch_Backend.Data.Services;
 using InTouch_Backend.Data.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -63,5 +64,25 @@ namespace InTouch_Backend.Controllers
         {
             return Ok(_service.getFollows_and_Followers(userId));
         }
+
+        [HttpDelete("users/{id}")]
+        public IActionResult DeleteUser(int id)
+        {
+            var user = _service.getUserInfo(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            _service.DeleteUser(id);
+
+            return NoContent();
+        }
+
+
+
+
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using InTouch_Backend.Data.Models;
 using InTouch_Backend.Data.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting.Internal;
 using System;
 using System.Data;
@@ -105,7 +106,20 @@ namespace InTouch_Backend.Data.Services
             return temp;
         }
 
-        
-        
+        public bool DeleteUser(int id)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+            if (user != null)
+            {
+                _context.Users.Remove(user);
+                _context.SaveChanges();
+                return true;
+            }
+            return false;
+        }
+       
+
+        }
     }
-}
+
+
