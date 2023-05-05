@@ -138,6 +138,21 @@ namespace InTouch_Backend.Data.Services
             return searchresult;
         }
 
+        public List<User> userFollowers(int userId)
+        {
+            List<int> followedUserIds = _context.Follows
+            .Where(f => f.FollowingId == userId)
+            .Select(f => f.FollowerId)
+            .ToList();
+
+
+            List<User> temp = _context.Users
+                .Where(u => followedUserIds.Contains(u.Id))
+                .ToList();
+
+            return temp;
+        }
+
         
         
     }
