@@ -18,7 +18,7 @@ namespace InTouch_Backend.Data.Services
             var _post = new Post()
             {
                 Content = post.Content,
-                PostDate=DateTime.Now,
+                PostDate=DateTime.Now.ToString("dddd, dd MMMM yyyy hh:mm tt"),
                 userID=post.userID
             };
 
@@ -64,7 +64,33 @@ namespace InTouch_Backend.Data.Services
                 return posts;
             }
 
-        
+        public User getUserPostInfo(int postId)
+        {
+
+            var PostInfo = _context.Posts.FirstOrDefault(u => u.Id == postId);
+            var UserInfo = _context.Users.FirstOrDefault(u => u.Id == PostInfo.userID);
+
+            return UserInfo;
+        }
+
+        public List<Post> getUserPosts(int userId)
+        {
+            var posts = _context.Posts.Where(p=> p.userID==userId).ToList();
+            posts.Reverse();
+            return posts;
+        }
+
+        public void deletePost(int postId)
+        {
+            var post= _context.Posts.FirstOrDefault(p => p.Id == postId);
+
+            if (post != null)
+            {
+                _context.Posts.Remove(post);
+            }
+            _context.SaveChanges();
+        }
+
     }
 }
  

@@ -1,4 +1,5 @@
-﻿using InTouch_Backend.Data.Services;
+﻿using InTouch_Backend.Data.Models;
+using InTouch_Backend.Data.Services;
 using InTouch_Backend.Data.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -53,6 +54,17 @@ namespace InTouch_Backend.Controllers
             return Ok(_service.getUsers());
         }
 
+        [HttpGet("get-user-info")]
+        public IActionResult GetUserInfo(int id) {
+            return Ok(_service.getUserInfo(id));
+        }
+
+        [HttpGet("get-user-followers-follows")]
+
+        public IActionResult getFollows_and_Followers(int userId)
+        {
+            return Ok(_service.getFollows_and_Followers(userId));
+        }
         [HttpPut("Update-user{id}")]
         public IActionResult UpdateUser(int id, [FromForm] UserDTO updatedUser)
         {

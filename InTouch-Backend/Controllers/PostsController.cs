@@ -38,5 +38,27 @@ namespace InTouch_Backend.Controllers
             Posts.Reverse();
             return Ok(Posts);
         }
+
+        [HttpGet("get-user-post-info")]
+
+        public IActionResult getUserPostInfo(int postId)
+        {
+            return Ok(_service.getUserPostInfo(postId));
+        }
+
+        [HttpGet("get-user-post")]
+
+        public IActionResult getUserPosts(int userId)
+        {
+            return Ok(_service.getUserPosts(userId));
+        }
+
+        [HttpDelete("delete-post")]
+
+        public IActionResult deletePost(int postId)
+        {
+            _service.deletePost(postId);
+            return Ok();
+        }
     }
 }

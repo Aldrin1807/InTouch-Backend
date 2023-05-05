@@ -2,9 +2,11 @@
 using InTouch_Backend.Data.Models;
 using InTouch_Backend.Data.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting.Internal;
 using System;
 using System.Data;
+using System.Linq;
 
 namespace InTouch_Backend.Data.Services
 {
@@ -42,10 +44,10 @@ namespace InTouch_Backend.Data.Services
                 var passwordHasher = new PasswordHasher<string>();
                 _user.Password = passwordHasher.HashPassword(null, user.Password);
 
-                if (user.Image != null && user.Image.Length > 0)
-                {
-                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + user.Image.FileName;
-                    string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Images");
+            if (user.Image != null && user.Image.Length > 0)
+            {
+                string uniqueFileName = Guid.NewGuid().ToString() + "_" + user.Image.FileName;
+                string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "User Images");
 
                     if (!Directory.Exists(folderPath))
                     {
@@ -76,8 +78,6 @@ namespace InTouch_Backend.Data.Services
                 }
             }
         }
-
-
 
         public int login(Login user)
         {
@@ -160,6 +160,30 @@ namespace InTouch_Backend.Data.Services
             return user;
         }
 
+        
+       
+
+       public User getUserInfo(int id)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+            return user;
+        }
+
+        public int[] getFollows_and_Followers(int userId)
+        {
+
+            var follows= _context.Follows.Where(f=> f.FollowerId==userId).ToList();
+            var followers=_context.Follows.Where(f=>f.FollowingId==userId).ToList();
+
+            int countFollows = follows.Count;
+            int countFollowers = followers.Count;
+
+            int[] temp = { countFollows, countFollowers };
+
+            return temp;
+        }
+
+        
         
     }
 }

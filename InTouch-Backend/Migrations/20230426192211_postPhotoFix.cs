@@ -15,10 +15,11 @@ namespace InTouch_Backend.Migrations
                 table: "Posts");
 
             migrationBuilder.AddColumn<string>(
-                name: "ImagePath",
-                table: "Posts",
-                type: "nvarchar(max)",
-                nullable: true);
+             name: "ImagePath",
+             table: "Posts",
+             type: "nvarchar(max)",
+             nullable: true);
+
         }
 
         /// <inheritdoc />
