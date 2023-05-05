@@ -21,50 +21,61 @@ namespace InTouch_Backend.Data.Services
         }
         public void register(UserDTO user)
         {
-           
-            bool emailExists = _context.Users.Any(u => u.Email == user.Email);
-            bool usernameExists = _context.Users.Any(u => u.Username == user.Username);
-
-            if (emailExists || usernameExists)
+            try
             {
-                throw new Exception("Email or username already exists");
-            }
+                bool emailExists = _context.Users.Any(u => u.Email == user.Email);
+                bool usernameExists = _context.Users.Any(u => u.Username == user.Username);
 
-            var _user = new User()
-            {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Username = user.Username,
-                Email = user.Email,
-                Role = user.Role
-            };
+                if (emailExists || usernameExists)
+                {
+                    throw new Exception("Email or username already exists");
+                }
 
-            var passwordHasher = new PasswordHasher<string>();
-            _user.Password = passwordHasher.HashPassword(null, user.Password);
+                var _user = new User()
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Username = user.Username,
+                    Email = user.Email,
+                    Role = user.Role
+                };
+
+                var passwordHasher = new PasswordHasher<string>();
+                _user.Password = passwordHasher.HashPassword(null, user.Password);
 
             if (user.Image != null && user.Image.Length > 0)
             {
                 string uniqueFileName = Guid.NewGuid().ToString() + "_" + user.Image.FileName;
                 string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "User Images");
 
-                if (!Directory.Exists(folderPath))
-                {
-                    Directory.CreateDirectory(folderPath);
+                    if (!Directory.Exists(folderPath))
+                    {
+                        Directory.CreateDirectory(folderPath);
+                    }
+
+                    string filePath = Path.Combine(folderPath, uniqueFileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        user.Image.CopyTo(fileStream);
+                    }
+
+                    _user.ImagePath = uniqueFileName;
                 }
 
-                string filePath = Path.Combine(folderPath, uniqueFileName);
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    user.Image.CopyTo(fileStream);
-                }
-
-                _user.ImagePath = uniqueFileName;
+                _context.Users.Add(_user);
+                _context.SaveChanges();
             }
-
-            _context.Users.Add(_user);
-            _context.SaveChanges();
-
-          
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine("Inner Exception: " + ex.InnerException.Message);
+                }
+                else
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+                }
+            }
         }
 
         public int login(Login user)
@@ -85,6 +96,70 @@ namespace InTouch_Backend.Data.Services
         }
         public List<User> getUsers() => _context.Users.ToList();
 
+        public void updateProfile(int userId, UserDTO updatedUser = null)
+        {
+            var user = _context.Users.Find(userId);
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+
+            if (updatedUser.FirstName != null)
+            {
+                user.FirstName = updatedUser.FirstName;
+            }
+
+            if (updatedUser.LastName != null)
+            {
+                user.LastName = updatedUser.LastName;
+            }
+
+            if (updatedUser.Username != null)
+            {
+                user.Username = updatedUser.Username;
+            }
+
+            if (updatedUser.Email != null)
+            {
+                user.Email = updatedUser.Email;
+            }
+
+            if (updatedUser?.Image != null && updatedUser.Image.Length > 0)
+            {
+                string uniqueFileName = Guid.NewGuid().ToString() + "_" + updatedUser.Image.FileName;
+                string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Images");
+
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                string filePath = Path.Combine(folderPath, uniqueFileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    updatedUser.Image.CopyTo(fileStream);
+                }
+
+                user.ImagePath = uniqueFileName;
+            }
+
+            _context.Users.Update(user);
+            _context.SaveChanges();
+        }
+
+
+
+        public User getUserById(int userId)
+        {
+            var user = _context.Users.Find(userId);
+           /* if (user == null)
+            {
+                throw new Exception("User no found");
+            }*/
+            return user;
+        }
+
+        
        
 
        public User getUserInfo(int id)
@@ -107,6 +182,23 @@ namespace InTouch_Backend.Data.Services
             return temp;
         }
 
+        public List<User> userFollowers(int userId)
+        {
+            List<int> followedUserIds = _context.Follows
+            .Where(f => f.FollowingId == userId)
+            .Select(f => f.FollowerId)
+            .ToList();
+
+
+            List<User> temp = _context.Users
+                .Where(u => followedUserIds.Contains(u.Id))
+                .ToList();
+
+            return temp;
+        }
+
+        
+        
         public bool DeleteUser(int id)
         {
             var user = _context.Users.FirstOrDefault(u => u.Id == id);

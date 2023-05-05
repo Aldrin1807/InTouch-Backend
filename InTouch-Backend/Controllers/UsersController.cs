@@ -3,6 +3,7 @@ using InTouch_Backend.Data.Services;
 using InTouch_Backend.Data.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace InTouch_Backend.Controllers
 {
@@ -64,6 +65,54 @@ namespace InTouch_Backend.Controllers
         {
             return Ok(_service.getFollows_and_Followers(userId));
         }
+        [HttpPut("Update-user{id}")]
+        public IActionResult UpdateUser(int id, [FromForm] UserDTO updatedUser)
+        {
+            try
+            {
+                // Update user profile
+                
+                _service.updateProfile(id, updatedUser);
+
+                // Return success response
+                return Ok(new { message = "User profile updated successfully" });
+            }
+            catch (Exception ex)
+            {
+                // Return error response
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+        [HttpGet("{id}")]
+        public IActionResult GetUserById(int id)
+        {
+            try
+            {
+                var user = _service.getUserById(id);    
+
+                if (user == null)
+                {
+                    return NotFound
+                        (new { message = "User is not not found" });
+                }
+                
+                
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("user-followers")]
+
+        public IActionResult userFollowers(int userId)
+        {
+            return Ok(_service.userFollowers(userId));
+        }
+    }
+}
 
         [HttpDelete("{id}")]
         public IActionResult DeleteUser(int id)
