@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Hosting.Internal;
 using System;
 using System.Data;
+using System.Linq;
 
 namespace InTouch_Backend.Data.Services
 {
@@ -103,6 +104,38 @@ namespace InTouch_Backend.Data.Services
             int[] temp = { countFollows, countFollowers };
 
             return temp;
+        }
+
+        public bool isFollowing(int userOne,int userTwo)
+        {
+            bool temp = _context.Follows.Any(f => f.FollowerId == userOne && f.FollowingId == userTwo);
+            return temp;
+        }
+
+        public List<User> suggestedUsers(int userId)
+        {
+            List<User> allUsers = _context.Users.ToList();
+
+         
+            List<int> followingIds = _context.Follows
+                .Where(f => f.FollowerId == userId)
+                .Select(f => f.FollowingId)
+                .ToList();
+
+         
+            List<User> suggestedUsers = allUsers
+                .Where(u => u.Id != userId && !followingIds.Contains(u.Id))
+                .ToList();
+
+         
+            return suggestedUsers.Take(10).ToList();
+
+        }
+
+        public List<User> searchUsers (int userId ,string query)
+        {
+            List<User> searchresult = _context.Users.Where(u=> u.Id!=userId &&( u.FirstName.StartsWith(query) || u.Username.StartsWith(query) || u.LastName.StartsWith(query))).ToList();
+            return searchresult;
         }
 
         

@@ -63,5 +63,24 @@ namespace InTouch_Backend.Controllers
         {
             return Ok(_service.getFollows_and_Followers(userId));
         }
+
+        [HttpGet("is-following")]
+
+        public IActionResult isFollowing(int userOne, int userTwo)
+        {
+            return Ok(_service.isFollowing(userOne, userTwo));
+        }
+
+        [HttpGet("suggested-users")]
+        public IActionResult suggestedUsers(int userId)
+        {
+            return Ok(_service.suggestedUsers(userId));
+        }
+
+        [HttpGet("search")]
+        public IActionResult searchUsers(int userId ,string query)
+        {
+            return Ok(_service.searchUsers(userId,query));
+        }
     }
 }

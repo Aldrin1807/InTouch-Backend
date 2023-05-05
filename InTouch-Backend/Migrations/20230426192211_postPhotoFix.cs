@@ -10,15 +10,12 @@ namespace InTouch_Backend.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "Image",
-                table: "Posts");
-
             migrationBuilder.AddColumn<string>(
-                name: "ImagePath",
-                table: "Posts",
-                type: "nvarchar(max)",
-                nullable: true);
+             name: "ImagePath",
+             table: "Posts",
+             type: "nvarchar(max)",
+             nullable: true);
+
         }
 
         /// <inheritdoc />
@@ -27,12 +24,7 @@ namespace InTouch_Backend.Migrations
             migrationBuilder.DropColumn(
                 name: "ImagePath",
                 table: "Posts");
-
-            migrationBuilder.AddColumn<byte[]>(
-                name: "Image",
-                table: "Posts",
-                type: "varbinary(max)",
-                nullable: true);
+      
         }
     }
 }
