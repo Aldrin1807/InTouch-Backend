@@ -26,12 +26,12 @@ namespace InTouch_Backend
                 .HasOne(u => u.User)
                 .WithMany(p => p.Likes)
                 .HasForeignKey(u => u.UserId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.ClientSetNull);
             modelBuilder.Entity<Likes>()
                 .HasOne(u => u.Post)
                 .WithMany(p => p.Likes)
                 .HasForeignKey(u => u.PostId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
             //MANY to MANY per tabelen e Commenteve
 
@@ -46,12 +46,12 @@ namespace InTouch_Backend
                 .HasOne(u => u.User)
                 .WithMany(p => p.Comments)
                 .HasForeignKey(u => u.UserId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.ClientSetNull);
             modelBuilder.Entity<Comments>()
                 .HasOne(u => u.Post)
                 .WithMany(p => p.Comments)
                 .HasForeignKey(u => u.PostId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.ClientSetNull);
             
 
             //MANY to MANY per tabelen e Reports
@@ -61,12 +61,12 @@ namespace InTouch_Backend
                 .HasOne(u => u.User)
                 .WithMany(p => p.Reports)
                 .HasForeignKey(u => u.UserId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.ClientSetNull);
             modelBuilder.Entity<Reports>()
                 .HasOne(u => u.Post)
                 .WithMany(p => p.Reports)
                 .HasForeignKey(u => u.PostId)
-                .OnDelete(DeleteBehavior.NoAction); 
+                .OnDelete(DeleteBehavior.ClientSetNull); 
 
 
             //MANY to MANY per tabelen e Followave
@@ -77,13 +77,13 @@ namespace InTouch_Backend
                 .HasOne(f => f.Follower)
                 .WithMany(u => u.Following)
                 .HasForeignKey(f => f.FollowerId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
             modelBuilder.Entity<Follows>()
                 .HasOne(f => f.Following)
                 .WithMany(u => u.Followers)
                 .HasForeignKey(f => f.FollowingId)
-                .OnDelete(DeleteBehavior.Cascade); 
+                .OnDelete(DeleteBehavior.ClientSetNull); 
 
         }
         public DbSet<User> Users { get; set; }

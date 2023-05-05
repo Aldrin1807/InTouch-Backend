@@ -24,7 +24,10 @@ namespace InTouch_Backend.Migrations
             modelBuilder.Entity("InTouch_Backend.Data.Models.Comments", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -42,7 +45,7 @@ namespace InTouch_Backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("InTouch_Backend.Data.Models.Follows", b =>
@@ -57,7 +60,7 @@ namespace InTouch_Backend.Migrations
 
                     b.HasIndex("FollowingId");
 
-                    b.ToTable("Follows");
+                    b.ToTable("Follows", (string)null);
                 });
 
             modelBuilder.Entity("InTouch_Backend.Data.Models.Likes", b =>
@@ -72,7 +75,7 @@ namespace InTouch_Backend.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("Likes");
+                    b.ToTable("Likes", (string)null);
                 });
 
             modelBuilder.Entity("InTouch_Backend.Data.Models.Post", b =>
@@ -101,7 +104,7 @@ namespace InTouch_Backend.Migrations
 
                     b.HasIndex("userID");
 
-                    b.ToTable("Posts");
+                    b.ToTable("Posts", (string)null);
                 });
 
             modelBuilder.Entity("InTouch_Backend.Data.Models.Reports", b =>
@@ -116,7 +119,7 @@ namespace InTouch_Backend.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("Reports");
+                    b.ToTable("Reports", (string)null);
                 });
 
             modelBuilder.Entity("InTouch_Backend.Data.Models.User", b =>
@@ -162,7 +165,7 @@ namespace InTouch_Backend.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("InTouch_Backend.Data.Models.Comments", b =>
@@ -170,13 +173,11 @@ namespace InTouch_Backend.Migrations
                     b.HasOne("InTouch_Backend.Data.Models.Post", "Post")
                         .WithMany("Comments")
                         .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("InTouch_Backend.Data.Models.User", "User")
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Post");
@@ -189,13 +190,11 @@ namespace InTouch_Backend.Migrations
                     b.HasOne("InTouch_Backend.Data.Models.User", "Follower")
                         .WithMany("Following")
                         .HasForeignKey("FollowerId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("InTouch_Backend.Data.Models.User", "Following")
                         .WithMany("Followers")
                         .HasForeignKey("FollowingId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Follower");
@@ -208,13 +207,11 @@ namespace InTouch_Backend.Migrations
                     b.HasOne("InTouch_Backend.Data.Models.Post", "Post")
                         .WithMany("Likes")
                         .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("InTouch_Backend.Data.Models.User", "User")
                         .WithMany("Likes")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Post");
@@ -238,13 +235,11 @@ namespace InTouch_Backend.Migrations
                     b.HasOne("InTouch_Backend.Data.Models.Post", "Post")
                         .WithMany("Reports")
                         .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("InTouch_Backend.Data.Models.User", "User")
                         .WithMany("Reports")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Post");

@@ -39,6 +39,7 @@ namespace InTouch_Backend.Data.Services
                 .Include(c => c.User)
                 .Where(c => c.PostId == postId)
                 .Select(c => new {
+                    userId = c.User.Id,
                     Username = c.User.Username,
                     Comment = c.comment
                 })
