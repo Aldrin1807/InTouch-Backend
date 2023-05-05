@@ -1,7 +1,9 @@
-﻿using InTouch_Backend.Data.Services;
+﻿using InTouch_Backend.Data.Models;
+using InTouch_Backend.Data.Services;
 using InTouch_Backend.Data.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace InTouch_Backend.Controllers
 {
@@ -63,24 +65,44 @@ namespace InTouch_Backend.Controllers
         {
             return Ok(_service.getFollows_and_Followers(userId));
         }
-
-        [HttpGet("is-following")]
-
-        public IActionResult isFollowing(int userOne, int userTwo)
+        [HttpPut("Update-user{id}")]
+        public IActionResult UpdateUser(int id, [FromForm] UserDTO updatedUser)
         {
-            return Ok(_service.isFollowing(userOne, userTwo));
+            try
+            {
+                // Update user profile
+                
+                _service.updateProfile(id, updatedUser);
+
+                // Return success response
+                return Ok(new { message = "User profile updated successfully" });
+            }
+            catch (Exception ex)
+            {
+                // Return error response
+                return BadRequest(new { message = ex.Message });
+            }
         }
-
-        [HttpGet("suggested-users")]
-        public IActionResult suggestedUsers(int userId)
+        [HttpGet("{id}")]
+        public IActionResult GetUserById(int id)
         {
-            return Ok(_service.suggestedUsers(userId));
-        }
+            try
+            {
+                var user = _service.getUserById(id);    
 
-        [HttpGet("search")]
-        public IActionResult searchUsers(int userId ,string query)
-        {
-            return Ok(_service.searchUsers(userId,query));
+                if (user == null)
+                {
+                    return NotFound
+                        (new { message = "User is not not found" });
+                }
+                
+                
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
         }
 
         [HttpGet("user-followers")]
