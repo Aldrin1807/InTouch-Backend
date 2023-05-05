@@ -28,7 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
     <Folder Include="Post Images\" />
     <Folder Include="User Images\" />
   </ItemGroup>

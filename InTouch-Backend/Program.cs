@@ -1,5 +1,6 @@
 
 using InTouch_Backend.Data.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 
@@ -27,6 +28,10 @@ namespace InTouch_Backend
             builder.Services.AddTransient<FollowsService>();
             builder.Services.AddTransient<CommentsService>();
 
+            builder.Services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
 
             builder.Services.AddCors();
 
@@ -50,7 +55,6 @@ namespace InTouch_Backend
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
 
             app.UseStaticFiles(new StaticFileOptions
             {

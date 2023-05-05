@@ -1,4 +1,5 @@
-﻿using InTouch_Backend.Data.Models;
+﻿
+using InTouch_Backend.Data.Models;
 using InTouch_Backend.Data.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Hosting.Internal;
@@ -104,22 +105,22 @@ namespace InTouch_Backend.Data.Services
                 throw new Exception("User not found");
             }
 
-            if (updatedUser?.FirstName != null)
+            if (updatedUser.FirstName != null)
             {
                 user.FirstName = updatedUser.FirstName;
             }
 
-            if (updatedUser?.LastName != null)
+            if (updatedUser.LastName != null)
             {
                 user.LastName = updatedUser.LastName;
             }
 
-            if (updatedUser?.Username != null)
+            if (updatedUser.Username != null)
             {
                 user.Username = updatedUser.Username;
             }
 
-            if (updatedUser?.Email != null)
+            if (updatedUser.Email != null)
             {
                 user.Email = updatedUser.Email;
             }
@@ -146,12 +147,15 @@ namespace InTouch_Backend.Data.Services
             _context.Users.Update(user);
             _context.SaveChanges();
         }
+
+
+
         public User getUserById(int userId)
         {
             var user = _context.Users.Find(userId);
-          /*  if (user == null)
+           /* if (user == null)
             {
-                throw new Exception("User not found");
+                throw new Exception("User no found");
             }*/
             return user;
         }
