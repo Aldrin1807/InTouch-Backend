@@ -32,23 +32,23 @@ namespace InTouch_Backend.Controllers
                 { Status = "Error", Message = ex.Message });
             }
         }
-       
-       
+
+
         [HttpPost("login")]
-        public IActionResult login([FromBody]Login user)
+        public IActionResult login([FromBody] Login user)
         {
-            int log = _service.login(user);
-            if (log!=0)
+            var tokenString = _service.login(user);
+
+            if (tokenString != null)
             {
-                return Ok(log);
+                return Ok(tokenString);
             }
             else
             {
-                return Ok(new Response
+                return BadRequest(new Response
                 { Status = "Error", Message = "Credentials wrong." });
             }
         }
-
         [HttpGet("get-users")]
         public IActionResult GetUsers() {
             return Ok(_service.getUsers());

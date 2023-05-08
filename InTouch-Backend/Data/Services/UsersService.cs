@@ -7,17 +7,22 @@ using Microsoft.Extensions.Hosting.Internal;
 using System;
 using System.Data;
 using System.Linq;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace InTouch_Backend.Data.Services
 {
     public class UsersService
     {
         public AppDbContext _context;
+        private readonly IConfiguration _configuration;
 
- 
-        public UsersService(AppDbContext context)
+        public UsersService(AppDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
     
         }
         public void register(UserDTO user)
@@ -79,7 +84,7 @@ namespace InTouch_Backend.Data.Services
             }
         }
 
-        public int login(Login user)
+        public string login(Login user)
         {
             var _user = _context.Users.FirstOrDefault(u => u.Email == user.EmailorUsername || u.Username == user.EmailorUsername);
 
@@ -87,13 +92,31 @@ namespace InTouch_Backend.Data.Services
             {
                 var passwordHasher = new PasswordHasher<string>();
                 var result = passwordHasher.VerifyHashedPassword(null, _user.Password, user.Password);
-
+                var claims = new[]
+                {
+            new Claim(ClaimTypes.Email, _user.Email),
+            new Claim(ClaimTypes.NameIdentifier, _user.FirstName),
+            new Claim(ClaimTypes.GivenName, _user.Username),
+            new Claim(ClaimTypes.Surname, _user.LastName),
+            new Claim(ClaimTypes.Role, _user.Role.ToString())
+        };
                 if (result == PasswordVerificationResult.Success)
                 {
-                    return _user.Id;
+                    var token = new JwtSecurityToken(
+                        issuer: _configuration["Jwt:Issuer"],
+                        audience: _configuration["Jwt:Audience"],
+                        claims: claims,
+                        expires: DateTime.UtcNow.AddMinutes(20),
+                        notBefore: DateTime.UtcNow,
+                        signingCredentials: new Microsoft.IdentityModel.Tokens.SigningCredentials(
+                            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"])),
+
+                            SecurityAlgorithms.HmacSha256));
+                    var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+                    return tokenString;
                 }
             }
-            return 0;
+            return null;
         }
         public List<User> getUsers() => _context.Users.ToList();
 

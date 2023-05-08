@@ -11,13 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InTouch_Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-<<<<<<<< HEAD:InTouch-Backend/Migrations/20230430183905_test1.Designer.cs
     [Migration("20230430183905_test1")]
     partial class test1
-========
-    [Migration("20230502181802_datetimeFix")]
-    partial class datetimeFix
->>>>>>>> 91f1f5143de95f51c330d7c8bfef43bdd3c38925:InTouch-Backend/Migrations/20230502181802_datetimeFix.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
