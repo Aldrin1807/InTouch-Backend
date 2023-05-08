@@ -105,6 +105,28 @@ namespace InTouch_Backend.Controllers
             }
         }
 
+        [HttpGet("user-followers")]
 
+        public IActionResult userFollowers(int userId)
+        {
+            return Ok(_service.userFollowers(userId));
+        }
     }
 }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteUser(int id)
+        {
+            var deleted = _service.DeleteUser(id);
+            if (deleted)
+            {
+                return Ok(new Response { Status = "Success", Message = "User deleted successfully." });
+            }
+            else
+            {
+                return Ok(new Response { Status = "Error", Message = "User not found." });
+            }
+        }
+        }
+    }
+

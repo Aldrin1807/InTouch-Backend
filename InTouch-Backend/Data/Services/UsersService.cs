@@ -1,5 +1,4 @@
-﻿
-using InTouch_Backend.Data.Models;
+﻿using InTouch_Backend.Data.Models;
 using InTouch_Backend.Data.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -206,7 +205,41 @@ namespace InTouch_Backend.Data.Services
             return temp;
         }
 
+        public List<User> userFollowers(int userId)
+        {
+            List<int> followedUserIds = _context.Follows
+            .Where(f => f.FollowingId == userId)
+            .Select(f => f.FollowerId)
+            .ToList();
+
+
+            List<User> temp = _context.Users
+                .Where(u => followedUserIds.Contains(u.Id))
+                .ToList();
+
+            return temp;
+        }
+
         
         
+        public bool DeleteUser(int id)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+            if (user != null)
+            {
+                
+                
+                _context.Users.Remove(user);
+                _context.SaveChanges();
+                return true;
+            }
+                   
+return false;
+            
+                
+        }
+
+
+
     }
 }
