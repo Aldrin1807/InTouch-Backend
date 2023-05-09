@@ -107,37 +107,6 @@ namespace InTouch_Backend.Controllers
             }
         }
 
-
-
-        
-       
-
-        [HttpGet("is-following")]
-        [HttpPut("Update-user{id}")]
-        public IActionResult UpdateUser(int id, [FromForm] UserDTO updatedUser)
-        {
-            try
-            {
-                // Update user profile
-                
-                _service.updateProfile(id, updatedUser);
-
-                // Return success response
-                return Ok(new { message = "User profile updated successfully" });
-            }
-            catch (Exception ex)
-            {
-                // Return error response
-                return BadRequest(new { message = ex.Message });
-            }
-        }
-        [HttpGet("{id}")]
-        public IActionResult GetUserById(int id)
-        {
-            try
-            {
-                var user = _service.getUserById(id);    
-
         [HttpGet("suggested-users")]
         public IActionResult suggestedUsers(int userId)
         {
@@ -148,19 +117,6 @@ namespace InTouch_Backend.Controllers
         public IActionResult searchUsers(int userId, string query)
         {
             return Ok(_service.searchUsers(userId, query));
-                if (user == null)
-                {
-                    return NotFound
-                        (new { message = "User is not not found" });
-                }
-                
-                
-                return Ok(user);
-            }
-            catch (Exception ex)
-            {
-                return NotFound(new { message = ex.Message });
-            }
         }
 
         [HttpGet("user-followers")]
@@ -169,8 +125,7 @@ namespace InTouch_Backend.Controllers
         {
             return Ok(_service.userFollowers(userId));
         }
-    }
-}
+
 
         [HttpDelete("{id}")]
         public IActionResult DeleteUser(int id)
@@ -185,8 +140,7 @@ namespace InTouch_Backend.Controllers
                 return Ok(new Response { Status = "Error", Message = "User not found." });
             }
         }
-        }
-    }
+    
 
 
         }

@@ -10,6 +10,7 @@ using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace InTouch_Backend.Data.Services
 {
@@ -22,7 +23,7 @@ namespace InTouch_Backend.Data.Services
         {
             _context = context;
             _configuration = configuration;
-    
+
         }
         public void register(UserDTO user)
         {
@@ -48,10 +49,10 @@ namespace InTouch_Backend.Data.Services
                 var passwordHasher = new PasswordHasher<string>();
                 _user.Password = passwordHasher.HashPassword(null, user.Password);
 
-            if (user.Image != null && user.Image.Length > 0)
-            {
-                string uniqueFileName = Guid.NewGuid().ToString() + "_" + user.Image.FileName;
-                string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "User Images");
+                if (user.Image != null && user.Image.Length > 0)
+                {
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + user.Image.FileName;
+                    string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "User Images");
 
                     if (!Directory.Exists(folderPath))
                     {
@@ -133,19 +134,6 @@ namespace InTouch_Backend.Data.Services
                 user.FirstName = updatedUser.FirstName;
             }
 
-        public void updateProfile(int userId, UserDTO updatedUser = null)
-        {
-            var user = _context.Users.Find(userId);
-            if (user == null)
-            {
-                throw new Exception("User not found");
-            }
-
-            if (updatedUser.FirstName != null)
-            {
-                user.FirstName = updatedUser.FirstName;
-            }
-
             if (updatedUser.LastName != null)
             {
                 user.LastName = updatedUser.LastName;
@@ -185,9 +173,9 @@ namespace InTouch_Backend.Data.Services
         }
 
 
-      
 
-       public User getUserInfo(int id)
+
+        public User getUserInfo(int id)
         {
             var user = _context.Users.FirstOrDefault(u => u.Id == id);
             return user;
@@ -197,121 +185,76 @@ namespace InTouch_Backend.Data.Services
         public User getUserById(int userId)
         {
             var user = _context.Users.Find(userId);
-           /* if (user == null)
-            {
-                throw new Exception("User no found");
-            }*/
+            /* if (user == null)
+             {
+                 throw new Exception("User no found");
+             }*/
             return user;
         }
-            if (updatedUser.LastName != null)
-            {
-                user.LastName = updatedUser.LastName;
-            }
-
-        
-       
 
 
-        public int[] getFollows_and_Followers(int userId)
-        {
-            if (updatedUser.Username != null)
-            {
-                user.Username = updatedUser.Username;
-            }
-
-            if (updatedUser.Email != null)
-            {
-                user.Email = updatedUser.Email;
-            }
-
-            if (updatedUser?.Image != null && updatedUser.Image.Length > 0)
-            {
-                string uniqueFileName = Guid.NewGuid().ToString() + "_" + updatedUser.Image.FileName;
-                string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Images");
-
-                if (!Directory.Exists(folderPath))
-                {
-                    Directory.CreateDirectory(folderPath);
-                }
 
 
-        
+
+
+
+
+
         public bool DeleteUser(int id)
         {
             var user = _context.Users.FirstOrDefault(u => u.Id == id);
             if (user != null)
             {
-                
-                
+
+
                 _context.Users.Remove(user);
                 _context.SaveChanges();
                 return true;
             }
-                   
+
             return false;
-            
-                
+
+
         }
-       
+
         public bool isFollowing(int userOne, int userTwo)
         {
             bool temp = _context.Follows.Any(f => f.FollowerId == userOne && f.FollowingId == userTwo);
             return temp;
         }
-                string filePath = Path.Combine(folderPath, uniqueFileName);
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    updatedUser.Image.CopyTo(fileStream);
-                }
-
-                user.ImagePath = uniqueFileName;
-            }
-
-            _context.Users.Update(user);
-            _context.SaveChanges();
-        }
 
 
+
+        public List<User> suggestedUsers(int userId)
+        {
+            List<User> allUsers = _context.Users.ToList();
             List<int> followingIds = _context.Follows
-                .Where(f => f.FollowerId == userId)
-                .Select(f => f.FollowingId)
-                .ToList();
-
-
+               .Where(f => f.FollowerId == userId)
+               .Select(f => f.FollowingId)
+               .ToList();
 
             List<User> suggestedUsers = allUsers
-                .Where(u => u.Id != userId && !followingIds.Contains(u.Id))
-                .ToList();
+            .Where(u => u.Id != userId && !followingIds.Contains(u.Id))
+            .ToList();
 
 
             return suggestedUsers.Take(10).ToList();
-        public User getUserById(int userId)
-        {
-            var user = _context.Users.Find(userId);
-           /* if (user == null)
-            {
-                throw new Exception("User no found");
-            }*/
-            return user;
+
         }
 
-        
-       
 
-       public User getUserInfo(int id)
-        {
-            var user = _context.Users.FirstOrDefault(u => u.Id == id);
-            return user;
-        }
 
         public List<User> searchUsers(int userId, string query)
-        public int[] getFollows_and_Followers(int userId)
         {
+
+
             List<User> searchresult = _context.Users.Where(u => u.Id != userId && (u.FirstName.Contains(query) || u.Username.Contains(query) || u.LastName.Contains(query))).ToList();
             return searchresult;
-
-            var follows= _context.Follows.Where(f=> f.FollowerId==userId).ToList();
-            var followers=_context.Follows.Where(f=>f.FollowingId==userId).ToList();
+        }
+        public int[] getFollows_and_Followers(int userId)
+        {
+            var follows = _context.Follows.Where(f => f.FollowerId == userId).ToList();
+            var followers = _context.Follows.Where(f => f.FollowingId == userId).ToList();
 
             int countFollows = follows.Count;
             int countFollowers = followers.Count;
@@ -336,26 +279,6 @@ namespace InTouch_Backend.Data.Services
             return temp;
         }
 
-        
-        
-        public bool DeleteUser(int id)
-        {
-            var user = _context.Users.FirstOrDefault(u => u.Id == id);
-            if (user != null)
-            {
-                
-                
-                _context.Users.Remove(user);
-                _context.SaveChanges();
-                return true;
-            }
-                   
-return false;
-            
-                
+
         }
-
-
-
     }
-}
