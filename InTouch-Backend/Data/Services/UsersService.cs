@@ -10,6 +10,7 @@ using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace InTouch_Backend.Data.Services
 {
@@ -22,7 +23,7 @@ namespace InTouch_Backend.Data.Services
         {
             _context = context;
             _configuration = configuration;
-    
+
         }
         public void register(UserDTO user)
         {
@@ -48,10 +49,10 @@ namespace InTouch_Backend.Data.Services
                 var passwordHasher = new PasswordHasher<string>();
                 _user.Password = passwordHasher.HashPassword(null, user.Password);
 
-            if (user.Image != null && user.Image.Length > 0)
-            {
-                string uniqueFileName = Guid.NewGuid().ToString() + "_" + user.Image.FileName;
-                string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "User Images");
+                if (user.Image != null && user.Image.Length > 0)
+                {
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + user.Image.FileName;
+                    string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "User Images");
 
                     if (!Directory.Exists(folderPath))
                     {
@@ -83,39 +84,50 @@ namespace InTouch_Backend.Data.Services
             }
         }
 
+
         public string login(Login user)
         {
             var _user = _context.Users.FirstOrDefault(u => u.Email == user.EmailorUsername || u.Username == user.EmailorUsername);
 
-            if (_user != null)
+            if (_user == null)
             {
-                var passwordHasher = new PasswordHasher<string>();
-                var result = passwordHasher.VerifyHashedPassword(null, _user.Password, user.Password);
-                var claims = new[]
-                {
-            new Claim(ClaimTypes.Email, _user.Email),
+                throw new Exception("User not found");
+
+            };
+            var passwordHasher = new PasswordHasher<string>();
+            var result = passwordHasher.VerifyHashedPassword(user.Password, _user.Password, user.Password);
+            if (result == PasswordVerificationResult.Success)
+            {
+                string token = CreateToken(_user);
+                return token;
+            }
+        
+            return null;
+        }
+        
+
+        private string CreateToken(User _user)
+        {
+            List<Claim> claims = new List<Claim> {
+                 new Claim(ClaimTypes.Email, _user.Email),
             new Claim(ClaimTypes.NameIdentifier, _user.FirstName),
             new Claim(ClaimTypes.GivenName, _user.Username),
             new Claim(ClaimTypes.Surname, _user.LastName),
             new Claim(ClaimTypes.Role, _user.Role.ToString())
-        };
-                if (result == PasswordVerificationResult.Success)
-                {
-                    var token = new JwtSecurityToken(
-                        issuer: _configuration["Jwt:Issuer"],
-                        audience: _configuration["Jwt:Audience"],
-                        claims: claims,
-                        expires: DateTime.UtcNow.AddMinutes(20),
-                        notBefore: DateTime.UtcNow,
-                        signingCredentials: new Microsoft.IdentityModel.Tokens.SigningCredentials(
-                            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"])),
+            };
 
-                            SecurityAlgorithms.HmacSha256));
-                    var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-                    return tokenString;
-                }
-            }
-            return null;
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:SecretKey").Value));
+
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: creds);
+
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return tokenString;
         }
         public List<User> getUsers() => _context.Users.ToList();
 

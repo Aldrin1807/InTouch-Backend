@@ -110,10 +110,7 @@ namespace InTouch_Backend.Controllers
         public IActionResult userFollowers(int userId)
         {
             return Ok(_service.userFollowers(userId));
-        }
-    }
-}
-
+        } 
         [HttpDelete("{id}")]
         public IActionResult DeleteUser(int id)
         {
@@ -129,4 +126,5 @@ namespace InTouch_Backend.Controllers
         }
         }
     }
+
 
