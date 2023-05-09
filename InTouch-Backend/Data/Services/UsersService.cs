@@ -95,9 +95,8 @@ namespace InTouch_Backend.Data.Services
                 var claims = new[]
                 {
             new Claim(ClaimTypes.Email, _user.Email),
-            new Claim(ClaimTypes.NameIdentifier, _user.FirstName),
+            new Claim(ClaimTypes.NameIdentifier, _user.Id.ToString()),
             new Claim(ClaimTypes.GivenName, _user.Username),
-            new Claim(ClaimTypes.Surname, _user.LastName),
             new Claim(ClaimTypes.Role, _user.Role.ToString())
         };
                 if (result == PasswordVerificationResult.Success)
@@ -106,16 +105,31 @@ namespace InTouch_Backend.Data.Services
                         issuer: _configuration["Jwt:Issuer"],
                         audience: _configuration["Jwt:Audience"],
                         claims: claims,
-                        expires: DateTime.UtcNow.AddMinutes(20),
+                        expires: DateTime.UtcNow.AddMinutes(1),
                         notBefore: DateTime.UtcNow,
                         signingCredentials: new Microsoft.IdentityModel.Tokens.SigningCredentials(
                             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"])),
-
                             SecurityAlgorithms.HmacSha256));
                     var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
                     return tokenString;
                 }
             }
+            return null;
+        }
+        public string GetUserIdFromToken(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
+
+            if (jwtToken != null)
+            {
+                var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+                if (userIdClaim != null)
+                {
+                    return userIdClaim.Value;
+                }
+            }
+
             return null;
         }
         public List<User> getUsers() => _context.Users.ToList();
@@ -194,7 +208,11 @@ namespace InTouch_Backend.Data.Services
 
 
 
-
+        public bool isFollowing(int userOne, int userTwo)
+        {
+            bool temp = _context.Follows.Any(f => f.FollowerId == userOne && f.FollowingId == userTwo);
+            return temp;
+        }
 
 
 
@@ -216,14 +234,6 @@ namespace InTouch_Backend.Data.Services
 
 
         }
-
-        public bool isFollowing(int userOne, int userTwo)
-        {
-            bool temp = _context.Follows.Any(f => f.FollowerId == userOne && f.FollowingId == userTwo);
-            return temp;
-        }
-
-
 
         public List<User> suggestedUsers(int userId)
         {

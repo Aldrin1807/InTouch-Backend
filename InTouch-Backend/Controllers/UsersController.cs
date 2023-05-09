@@ -1,6 +1,7 @@
 ﻿using InTouch_Backend.Data.Models;
 using InTouch_Backend.Data.Services;
 using InTouch_Backend.Data.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -49,25 +50,35 @@ namespace InTouch_Backend.Controllers
                 { Status = "Error", Message = "Credentials wrong." });
             }
         }
-        [HttpGet("get-users")]
+
+        [HttpGet("get-user-id")]
+        public IActionResult getId(string token)
+        {
+            return Ok(_service.GetUserIdFromToken(token));
+        }
+
+
+        
+        [HttpGet("get-users") ,Authorize]
         public IActionResult GetUsers()
         {
             return Ok(_service.getUsers());
         }
 
-        [HttpGet("get-user-info")]
+
+        [HttpGet("get-user-info"),Authorize]
         public IActionResult GetUserInfo(int id)
         {
             return Ok(_service.getUserInfo(id));
         }
 
-        [HttpGet("get-user-followers-follows")]
+        [HttpGet("get-user-followers-follows"), Authorize]
 
         public IActionResult getFollows_and_Followers(int userId)
         {
             return Ok(_service.getFollows_and_Followers(userId));
         }
-        [HttpPut("Update-user{id}")]
+        [HttpPut("Update-user{id}"), Authorize]
         public IActionResult UpdateUser(int id, [FromForm] UserDTO updatedUser)
         {
             try
@@ -85,7 +96,7 @@ namespace InTouch_Backend.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), Authorize]
         public IActionResult GetUserById(int id)
         {
             try
@@ -107,19 +118,19 @@ namespace InTouch_Backend.Controllers
             }
         }
 
-        [HttpGet("suggested-users")]
+        [HttpGet("suggested-users"), Authorize]
         public IActionResult suggestedUsers(int userId)
         {
             return Ok(_service.suggestedUsers(userId));
         }
 
-        [HttpGet("search")]
+        [HttpGet("search"), Authorize]
         public IActionResult searchUsers(int userId, string query)
         {
             return Ok(_service.searchUsers(userId, query));
         }
 
-        [HttpGet("user-followers")]
+        [HttpGet("user-followers"), Authorize]
 
         public IActionResult userFollowers(int userId)
         {
@@ -127,7 +138,7 @@ namespace InTouch_Backend.Controllers
         }
 
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         public IActionResult DeleteUser(int id)
         {
             var deleted = _service.DeleteUser(id);
@@ -140,9 +151,17 @@ namespace InTouch_Backend.Controllers
                 return Ok(new Response { Status = "Error", Message = "User not found." });
             }
         }
-    
 
 
+        [HttpGet("is-following"),Authorize]
+
+        public IActionResult isFollowing(int userOne, int userTwo)
+        {
+            return Ok(_service.isFollowing(userOne, userTwo));
         }
+
+
+
+    }
     }
 

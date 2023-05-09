@@ -1,5 +1,6 @@
 ﻿using InTouch_Backend.Data.Services;
 using InTouch_Backend.Data.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,14 +16,14 @@ namespace InTouch_Backend.Controllers
             _service = service;
         }
 
-        [HttpPost("follow-user")]
+        [HttpPost("follow-user"), Authorize]
         public IActionResult followUser([FromBody]FollowsDTO follow)
         {
             _service.followUser(follow);
             return Ok();
         }
 
-        [HttpDelete("unfollow-user")]
+        [HttpDelete("unfollow-user"), Authorize]
         public IActionResult unFollowUser([FromBody] FollowsDTO follow)
         {
             _service.unFollowUser(follow);
