@@ -10,10 +10,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace InTouch_Backend.Migrations
 {
-    [DbContext(typeof(AppDbContext))]
-    [Migration("20230502181802_datetimeFix")]
-    partial class datetimeFix
-    {
+
+    partial class datetimeFix : Migration { 
+
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
