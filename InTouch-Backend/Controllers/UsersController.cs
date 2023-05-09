@@ -37,18 +37,18 @@ namespace InTouch_Backend.Controllers
         [HttpPost("login")]
         public IActionResult login([FromBody] Login user)
         {
-            int log = _service.login(user);
-            if (log != 0)
+            var tokenString = _service.login(user);
+
+            if (tokenString != null)
             {
-                return Ok(log);
+                return Ok(tokenString);
             }
             else
             {
-                return Ok(new Response
+                return BadRequest(new Response
                 { Status = "Error", Message = "Credentials wrong." });
             }
         }
-
         [HttpGet("get-users")]
         public IActionResult GetUsers()
         {
@@ -113,11 +113,30 @@ namespace InTouch_Backend.Controllers
        
 
         [HttpGet("is-following")]
-
-        public IActionResult isFollowing(int userOne, int userTwo)
+        [HttpPut("Update-user{id}")]
+        public IActionResult UpdateUser(int id, [FromForm] UserDTO updatedUser)
         {
-            return Ok(_service.isFollowing(userOne, userTwo));
+            try
+            {
+                // Update user profile
+                
+                _service.updateProfile(id, updatedUser);
+
+                // Return success response
+                return Ok(new { message = "User profile updated successfully" });
+            }
+            catch (Exception ex)
+            {
+                // Return error response
+                return BadRequest(new { message = ex.Message });
+            }
         }
+        [HttpGet("{id}")]
+        public IActionResult GetUserById(int id)
+        {
+            try
+            {
+                var user = _service.getUserById(id);    
 
         [HttpGet("suggested-users")]
         public IActionResult suggestedUsers(int userId)
@@ -129,6 +148,19 @@ namespace InTouch_Backend.Controllers
         public IActionResult searchUsers(int userId, string query)
         {
             return Ok(_service.searchUsers(userId, query));
+                if (user == null)
+                {
+                    return NotFound
+                        (new { message = "User is not not found" });
+                }
+                
+                
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
         }
 
         [HttpGet("user-followers")]
@@ -137,6 +169,25 @@ namespace InTouch_Backend.Controllers
         {
             return Ok(_service.userFollowers(userId));
         }
+    }
+}
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteUser(int id)
+        {
+            var deleted = _service.DeleteUser(id);
+            if (deleted)
+            {
+                return Ok(new Response { Status = "Success", Message = "User deleted successfully." });
+            }
+            else
+            {
+                return Ok(new Response { Status = "Error", Message = "User not found." });
+            }
+        }
+        }
+    }
+
 
         }
     }
