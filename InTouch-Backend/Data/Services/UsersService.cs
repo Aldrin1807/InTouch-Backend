@@ -43,6 +43,7 @@ namespace InTouch_Backend.Data.Services
                     LastName = user.LastName,
                     Username = user.Username,
                     Email = user.Email,
+                    isPrivate = user.isPrivate,
                     Role = user.Role
                 };
 

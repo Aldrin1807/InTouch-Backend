@@ -12,6 +12,8 @@ namespace InTouch_Backend.Data.Models
         public string Username { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
+
+        public bool isPrivate { get; set; }
         public string ImagePath { get; set; }
         [NotMapped]
         public IFormFile Image { get; set; }
