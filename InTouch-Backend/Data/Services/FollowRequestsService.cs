@@ -48,7 +48,7 @@ namespace InTouch_Backend.Data.Services
             return request;
         }
 
-        public void handleAccept(int userOne,int userTwo)
+        public void handleAccept(int userOne, int userTwo)
         {
             var request = _context.FollowRequests.FirstOrDefault(r => r.FollowRequestId == userOne && r.FollowRequestedId == userTwo);
             if (request != null)
@@ -61,5 +61,14 @@ namespace InTouch_Backend.Data.Services
                 _context.Follows.Add(_follow);
                 _context.FollowRequests.Remove(request);
             }
+        }
+        public void handleDecline(int userOne, int userTwo)
+        {
+            var request = _context.FollowRequests.FirstOrDefault(r => r.FollowRequestId == userOne && r.FollowRequestedId == userTwo);
+            if (request != null)
+            {
+                _context.FollowRequests.Remove(request);
+            }
+        }
     }
 }
