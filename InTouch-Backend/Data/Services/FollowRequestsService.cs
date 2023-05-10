@@ -34,10 +34,41 @@ namespace InTouch_Backend.Data.Services
             }
 
         }
+        
         public bool isRequested(FollowRequestsDTO request)
         {
             return _context.FollowRequests.Any(f => f.FollowRequestId == request.FollowRequestId && f.FollowRequestedId == request.FollowRequestedId);
         }
 
+        public List<User> getUserRequests (int userId)
+        {
+            List<int> ids = _context.FollowRequests.Where(r => r.FollowRequestedId == userId)
+                .Select(r=> r.FollowRequestId).ToList();
+            List<User> request = _context.Users.Where(u => ids.Contains(u.Id)).ToList();
+            return request;
+        }
+
+        public void handleAccept(int userOne, int userTwo)
+        {
+            var request = _context.FollowRequests.FirstOrDefault(r => r.FollowRequestId == userOne && r.FollowRequestedId == userTwo);
+            if (request != null)
+            {
+                Follows _follow = new Follows()
+                {
+                    FollowerId = userOne,
+                    FollowingId = userTwo
+                };
+                _context.Follows.Add(_follow);
+                _context.FollowRequests.Remove(request);
+            }
+        }
+        public void handleDecline(int userOne, int userTwo)
+        {
+            var request = _context.FollowRequests.FirstOrDefault(r => r.FollowRequestId == userOne && r.FollowRequestedId == userTwo);
+            if (request != null)
+            {
+                _context.FollowRequests.Remove(request);
+            }
+        }
     }
 }

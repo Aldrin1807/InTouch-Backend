@@ -40,5 +40,23 @@ namespace InTouch_Backend.Controllers
             };
             return Ok(_service.isRequested(request));
         }
-    }
+
+        [HttpGet("get-requests")]
+        public IActionResult getUserRequests(int userId)
+        {
+            return Ok(_service.getUserRequests(userId));
+        }
+        [HttpPost("handle-accept")]
+        public IActionResult handleAccept(int userOne,int UserTwo)
+        {
+            _service.handleAccept(userOne,UserTwo);
+            return Ok();
+        }
+        [HttpPost("handle-decline")]
+        public IActionResult handleDecline(int userOne, int UserTwo)
+        {
+            _service.handleDecline(userOne, UserTwo);
+            return Ok();
+        }
+    } 
 }
