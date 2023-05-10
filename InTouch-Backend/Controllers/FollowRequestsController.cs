@@ -40,5 +40,11 @@ namespace InTouch_Backend.Controllers
             };
             return Ok(_service.isRequested(request));
         }
-    }
+
+        [HttpGet("get-requests")]
+        public IActionResult getUserRequests(int userId)
+        {
+            return Ok(_service.getUserRequests(userId));
+        }
+    } 
 }
