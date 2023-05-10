@@ -50,25 +50,27 @@ namespace InTouch_Backend.Data.Services
 
         public void handleAccept(int userOne, int userTwo)
         {
-            var request = _context.FollowRequests.FirstOrDefault(r => r.FollowRequestId == userOne && r.FollowRequestedId == userTwo);
-            if (request != null)
-            {
+          
+           
                 Follows _follow = new Follows()
                 {
-                    FollowerId = userOne,
-                    FollowingId = userTwo
+                    FollowerId = userTwo,
+                    FollowingId = userOne
                 };
                 _context.Follows.Add(_follow);
-                _context.FollowRequests.Remove(request);
-            }
+            var request = _context.FollowRequests.FirstOrDefault(r => r.FollowRequestId == userOne && r.FollowRequestedId == userTwo);
+            if(request != null)
+            _context.FollowRequests.Remove(request);
+            _context.SaveChanges();
         }
         public void handleDecline(int userOne, int userTwo)
         {
-            var request = _context.FollowRequests.FirstOrDefault(r => r.FollowRequestId == userOne && r.FollowRequestedId == userTwo);
+            var request = _context.FollowRequests.FirstOrDefault(r => r.FollowRequestedId == userOne && r.FollowRequestId == userTwo);
             if (request != null)
             {
                 _context.FollowRequests.Remove(request);
             }
+            _context.SaveChanges();
         }
     }
 }

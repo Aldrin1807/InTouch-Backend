@@ -52,7 +52,7 @@ namespace InTouch_Backend.Controllers
             _service.handleAccept(userOne,UserTwo);
             return Ok();
         }
-        [HttpPost("handle-decline")]
+        [HttpDelete("handle-decline")]
         public IActionResult handleDecline(int userOne, int UserTwo)
         {
             _service.handleDecline(userOne, UserTwo);
