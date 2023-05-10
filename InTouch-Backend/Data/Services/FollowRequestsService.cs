@@ -39,5 +39,10 @@ namespace InTouch_Backend.Data.Services
             return _context.FollowRequests.Any(f => f.FollowRequestId == request.FollowRequestId && f.FollowRequestedId == request.FollowRequestedId);
         }
 
+        public List<User> getUserRequests (int userId)
+        {
+            List<User> requests = _context.FollowRequests.Where(r => r.FollowRequestedId == userId).ToList();
+            return requests;
+        }
     }
 }
