@@ -1,8 +1,12 @@
-﻿using InTouch_Backend.Data.Services;
+﻿using InTouch_Backend.Data.DTOs;
+using InTouch_Backend.Data.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace InTouch_Backend.Controllers
 {
-    public class FollowRequestsController
+    [Route("api/[controller]")]
+    [ApiController]
+    public class FollowRequestsController : ControllerBase
     {
         private readonly FollowRequestsService _service;
 
@@ -11,5 +15,19 @@ namespace InTouch_Backend.Controllers
             _service = service;
         }
 
+        [HttpPost("request-follow")]
+
+        public IActionResult requestFollow([FromBody]FollowRequestsDTO request)
+        {
+            _service.requestFollow(request);
+            return Ok();
+        }
+
+        [HttpDelete("unrequest-follow")]
+        public IActionResult unRequestFollow([FromBody] FollowRequestsDTO request)
+        {
+            _service.unRequestFollow(request);
+            return Ok();
+        }
     }
 }

@@ -106,7 +106,7 @@ namespace InTouch_Backend.Data.Services
                         issuer: _configuration["Jwt:Issuer"],
                         audience: _configuration["Jwt:Audience"],
                         claims: claims,
-                        expires: DateTime.UtcNow.AddMinutes(1),
+                        expires: DateTime.UtcNow.AddMinutes(20),
                         notBefore: DateTime.UtcNow,
                         signingCredentials: new Microsoft.IdentityModel.Tokens.SigningCredentials(
                             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"])),
