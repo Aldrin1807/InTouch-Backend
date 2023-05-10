@@ -10,6 +10,7 @@ using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace InTouch_Backend.Data.Services
@@ -131,6 +132,7 @@ namespace InTouch_Backend.Data.Services
         }
         public List<User> getUsers() => _context.Users.ToList();
 
+
         public void updateProfile(int userId, UserDTO updatedUser = null)
         {
             var user = _context.Users.Find(userId);
@@ -162,7 +164,7 @@ namespace InTouch_Backend.Data.Services
             if (updatedUser?.Image != null && updatedUser.Image.Length > 0)
             {
                 string uniqueFileName = Guid.NewGuid().ToString() + "_" + updatedUser.Image.FileName;
-                string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Images");
+                string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "User Images");
 
                 if (!Directory.Exists(folderPath))
                 {
@@ -182,32 +184,78 @@ namespace InTouch_Backend.Data.Services
             _context.SaveChanges();
         }
 
-
-
-        public User getUserById(int userId)
-        {
-            var user = _context.Users.Find(userId);
-           /* if (user == null)
-            {
-                throw new Exception("User no found");
-            }*/
-            return user;
-        }
-
-        
-       
-
-       public User getUserInfo(int id)
+        public User getUserInfo(int id)
         {
             var user = _context.Users.FirstOrDefault(u => u.Id == id);
             return user;
         }
 
-        public int[] getFollows_and_Followers(int userId)
+
+        public User getUserById(int userId)
+        {
+            var user = _context.Users.Find(userId);
+            /* if (user == null)
+             {
+                 throw new Exception("User no found");
+             }*/
+            return user;
+        }
+
+        public bool DeleteUser(int id)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+            if (user != null)
+            {
+
+
+                _context.Users.Remove(user);
+                _context.SaveChanges();
+                return true;
+            }
+
+            return false;
+
+
+        }
+
+        public bool isFollowing(int userOne, int userTwo)
+        {
+            bool temp = _context.Follows.Any(f => f.FollowerId == userOne && f.FollowingId == userTwo);
+            return temp;
+        }
+
+
+
+        public List<User> suggestedUsers(int userId)
+        {
+            List<User> allUsers = _context.Users.ToList();
+            List<int> followingIds = _context.Follows
+               .Where(f => f.FollowerId == userId)
+               .Select(f => f.FollowingId)
+               .ToList();
+
+            List<User> suggestedUsers = allUsers
+            .Where(u => u.Id != userId && !followingIds.Contains(u.Id))
+            .ToList();
+
+
+            return suggestedUsers.Take(10).ToList();
+
+        }
+
+
+
+        public List<User> searchUsers(int userId, string query)
         {
 
-            var follows= _context.Follows.Where(f=> f.FollowerId==userId).ToList();
-            var followers=_context.Follows.Where(f=>f.FollowingId==userId).ToList();
+
+            List<User> searchresult = _context.Users.Where(u => u.Id != userId && (u.FirstName.Contains(query) || u.Username.Contains(query) || u.LastName.Contains(query))).ToList();
+            return searchresult;
+        }
+        public int[] getFollows_and_Followers(int userId)
+        {
+            var follows = _context.Follows.Where(f => f.FollowerId == userId).ToList();
+            var followers = _context.Follows.Where(f => f.FollowingId == userId).ToList();
 
             int countFollows = follows.Count;
             int countFollowers = followers.Count;
@@ -232,26 +280,6 @@ namespace InTouch_Backend.Data.Services
             return temp;
         }
 
-        
-        
-        public bool DeleteUser(int id)
-        {
-            var user = _context.Users.FirstOrDefault(u => u.Id == id);
-            if (user != null)
-            {
-                
-                
-                _context.Users.Remove(user);
-                _context.SaveChanges();
-                return true;
-            }
-                   
-return false;
-            
-                
+
         }
-
-
-
     }
-}

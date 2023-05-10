@@ -19,7 +19,7 @@ namespace InTouch_Backend.Data.Services
                 UserId = report.UserId,
                 PostId = report.PostId
             };
-            _context.Add(_report);
+            _context.Reports.Add(_report);
             _context.SaveChanges();
         }
 

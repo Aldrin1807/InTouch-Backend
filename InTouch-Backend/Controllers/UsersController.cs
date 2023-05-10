@@ -15,13 +15,13 @@ namespace InTouch_Backend.Controllers
         public UsersController(UsersService service)
         {
             _service = service;
-          
+
         }
         [HttpPost("register")]
         public IActionResult register([FromForm] UserDTO user)
         {
             try
-            {   
+            {
                 _service.register(user);
                 return Ok(new Response
                 { Status = "Success", Message = "User Successfully registered." });
@@ -50,12 +50,14 @@ namespace InTouch_Backend.Controllers
             }
         }
         [HttpGet("get-users")]
-        public IActionResult GetUsers() {
+        public IActionResult GetUsers()
+        {
             return Ok(_service.getUsers());
         }
 
         [HttpGet("get-user-info")]
-        public IActionResult GetUserInfo(int id) {
+        public IActionResult GetUserInfo(int id)
+        {
             return Ok(_service.getUserInfo(id));
         }
 
@@ -71,7 +73,7 @@ namespace InTouch_Backend.Controllers
             try
             {
                 // Update user profile
-                
+
                 _service.updateProfile(id, updatedUser);
 
                 // Return success response
@@ -88,21 +90,33 @@ namespace InTouch_Backend.Controllers
         {
             try
             {
-                var user = _service.getUserById(id);    
+                var user = _service.getUserById(id);
 
                 if (user == null)
                 {
                     return NotFound
                         (new { message = "User is not not found" });
                 }
-                
-                
+
+
                 return Ok(user);
             }
             catch (Exception ex)
             {
                 return NotFound(new { message = ex.Message });
             }
+        }
+
+        [HttpGet("suggested-users")]
+        public IActionResult suggestedUsers(int userId)
+        {
+            return Ok(_service.suggestedUsers(userId));
+        }
+
+        [HttpGet("search")]
+        public IActionResult searchUsers(int userId, string query)
+        {
+            return Ok(_service.searchUsers(userId, query));
         }
 
         [HttpGet("user-followers")]
@@ -124,6 +138,9 @@ namespace InTouch_Backend.Controllers
                 return Ok(new Response { Status = "Error", Message = "User not found." });
             }
         }
+    
+
+
         }
     }
 

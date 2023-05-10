@@ -89,6 +89,8 @@ namespace InTouch_Backend
         public DbSet<User> Users { get; set; }
         public DbSet<Post> Posts { get;set; }  
         public DbSet<Likes> Likes { get; set; }
+
+        public DbSet<Reports> Reports { get; set; }
         public DbSet<Comments> Comments { get; set; }
         public DbSet<Follows> Follows { get; set; }
         

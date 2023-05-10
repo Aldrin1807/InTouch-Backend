@@ -83,9 +83,18 @@ namespace InTouch_Backend.Data.Services
         public void deletePost(int postId)
         {
             var post= _context.Posts.FirstOrDefault(p => p.Id == postId);
-
             if (post != null)
             {
+              
+                var postComments = _context.Comments.Where(c => c.PostId == postId);
+                _context.Comments.RemoveRange(postComments);
+
+                var postLikes = _context.Likes.Where(l => l.PostId == postId);
+                _context.Likes.RemoveRange(postLikes);
+
+                var postReports = _context.Reports.Where(r => r.PostId == postId);
+                _context.Reports.RemoveRange(postReports);
+
                 _context.Posts.Remove(post);
             }
             _context.SaveChanges();

@@ -59,6 +59,11 @@ namespace InTouch_Backend
             builder.Services.AddTransient<LikesService>();
             builder.Services.AddTransient<FollowsService>();
             builder.Services.AddTransient<CommentsService>();
+
+            builder.Services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 
             options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
