@@ -1,5 +1,6 @@
 ﻿using InTouch_Backend.Data.DTOs;
 using InTouch_Backend.Data.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InTouch_Backend.Controllers
@@ -16,8 +17,7 @@ namespace InTouch_Backend.Controllers
         }
 
         [HttpPost("request-follow")]
-
-        public IActionResult requestFollow([FromBody]FollowRequestsDTO request)
+        public IActionResult requestFollow([FromBody] FollowRequestsDTO request)
         {
             _service.requestFollow(request);
             return Ok();
@@ -28,6 +28,17 @@ namespace InTouch_Backend.Controllers
         {
             _service.unRequestFollow(request);
             return Ok();
+        }
+
+        [HttpGet("is-requested")]
+        public IActionResult isRequested(int userOne,int userTwo)
+        {
+            FollowRequestsDTO request = new FollowRequestsDTO()
+            {
+                FollowRequestId = userOne,
+                FollowRequestedId = userTwo
+            };
+            return Ok(_service.isRequested(request));
         }
     }
 }

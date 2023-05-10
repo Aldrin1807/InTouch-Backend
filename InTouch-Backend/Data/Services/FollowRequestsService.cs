@@ -34,6 +34,10 @@ namespace InTouch_Backend.Data.Services
             }
 
         }
+        public bool isRequested(FollowRequestsDTO request)
+        {
+            return _context.FollowRequests.Any(f => f.FollowRequestId == request.FollowRequestId && f.FollowRequestedId == request.FollowRequestedId);
+        }
 
     }
 }
