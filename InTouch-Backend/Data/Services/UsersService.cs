@@ -44,6 +44,7 @@ namespace InTouch_Backend.Data.Services
                     LastName = user.LastName,
                     Username = user.Username,
                     Email = user.Email,
+                    isPrivate = user.isPrivate,
                     Role = user.Role
                 };
 
@@ -102,10 +103,10 @@ namespace InTouch_Backend.Data.Services
                 string token = CreateToken(_user);
                 return token;
             }
-        
+
             return null;
         }
-        
+
 
         private string CreateToken(User _user)
         {
@@ -113,25 +114,43 @@ namespace InTouch_Backend.Data.Services
                  new Claim(ClaimTypes.Email, _user.Email),
             new Claim(ClaimTypes.NameIdentifier, _user.FirstName),
             new Claim(ClaimTypes.GivenName, _user.Username),
-            new Claim(ClaimTypes.Surname, _user.LastName),
             new Claim(ClaimTypes.Role, _user.Role.ToString())
-            };
-
+        };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:SecretKey").Value));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
-            var token = new JwtSecurityToken(
-                claims: claims,
-                expires: DateTime.Now.AddDays(1),
-                signingCredentials: creds);
+            if (result == PasswordVerificationResult.Success)
+            {
+                var token = new JwtSecurityToken(
+            claims: claims,
+            expires: DateTime.Now.AddDays(1),
+            signingCredentials: creds);
+                var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+                return tokenString;
+            }
 
-            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-
-            return tokenString;
+            return null;
         }
-        public List<User> getUsers() => _context.Users.ToList();
 
+        public string GetUserIdFromToken(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
+
+            if (jwtToken != null)
+            {
+                var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+                if (userIdClaim != null)
+                {
+                    return userIdClaim.Value;
+                }
+            }
+
+            return null;
+        }
+
+        public List<User> getUsers() => _context.Users.ToList();
 
         public void updateProfile(int userId, UserDTO updatedUser = null)
         {
@@ -190,7 +209,6 @@ namespace InTouch_Backend.Data.Services
             return user;
         }
 
-
         public User getUserById(int userId)
         {
             var user = _context.Users.Find(userId);
@@ -201,6 +219,11 @@ namespace InTouch_Backend.Data.Services
             return user;
         }
 
+        public bool isFollowing(int userOne, int userTwo)
+        {
+            bool temp = _context.Follows.Any(f => f.FollowerId == userOne && f.FollowingId == userTwo);
+            return temp;
+        }
         public bool DeleteUser(int id)
         {
             var user = _context.Users.FirstOrDefault(u => u.Id == id);
@@ -217,15 +240,6 @@ namespace InTouch_Backend.Data.Services
 
 
         }
-
-        public bool isFollowing(int userOne, int userTwo)
-        {
-            bool temp = _context.Follows.Any(f => f.FollowerId == userOne && f.FollowingId == userTwo);
-            return temp;
-        }
-
-
-
         public List<User> suggestedUsers(int userId)
         {
             List<User> allUsers = _context.Users.ToList();
@@ -242,9 +256,6 @@ namespace InTouch_Backend.Data.Services
             return suggestedUsers.Take(10).ToList();
 
         }
-
-
-
         public List<User> searchUsers(int userId, string query)
         {
 
@@ -279,7 +290,8 @@ namespace InTouch_Backend.Data.Services
 
             return temp;
         }
+    };
+}
 
-
-        }
-    }
+        
+    

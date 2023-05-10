@@ -83,7 +83,24 @@ namespace InTouch_Backend
                 .HasOne(f => f.Following)
                 .WithMany(u => u.Followers)
                 .HasForeignKey(f => f.FollowingId)
-                .OnDelete(DeleteBehavior.ClientSetNull); 
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            //Many to many per tabelen e follow requestav
+
+            modelBuilder.Entity<FollowRequests>()
+               .HasKey(f => new { f.FollowRequestId, f.FollowRequestedId});
+
+            modelBuilder.Entity<FollowRequests>()
+                .HasOne(f => f.FollowRequest)
+                .WithMany(u => u.FollowRequested)
+                .HasForeignKey(f => f.FollowRequestId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            modelBuilder.Entity<FollowRequests>()
+                .HasOne(f => f.FollowRequested)
+                .WithMany(u => u.FollowRequest)
+                .HasForeignKey(f => f.FollowRequestedId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
         }
         public DbSet<User> Users { get; set; }
@@ -93,6 +110,8 @@ namespace InTouch_Backend
         public DbSet<Reports> Reports { get; set; }
         public DbSet<Comments> Comments { get; set; }
         public DbSet<Follows> Follows { get; set; }
-        
+
+        public DbSet<FollowRequests> FollowRequests { get; set; }
+
     }
 }

@@ -41,6 +41,7 @@ namespace InTouch_Backend.Data.Services
                 .Select(c => new {
                     userId = c.User.Id,
                     Username = c.User.Username,
+                    ImagePath= c.User.ImagePath,
                     Comment = c.comment
                 })
                 .ToList();
