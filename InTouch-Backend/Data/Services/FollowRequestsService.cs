@@ -47,5 +47,19 @@ namespace InTouch_Backend.Data.Services
             List<User> request = _context.Users.Where(u => ids.Contains(u.Id)).ToList();
             return request;
         }
+
+        public void handleAccept(int userOne,int userTwo)
+        {
+            var request = _context.FollowRequests.FirstOrDefault(r => r.FollowRequestId == userOne && r.FollowRequestedId == userTwo);
+            if (request != null)
+            {
+                Follows _follow = new Follows()
+                {
+                    FollowerId = userOne,
+                    FollowingId = userTwo
+                };
+                _context.Follows.Add(_follow);
+                _context.FollowRequests.Remove(request);
+            }
     }
 }
