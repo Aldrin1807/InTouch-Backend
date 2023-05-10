@@ -31,5 +31,9 @@ namespace InTouch_Backend.Data.Models
         public List<Follows> Followers { get; set; }
         [JsonIgnore]
         public List<Follows> Following { get; set; }
+
+        public List<FollowRequests> FollowRequest{ get; set; }
+        [JsonIgnore]
+        public List<FollowRequests> FollowRequested { get; set; }
     }
 }
