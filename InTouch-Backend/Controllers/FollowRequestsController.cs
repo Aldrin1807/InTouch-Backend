@@ -47,15 +47,15 @@ namespace InTouch_Backend.Controllers
             return Ok(_service.getUserRequests(userId));
         }
         [HttpPost("handle-accept")]
-        public IActionResult handleAccept(int userOne,int UserTwo)
+        public IActionResult handleAccept([FromBody] FollowRequestsDTO request)
         {
-            _service.handleAccept(userOne,UserTwo);
+            _service.handleAccept(request);
             return Ok();
         }
         [HttpDelete("handle-decline")]
-        public IActionResult handleDecline(int userOne, int UserTwo)
+        public IActionResult handleDecline([FromBody] FollowRequestsDTO request)
         {
-            _service.handleDecline(userOne, UserTwo);
+            _service.handleDecline(request);
             return Ok();
         }
     } 

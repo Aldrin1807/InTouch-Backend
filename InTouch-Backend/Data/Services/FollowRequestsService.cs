@@ -48,27 +48,30 @@ namespace InTouch_Backend.Data.Services
             return request;
         }
 
-        public void handleAccept(int userOne, int userTwo)
+        public void handleAccept(FollowRequestsDTO request)
         {
-            var request = _context.FollowRequests.FirstOrDefault(r => r.FollowRequestId == userOne && r.FollowRequestedId == userTwo);
-            if (request != null)
-                _context.FollowRequests.Remove(request);
-
+            var _request = _context.FollowRequests.SingleOrDefault(r => r.FollowRequestId == request.FollowRequestId && r.FollowRequestedId == request.FollowRequestedId);
+            if (_request != null)
+            {
+                _context.FollowRequests.Remove(_request);
+                _context.SaveChanges();
+            }
+            
             Follows _follow = new Follows()
                 {
-                    FollowerId = userTwo,
-                    FollowingId = userOne
+                    FollowerId = _request.FollowRequestId,
+                    FollowingId = _request.FollowRequestedId
                 };
                 _context.Follows.Add(_follow);
           
             _context.SaveChanges();
         }
-        public void handleDecline(int userOne, int userTwo)
+        public void handleDecline(FollowRequestsDTO request)
         {
-            var request = _context.FollowRequests.FirstOrDefault(r => r.FollowRequestedId == userOne && r.FollowRequestId == userTwo);
-            if (request != null)
+            var _request = _context.FollowRequests.FirstOrDefault(r => r.FollowRequestedId == request.FollowRequestId && r.FollowRequestId == request.FollowRequestedId);
+            if (_request != null)
             {
-                _context.FollowRequests.Remove(request);
+                _context.FollowRequests.Remove(_request);
             }
             _context.SaveChanges();
         }

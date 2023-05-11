@@ -28,8 +28,7 @@ namespace InTouch_Backend.Data.Services
         }
         public void register(UserDTO user)
         {
-            try
-            {
+           
                 bool emailExists = _context.Users.Any(u => u.Email == user.Email);
                 bool usernameExists = _context.Users.Any(u => u.Username == user.Username);
 
@@ -73,18 +72,8 @@ namespace InTouch_Backend.Data.Services
                 _context.Users.Add(_user);
                 _context.SaveChanges();
             }
-            catch (Exception ex)
-            {
-                if (ex.InnerException != null)
-                {
-                    Console.WriteLine("Inner Exception: " + ex.InnerException.Message);
-                }
-                else
-                {
-                    Console.WriteLine("Error: " + ex.Message);
-                }
-            }
-        }
+           
+        
 
 
         public string login(Login user)
