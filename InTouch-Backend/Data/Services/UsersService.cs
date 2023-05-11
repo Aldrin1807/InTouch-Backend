@@ -97,7 +97,7 @@ namespace InTouch_Backend.Data.Services
 
             };
             var passwordHasher = new PasswordHasher<string>();
-            var result = passwordHasher.VerifyHashedPassword(user.Password, _user.Password, user.Password);
+            var result = passwordHasher.VerifyHashedPassword(null, _user.Password, user.Password);
             if (result == PasswordVerificationResult.Success)
             {
                 string token = CreateToken(_user);
@@ -110,6 +110,11 @@ namespace InTouch_Backend.Data.Services
 
         private string CreateToken(User _user)
         {
+            if (_user == null)
+            {
+                throw new ArgumentNullException(nameof(_user));
+            }
+
             List<Claim> claims = new List<Claim> {
                  new Claim(ClaimTypes.Email, _user.Email),
             new Claim(ClaimTypes.NameIdentifier, _user.Id.ToString()),
@@ -118,6 +123,7 @@ namespace InTouch_Backend.Data.Services
         };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:SecretKey").Value));
 
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
            
@@ -202,7 +208,7 @@ namespace InTouch_Backend.Data.Services
             _context.Users.Update(user);
             _context.SaveChanges();
         }
-
+        
         public User getUserInfo(int id)
         {
             var user = _context.Users.FirstOrDefault(u => u.Id == id);
