@@ -112,7 +112,7 @@ namespace InTouch_Backend.Data.Services
         {
             List<Claim> claims = new List<Claim> {
                  new Claim(ClaimTypes.Email, _user.Email),
-            new Claim(ClaimTypes.NameIdentifier, _user.FirstName),
+            new Claim(ClaimTypes.NameIdentifier, _user.Id.ToString()),
             new Claim(ClaimTypes.GivenName, _user.Username),
             new Claim(ClaimTypes.Role, _user.Role.ToString())
         };
@@ -120,17 +120,17 @@ namespace InTouch_Backend.Data.Services
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
-            if (result == PasswordVerificationResult.Success)
-            {
-                var token = new JwtSecurityToken(
+           
+            var token = new JwtSecurityToken(
+            issuer: _configuration["Jwt:Issuer"],
+            audience: _configuration["Jwt:Audience"],
             claims: claims,
-            expires: DateTime.Now.AddDays(1),
+            expires: DateTime.Now.AddMinutes(20),
+            notBefore: DateTime.UtcNow,
             signingCredentials: creds);
                 var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
                 return tokenString;
-            }
-
-            return null;
+           
         }
 
         public string GetUserIdFromToken(string token)
