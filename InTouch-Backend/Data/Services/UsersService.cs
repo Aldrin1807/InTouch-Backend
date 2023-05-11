@@ -121,7 +121,6 @@ namespace InTouch_Backend.Data.Services
             new Claim(ClaimTypes.GivenName, _user.Username),
             new Claim(ClaimTypes.Role, _user.Role.ToString())
         };
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:SecretKey").Value));
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
@@ -138,7 +137,35 @@ namespace InTouch_Backend.Data.Services
                 return tokenString;
            
         }
+        public bool isTokenAvailable(string token)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                return false; 
+            }
 
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true, 
+                IssuerSigningKey = key, 
+                ValidateIssuer = false, 
+                ValidateAudience = false, 
+                ClockSkew = TimeSpan.Zero 
+            };
+
+            try
+            {
+                SecurityToken validatedToken;
+                tokenHandler.ValidateToken(token, validationParameters, out validatedToken);
+                return true; // Token is valid
+            }
+            catch
+            {
+                return false; // Token validation failed
+            }
+        }
         public string GetUserIdFromToken(string token)
         {
             var handler = new JwtSecurityTokenHandler();

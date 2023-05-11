@@ -160,6 +160,12 @@ namespace InTouch_Backend.Controllers
             return Ok(_service.isFollowing(userOne, userTwo));
         }
 
+        [HttpGet("is-token-available")]
+        public IActionResult isTokenAvailable(string token)
+        {
+            return Ok(_service.isTokenAvailable(token));
+        }
+
 
 
     }
