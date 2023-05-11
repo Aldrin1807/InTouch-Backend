@@ -97,7 +97,7 @@ namespace InTouch_Backend.Data.Services
 
             };
             var passwordHasher = new PasswordHasher<string>();
-            var result = passwordHasher.VerifyHashedPassword(user.Password, _user.Password, user.Password);
+            var result = passwordHasher.VerifyHashedPassword(null, _user.Password, user.Password);
             if (result == PasswordVerificationResult.Success)
             {
                 string token = CreateToken(_user);
@@ -110,29 +110,35 @@ namespace InTouch_Backend.Data.Services
 
         private string CreateToken(User _user)
         {
-            List<Claim> claims = new List<Claim> {
-                 new Claim(ClaimTypes.Email, _user.Email),
-            new Claim(ClaimTypes.NameIdentifier, _user.FirstName),
-            new Claim(ClaimTypes.GivenName, _user.Username),
-            new Claim(ClaimTypes.Role, _user.Role.ToString())
-        };
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:SecretKey").Value));
-
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-            if (result == PasswordVerificationResult.Success)
+            if (_user == null)
             {
-                var token = new JwtSecurityToken(
-            claims: claims,
-            expires: DateTime.Now.AddDays(1),
-            signingCredentials: creds);
-                var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-                return tokenString;
+                throw new ArgumentNullException(nameof(_user));
             }
 
-            return null;
-        }
+            List<Claim> claims = new List<Claim> {
+        new Claim(ClaimTypes.Email, _user.Email),
+        new Claim(ClaimTypes.NameIdentifier, _user.Username),
+        new Claim(ClaimTypes.GivenName, _user.FirstName),
+        new Claim(ClaimTypes.Role, _user.Role.ToString())
+              };
 
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            
+            var token = new JwtSecurityToken(
+                audience: _configuration["Jwt:Audience"],
+                issuer: _configuration["Jwt:Issuer"],
+                claims: claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: creds
+               
+            );
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var tokenString = tokenHandler.WriteToken(token);
+
+            return tokenString;
+        }
         public string GetUserIdFromToken(string token)
         {
             var handler = new JwtSecurityTokenHandler();
@@ -202,7 +208,7 @@ namespace InTouch_Backend.Data.Services
             _context.Users.Update(user);
             _context.SaveChanges();
         }
-
+        
         public User getUserInfo(int id)
         {
             var user = _context.Users.FirstOrDefault(u => u.Id == id);
