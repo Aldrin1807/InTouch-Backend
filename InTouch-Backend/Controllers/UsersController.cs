@@ -166,6 +166,13 @@ namespace InTouch_Backend.Controllers
             return Ok(_service.isTokenAvailable(token));
         }
 
+        [HttpPut("update-password")]
+        public IActionResult updatePassword([FromBody] UpdatePassword updatePassword)
+        {
+            return Ok(_service.updatePassword(updatePassword));
+
+        }
+
 
 
     }

@@ -312,6 +312,33 @@ namespace InTouch_Backend.Data.Services
 
             return temp;
         }
+
+        public bool updatePassword (UpdatePassword updatePassword)
+        {
+            var _user = _context.Users.FirstOrDefault(u => u.Id == updatePassword.Id);
+
+            if (_user == null)
+            {
+                throw new Exception("User not found");
+
+            };
+            var passwordHasher = new PasswordHasher<string>();
+            var result = passwordHasher.VerifyHashedPassword(null, _user.Password, updatePassword.OldPassword);
+
+
+            if (!(result == PasswordVerificationResult.Success))
+            {
+                throw new Exception("Old password is wrong");
+                return false;
+            }
+            else
+            {
+                _user.Password = passwordHasher.HashPassword(null, updatePassword.NewPassword);
+                _context.SaveChanges();
+                return true;
+            }
+
+        }
     };
 }
 
