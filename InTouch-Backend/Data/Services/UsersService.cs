@@ -347,7 +347,7 @@ namespace InTouch_Backend.Data.Services
         {
             var _user = _context.Users.FirstOrDefault(u => u.Id == user.Id);
             bool emailExist = _context.Users.Any(u => u.Id!=user.Id && u.Email.Equals(user.Email));
-            bool usernameExist = _context.Users.Any(u => u.Id != user.Id && u.Username.Equals(user.Email));
+            bool usernameExist = _context.Users.Any(u => u.Id != user.Id && u.Username.Equals(user.Username));
 
             if (emailExist)
             {

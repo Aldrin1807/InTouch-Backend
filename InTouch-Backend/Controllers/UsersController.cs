@@ -187,6 +187,23 @@ namespace InTouch_Backend.Controllers
 
         }
 
+        [HttpPut("update-user-info")]
+        public IActionResult updateUserInfo([FromBody] UpdateUserInfo user)
+        {
+            try
+            {
+                _service.updateUserInfo(user);
+                return Ok(new Response
+                { Status = "Success", Message = "Personal info updated succesfully." });
+            }
+            catch (Exception ex)
+            {
+                // Return error response
+                return Ok(new Response
+                { Status = "Failed", Message = ex.Message });
+            }
+        }
+
 
 
     }
