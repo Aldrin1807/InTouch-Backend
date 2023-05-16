@@ -313,7 +313,7 @@ namespace InTouch_Backend.Data.Services
             return temp;
         }
 
-        public bool updatePassword (UpdatePassword updatePassword)
+        public void updatePassword (UpdatePassword updatePassword)
         {
             var _user = _context.Users.FirstOrDefault(u => u.Id == updatePassword.Id);
 
@@ -329,13 +329,12 @@ namespace InTouch_Backend.Data.Services
             if (!(result == PasswordVerificationResult.Success))
             {
                 throw new Exception("Old password is wrong");
-                return false;
             }
             else
             {
                 _user.Password = passwordHasher.HashPassword(null, updatePassword.NewPassword);
                 _context.SaveChanges();
-                return true;
+
             }
 
         }

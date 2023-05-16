@@ -169,7 +169,19 @@ namespace InTouch_Backend.Controllers
         [HttpPut("update-password")]
         public IActionResult updatePassword([FromBody] UpdatePassword updatePassword)
         {
-            return Ok(_service.updatePassword(updatePassword));
+            try
+            {
+                _service.updatePassword(updatePassword);
+                return Ok(new Response
+                { Status = "Success", Message = "Password updated succesfully." });
+            }
+            catch (Exception ex)
+            {
+                // Return error response
+                return Ok(new Response
+                { Status = "Failed", Message = ex.Message });
+            }
+
 
         }
 
