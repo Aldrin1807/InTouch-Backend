@@ -38,17 +38,18 @@ namespace InTouch_Backend.Controllers
         [HttpPost("login")]
         public IActionResult login([FromBody] Login user)
         {
-            var tokenString = _service.login(user);
-
-            if (tokenString != null)
+            try
             {
+                var tokenString = _service.login(user);
                 return Ok(tokenString);
+
             }
-            else
+            catch(Exception ex)
             {
-                return BadRequest(new Response
-                { Status = "Error", Message = "Credentials wrong." });
+                return Ok(new Response
+                { Status = "Error", Message = ex.Message });
             }
+            
         }
 
         [HttpGet("get-user-id")]

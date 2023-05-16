@@ -87,6 +87,10 @@ namespace InTouch_Backend.Data.Services
             };
             var passwordHasher = new PasswordHasher<string>();
             var result = passwordHasher.VerifyHashedPassword(null, _user.Password, user.Password);
+            if(result != PasswordVerificationResult.Success)
+            {
+                throw new Exception("Failed to verify credentials");
+            }
             if (result == PasswordVerificationResult.Success)
             {
                 string token = CreateToken(_user);
@@ -326,7 +330,7 @@ namespace InTouch_Backend.Data.Services
             var result = passwordHasher.VerifyHashedPassword(null, _user.Password, updatePassword.OldPassword);
 
 
-            if (!(result == PasswordVerificationResult.Success))
+            if (result != PasswordVerificationResult.Success)
             {
                 throw new Exception("Old password is wrong");
             }
