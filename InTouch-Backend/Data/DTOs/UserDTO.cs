@@ -14,15 +14,22 @@ namespace InTouch_Backend.Data.ViewModels
         public IFormFile Image{ get; set; }
         public int Role { get; set; } = 0;
     }
-}
-
-namespace InTouch_Backend
-{
-   public class UpdatePassword
+    public class UpdatePassword
     {
-        public int Id{ get; set; }
+        public int Id { get; set; }
         public string OldPassword { get; set; }
         public string NewPassword { get; set; }
-       
+
+    }
+
+    public class UpdateUserInfo
+    {
+        public int Id { get; set;}
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Username { get; set; }
+        public string Email { get; set; }
+        public bool isPrivate { get; set; }
     }
 }
+

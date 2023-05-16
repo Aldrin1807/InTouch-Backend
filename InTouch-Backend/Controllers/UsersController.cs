@@ -41,7 +41,8 @@ namespace InTouch_Backend.Controllers
             try
             {
                 var tokenString = _service.login(user);
-                return Ok(tokenString);
+                return Ok(new Response
+                { Status = "Success", Message = tokenString });
 
             }
             catch(Exception ex)

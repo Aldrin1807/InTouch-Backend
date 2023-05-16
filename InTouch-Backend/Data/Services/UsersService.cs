@@ -342,6 +342,36 @@ namespace InTouch_Backend.Data.Services
             }
 
         }
+
+        public void updateUserInfo (UpdateUserInfo user)
+        {
+            var _user = _context.Users.FirstOrDefault(u => u.Id == user.Id);
+            bool emailExist = _context.Users.Any(u => u.Id!=user.Id && u.Email.Equals(user.Email));
+            bool usernameExist = _context.Users.Any(u => u.Id != user.Id && u.Username.Equals(user.Email));
+
+            if (emailExist)
+            {
+                throw new Exception("The email you are trying to use already exist.");
+            }
+            if(usernameExist)
+            {
+                throw new Exception("The username you are trying to use already exist");
+            }
+
+            if (_user == null)
+            {
+                throw new Exception("User not found");
+
+            };
+            _user.FirstName = user.FirstName;
+            _user.LastName = user.LastName;
+            _user.Username = user.Username;
+            _user.Email = user.Email;
+            _user.isPrivate = user.isPrivate;
+
+            _context.SaveChanges();
+
+        }
     };
 }
 
