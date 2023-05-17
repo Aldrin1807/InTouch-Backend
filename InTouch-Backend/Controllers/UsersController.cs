@@ -138,6 +138,12 @@ namespace InTouch_Backend.Controllers
         {
             return Ok(_service.userFollowers(userId));
         }
+        [HttpGet("user-following"), Authorize]
+
+        public IActionResult userFollowing(int userId)
+        {
+            return Ok(_service.userFollowing(userId));
+        }
 
 
         [HttpDelete("{id}"), Authorize]
