@@ -316,6 +316,19 @@ namespace InTouch_Backend.Data.Services
 
             return temp;
         }
+        public List<User> userFollowing(int userId)
+        {
+            List<int> followingUserIds = _context.Follows
+           .Where(f => f.FollowerId == userId)
+           .Select(f => f.FollowingId)
+           .ToList();
+
+
+            List<User> temp = _context.Users
+                .Where(u => followingUserIds.Contains(u.Id))
+                .ToList();
+            return temp;
+        }
 
         public void updatePassword (UpdatePassword updatePassword)
         {
