@@ -210,6 +210,23 @@ namespace InTouch_Backend.Controllers
             }
         }
 
+        [HttpPut("update-profile-pic")]
+        public IActionResult updateProfilePicture([FromForm] UpdateProfilePic newPic)
+        {
+            try
+            {
+                _service.updateProfilePicture(newPic);
+                return Ok(new Response
+                { Status = "Success", Message = "Profile Picture updated succesfully." });
+            }
+            catch (Exception ex)
+            {
+                // Return error response
+                return Ok(new Response
+                { Status = "Failed", Message = ex.Message });
+            }
+        }
+
 
 
     }
