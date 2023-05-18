@@ -45,6 +45,7 @@ namespace InTouch_Backend.Data.Services
             List<int> ids = _context.FollowRequests.Where(r => r.FollowRequestedId == userId)
                 .Select(r=> r.FollowRequestId).ToList();
             List<User> request = _context.Users.Where(u => ids.Contains(u.Id)).ToList();
+            request.Reverse();
             return request;
         }
 

@@ -72,6 +72,44 @@ namespace InTouch_Backend.Data.Services
                 _context.Users.Add(_user);
                 _context.SaveChanges();
             }
+
+        public void updateProfilePicture (UpdateProfilePic newPic)
+        {
+            var _user = _context.Users.FirstOrDefault(u => u.Id == newPic.Id);
+            if (_user == null)
+            {
+                throw new Exception("User not found");
+            }
+            if(newPic.Image!=null && newPic.Image.Length > 0)
+            {
+                if (!string.IsNullOrEmpty(_user.ImagePath))
+                {
+                    string ImageFilePath = Path.Combine(Directory.GetCurrentDirectory(), "User Images", _user.ImagePath);
+                    if (File.Exists(ImageFilePath))
+                    {
+                        File.Delete(ImageFilePath);
+                    }
+                }
+                string uniqueFileName = Guid.NewGuid().ToString() + "_" + newPic.Image.FileName;
+                string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "User Images");
+
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                string filePath = Path.Combine(folderPath, uniqueFileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    newPic.Image.CopyTo(fileStream);
+                }
+
+                _user.ImagePath = uniqueFileName;
+            }
+
+            _context.SaveChanges();
+                
+        }
            
         
 

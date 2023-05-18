@@ -31,5 +31,11 @@ namespace InTouch_Backend.Data.ViewModels
         public string Email { get; set; }
         public bool isPrivate { get; set; }
     }
+
+    public class UpdateProfilePic
+    {
+        public int Id { get; set; }
+        public IFormFile Image { get; set; }
+    }
 }
 
