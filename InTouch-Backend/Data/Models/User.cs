@@ -26,6 +26,8 @@ namespace InTouch_Backend.Data.Models
         [JsonIgnore]
         public List<Likes> Likes { get; set; }
         [JsonIgnore]
+        public List<SavedPost> SavedPosts { get; set; }
+        [JsonIgnore]
         public List<Comments> Comments { get; set; }
         [JsonIgnore]
         public List<Reports> Reports { get; set; }
