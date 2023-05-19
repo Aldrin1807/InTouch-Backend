@@ -19,10 +19,12 @@ namespace InTouch_Backend.Data.Services
     {
         public AppDbContext _context;
         private readonly IConfiguration _configuration;
+        private readonly PostService _postService;
 
-        public UsersService(AppDbContext context, IConfiguration configuration)
+        public UsersService(AppDbContext context,PostService postService, IConfiguration configuration)
         {
             _context = context;
+            _postService = postService;
             _configuration = configuration;
 
         }
@@ -293,6 +295,30 @@ namespace InTouch_Backend.Data.Services
             var user = _context.Users.FirstOrDefault(u => u.Id == id);
             if (user != null)
             {
+                var userPosts = _context.Posts.Where(u => u.userID == id);
+                foreach (var item in userPosts)
+                {
+                    _postService.deletePost(item.Id);
+                }
+                var userFollows = _context.Follows.Where(u => u.FollowerId == id || u.FollowingId == id);
+                _context.Follows.RemoveRange(userFollows);
+
+                var userRequest = _context.FollowRequests.Where(u => u.FollowRequestId== id || u.FollowRequestedId == id);
+                _context.FollowRequests.RemoveRange(userRequest);
+
+                var userReports = _context.Reports.Where(r => r.UserId == id);
+                _context.Reports.RemoveRange(userReports);
+
+                var userLikes = _context.Likes.Where(l => l.UserId == id);
+                _context.Likes.RemoveRange(userLikes);
+
+                var userComments = _context.Comments.Where(c => c.UserId == id);
+                _context.Comments.RemoveRange(userComments);
+
+                var userSavedPosts = _context.SavedPosts.Where(s => s.UserId == id);
+                _context.SavedPosts.RemoveRange(userSavedPosts);
+
+
 
 
                 _context.Users.Remove(user);
