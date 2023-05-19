@@ -46,6 +46,12 @@ namespace InTouch_Backend.Controllers
                 };
                 return Ok(_savedPostServices.isSaved(savePost));
             }
+
+        [HttpGet("get-saved-posts")]
+        public IActionResult getSavedPosts(int userId)
+        {
+            return Ok(_savedPostServices.getSavedPosts(userId));
+        }
         }
 
     

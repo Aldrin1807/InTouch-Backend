@@ -38,5 +38,13 @@ namespace InTouch_Backend.Data.Services
             return _context.SavedPosts.Any(l => l.UserId == like.UserId && l.PostId == like.PostId);
         }
 
+        public List<Post> getSavedPosts(int userId)
+        {
+            var savedPostsID = _context.SavedPosts.Where(u => u.UserId == userId).Select(i => i.PostId)
+                .ToList();
+            List<Post> savedPosts = _context.Posts.Where(p => savedPostsID.Contains(p.Id)).ToList();
+            return savedPosts;
+        }
+
     }
 }
