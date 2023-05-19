@@ -174,7 +174,7 @@ namespace InTouch_Backend.Controllers
             return Ok(_service.isTokenAvailable(token));
         }
 
-        [HttpPut("update-password")]
+        [HttpPut("update-password"),Authorize]
         public IActionResult updatePassword([FromBody] UpdatePassword updatePassword)
         {
             try
@@ -193,7 +193,7 @@ namespace InTouch_Backend.Controllers
 
         }
 
-        [HttpPut("update-user-info")]
+        [HttpPut("update-user-info"),Authorize]
         public IActionResult updateUserInfo([FromBody] UpdateUserInfo user)
         {
             try
@@ -210,7 +210,7 @@ namespace InTouch_Backend.Controllers
             }
         }
 
-        [HttpPut("update-profile-pic")]
+        [HttpPut("update-profile-pic"),Authorize]
         public IActionResult updateProfilePicture([FromForm] UpdateProfilePic newPic)
         {
             try
