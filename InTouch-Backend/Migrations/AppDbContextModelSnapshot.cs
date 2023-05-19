@@ -137,6 +137,21 @@ namespace InTouch_Backend.Migrations
                     b.ToTable("Reports");
                 });
 
+            modelBuilder.Entity("InTouch_Backend.Data.Models.SavedPost", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "PostId");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("SavedPosts");
+                });
+
             modelBuilder.Entity("InTouch_Backend.Data.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -282,6 +297,23 @@ namespace InTouch_Backend.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("InTouch_Backend.Data.Models.SavedPost", b =>
+                {
+                    b.HasOne("InTouch_Backend.Data.Models.Post", "Post")
+                        .WithMany("SavedPosts")
+                        .HasForeignKey("PostId")
+                        .IsRequired();
+
+                    b.HasOne("InTouch_Backend.Data.Models.User", "User")
+                        .WithMany("SavedPosts")
+                        .HasForeignKey("UserId")
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("InTouch_Backend.Data.Models.Post", b =>
                 {
                     b.Navigation("Comments");
@@ -289,6 +321,8 @@ namespace InTouch_Backend.Migrations
                     b.Navigation("Likes");
 
                     b.Navigation("Reports");
+
+                    b.Navigation("SavedPosts");
                 });
 
             modelBuilder.Entity("InTouch_Backend.Data.Models.User", b =>
@@ -308,6 +342,8 @@ namespace InTouch_Backend.Migrations
                     b.Navigation("Posts");
 
                     b.Navigation("Reports");
+
+                    b.Navigation("SavedPosts");
                 });
 #pragma warning restore 612, 618
         }

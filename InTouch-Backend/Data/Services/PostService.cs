@@ -1,6 +1,7 @@
 ﻿using InTouch_Backend.Data.Models;
 using InTouch_Backend.Data.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using NLog.Fluent;
 
 namespace InTouch_Backend.Data.Services
 {
@@ -13,45 +14,90 @@ namespace InTouch_Backend.Data.Services
             _context = context;
         }
 
-        public void makePost(PostDTO post)
+         public void makePost(PostDTO post)
+         {
+             var _post = new Post()
+             {
+                 Content = post.Content,
+                 PostDate=DateTime.Now.ToString("dddd, dd MMMM yyyy hh:mm tt"),
+                 userID=post.userID
+             };
+
+             if (post.Image != null)
+             {
+                 string uniqueFileName = Guid.NewGuid().ToString() + "_" + post.Image.FileName;
+                 string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Post Images");
+
+                 if (!Directory.Exists(folderPath))
+                 {
+                     Directory.CreateDirectory(folderPath);
+                 }
+
+
+                 string filePath = Path.Combine(folderPath, uniqueFileName);
+                 using (var fileStream = new FileStream(filePath, FileMode.Create))
+                 {
+                     post.Image.CopyTo(fileStream);
+                 }
+
+                 _post.ImagePath = uniqueFileName;
+             }
+             else
+             {
+                 _post.ImagePath = "";
+             }
+
+
+             _context.Posts.Add(_post);
+             _context.SaveChanges();
+         } 
+
+        
+       /* public void makePost(PostDTO post)
         {
-            var _post = new Post()
+            try
             {
-                Content = post.Content,
-                PostDate=DateTime.Now.ToString("dddd, dd MMMM yyyy hh:mm tt"),
-                userID=post.userID
-            };
-
-            if (post.Image != null)
-            {
-                string uniqueFileName = Guid.NewGuid().ToString() + "_" + post.Image.FileName;
-                string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Post Images");
-
-                if (!Directory.Exists(folderPath))
+                var _post = new Post()
                 {
-                    Directory.CreateDirectory(folderPath);
+                    Content = post.Content,
+                    PostDate = DateTime.Now.ToString("dddd, dd MMMM yyyy hh:mm tt"),
+                    userID = post.userID
+                };
+
+                if (post.Image != null)
+                {
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + post.Image.FileName;
+                    string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Post Images");
+
+                    if (!Directory.Exists(folderPath))
+                    {
+                        Directory.CreateDirectory(folderPath);
+                    }
+
+                    string filePath = Path.Combine(folderPath, uniqueFileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        post.Image.CopyTo(fileStream);
+                    }
+
+                    _post.ImagePath = uniqueFileName;
+                }
+                else
+                {
+                    _post.ImagePath = "";
                 }
 
-
-                string filePath = Path.Combine(folderPath, uniqueFileName);
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    post.Image.CopyTo(fileStream);
-                }
-
-                _post.ImagePath = uniqueFileName;
+                _context.Posts.Add(_post);
+                _context.SaveChanges();
             }
-            else
+            catch (Exception ex)
             {
-                _post.ImagePath = "";
+                throw new Exception( ex.Message);
             }
 
+        }*/
 
-            _context.Posts.Add(_post);
-            _context.SaveChanges();
-        } 
-       
-            public List<Post> getFollowedPosts(int userId)
+        public List<Post> getFollowedPosts(int userId)
             {
                 var followedUserIds = _context.Follows
                     .Where(f => f.FollowerId == userId || f.FollowingId == userId)

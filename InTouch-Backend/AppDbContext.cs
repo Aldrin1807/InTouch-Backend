@@ -102,10 +102,26 @@ namespace InTouch_Backend
                 .HasForeignKey(f => f.FollowRequestedId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
+            //MANY to MANY per tabelen e SavedPosts
+            modelBuilder.Entity<SavedPost>()
+                .HasKey(up => new { up.UserId, up.PostId });
+            modelBuilder.Entity<SavedPost>()
+                .HasOne(u => u.User)
+                .WithMany(p => p.SavedPosts)
+                .HasForeignKey(u => u.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+            modelBuilder.Entity<SavedPost>()
+                .HasOne(u => u.Post)
+                .WithMany(p => p.SavedPosts)
+                .HasForeignKey(u => u.PostId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
         }
         public DbSet<User> Users { get; set; }
         public DbSet<Post> Posts { get;set; }  
         public DbSet<Likes> Likes { get; set; }
+
+        public DbSet<SavedPost> SavedPosts { get; set; }
 
         public DbSet<Reports> Reports { get; set; }
         public DbSet<Comments> Comments { get; set; }
