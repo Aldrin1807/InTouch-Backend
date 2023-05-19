@@ -423,6 +423,14 @@ namespace InTouch_Backend.Data.Services
             _context.SaveChanges();
 
         }
+        public List<Post> GetSavedPosts(int id)
+        {
+            
+            List<int> Ids = _context.SavedPosts.Where(sp => sp.UserId == id).Select(sp => sp.PostId).ToList();
+
+            List<Post> savedPosts = _context.Posts.Where(sp => Ids.Contains(sp.Id)).ToList();
+            return savedPosts;
+        }
     };
 }
 

@@ -227,6 +227,24 @@ namespace InTouch_Backend.Controllers
             }
         }
 
+        [HttpGet("users/{id}/savedposts")]
+        public IActionResult GetSavedPosts(int id)
+        {
+            try { 
+            List<Post> savedPosts = _service.GetSavedPosts(id);
+
+            if (savedPosts == null || savedPosts.Count == 0)
+            {
+                return NotFound(); // No saved posts found, return a 404 Not Found status code
+            }
+
+            return Ok(savedPosts);} catch (Exception ex)
+            {// Return error response
+                return Ok(new Response
+                { Status = "Failed", Message = ex.Message });
+            }
+        }
+
 
 
     }
