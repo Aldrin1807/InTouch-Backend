@@ -1,5 +1,6 @@
 ﻿using InTouch_Backend.Data.Models;
 using InTouch_Backend.Data.ViewModels;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using NLog.Fluent;
 
@@ -162,6 +163,19 @@ namespace InTouch_Backend.Data.Services
         public Post getPostInfo(int postId)
         {
             return (_context.Posts.FirstOrDefault(p => p.Id == postId));
+        }
+
+        public void setDeleteTrue(int postId)
+        {
+            var post = _context.Posts.FirstOrDefault(p => p.Id == postId);
+            if(post == null)
+            {
+                throw new Exception("There is no post with this id");
+            }
+            post.isDeleted = true;
+            var _report = _context.Reports.Where(Reports => Reports.PostId == post.Id).ToList();
+            _context.RemoveRange(_report);
+            _context.SaveChanges();
         }
 
     }

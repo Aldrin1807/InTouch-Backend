@@ -83,5 +83,21 @@ namespace InTouch_Backend.Controllers
         {
             return Ok(_service.getPostInfo(postId));
         }
+
+        [HttpPut("set-delete-attr")]
+        public IActionResult setDeleteTrue(int postId)
+        {
+            try
+            {
+                _service.setDeleteTrue(postId);
+                return Ok(new Response
+                { Status = "Success", Message = "The post will be deleted when the user is logged in." });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Response
+                { Status = "Error", Message = ex.Message });
+            }
+        }
     }
 }
