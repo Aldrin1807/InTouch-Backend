@@ -159,6 +159,11 @@ namespace InTouch_Backend.Data.Services
             _context.SaveChanges();
         }
 
+        public Post getPostInfo(int postId)
+        {
+            return (_context.Posts.FirstOrDefault(p => p.Id == postId));
+        }
+
     }
 }
  

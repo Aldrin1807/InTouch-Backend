@@ -23,5 +23,22 @@ namespace InTouch_Backend.Data.Services
             _context.SaveChanges();
         }
 
+        public List<Reports> getReports()
+        {
+            List<Reports> reports = _context.Reports.ToList();
+            reports.Reverse();
+            return reports;
+        }
+
+        public void deleteReport(ReportsDTO report)
+        {
+            var _report = _context.Reports.FirstOrDefault(r => r.UserId == report.UserId && r.PostId == report.PostId);
+            if(_report == null ) {
+                throw new Exception("Report does not exist.");
+            }
+            _context.Reports.Remove(_report);
+            _context.SaveChanges();
+        }
+
     }
 }

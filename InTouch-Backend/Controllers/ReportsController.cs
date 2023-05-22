@@ -32,5 +32,26 @@ namespace InTouch_Backend.Controllers
                 { Status = "Error", Message ="You already reported this" });
             }
         }
+
+        [HttpGet("get-reports")]
+        public IActionResult getReports()
+        {
+            return Ok(_reportsService.getReports());
+        }
+
+        [HttpDelete("delete-report")]
+        public IActionResult deleteReport([FromBody] ReportsDTO report) {
+            try
+            {
+                _reportsService.deleteReport(report);
+                return Ok(new Response
+                { Status = "Success", Message = "Report deleted succesfully." });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Response
+                { Status = "Error", Message = ex.Message });
+            }
+        }
     }
 }

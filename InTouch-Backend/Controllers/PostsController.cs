@@ -76,5 +76,12 @@ namespace InTouch_Backend.Controllers
             _service.deletePost(postId);
             return Ok();
         }
+
+
+        [HttpGet("get-post-info")]
+        public IActionResult getPostInfo(int postId)
+        {
+            return Ok(_service.getPostInfo(postId));
+        }
     }
 }
