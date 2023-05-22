@@ -97,6 +97,18 @@ namespace InTouch_Backend.Data.Services
 
         }*/
 
+        public void checkDeletedPosts (int userId)
+        {
+            List<int> userPosts = _context.Posts.Where(p => p.userID == userId && p.isDeleted).Select(p=>p.Id).ToList();
+            if (userPosts.Count>0)
+            {
+               foreach(int id in userPosts)
+                {
+                    deletePost(id);
+                }
+                throw new Exception("Please don't use harmful words on your posts, it may cause your account to be locked or deleted.");
+            }
+        }
         public List<Post> getFollowedPosts(int userId)
             {
                 var followedUserIds = _context.Follows
@@ -121,6 +133,7 @@ namespace InTouch_Backend.Data.Services
 
         public List<Post> getUserPosts(int userId)
         {
+
             var posts = _context.Posts.Where(p=> p.userID==userId).ToList();
             posts.Reverse();
             return posts;

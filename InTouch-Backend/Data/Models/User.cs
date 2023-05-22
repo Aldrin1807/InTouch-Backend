@@ -19,6 +19,8 @@ namespace InTouch_Backend.Data.Models
         public IFormFile Image { get; set; }
         public int Role { get; set; } = 0;//Default 0 per user, per admin 1
 
+        public bool isLocked { get; set; }
+
 
         //Navigation Properties
         [JsonIgnore]

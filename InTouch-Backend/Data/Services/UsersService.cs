@@ -39,8 +39,8 @@ namespace InTouch_Backend.Data.Services
                     throw new Exception("Email or username already exists");
                 }
 
-                var _user = new User()
-                {
+            var _user = new User()
+            {
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     Username = user.Username,
@@ -125,6 +125,14 @@ namespace InTouch_Backend.Data.Services
                 throw new Exception("User not found");
 
             };
+            if (_user.isLocked)
+            {
+              //  DeleteUser(_user.Id);
+                throw new Exception("This account has been locked. Please send a ticket to our support. If the lock is lifted please don't post inappropriate content. Your account will be deleted.");
+
+            }
+           
+
             var passwordHasher = new PasswordHasher<string>();
             var result = passwordHasher.VerifyHashedPassword(null, _user.Password, user.Password);
             if(result != PasswordVerificationResult.Success)

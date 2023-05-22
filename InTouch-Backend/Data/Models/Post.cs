@@ -19,6 +19,8 @@ namespace InTouch_Backend.Data.Models
 
         public int userID { get; set; }
 
+        public bool isDeleted { get; set; }
+
         //Navigation Properties
 
 

@@ -3,6 +3,7 @@ using InTouch_Backend.Data.Services;
 using InTouch_Backend.Data.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 
 namespace InTouch_Backend.Controllers
 {
@@ -37,6 +38,21 @@ namespace InTouch_Backend.Controllers
             List<Post> Posts = _service.getFollowedPosts(id);
             Posts.Reverse();
             return Ok(Posts);
+        }
+
+        [HttpGet("check-deleted-post")]
+        public IActionResult checkDeletedPosts(int userId)
+        {
+            try
+            {
+                _service.checkDeletedPosts(userId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Response
+                { Status = "Error", Message = ex.Message });
+            }
         }
 
         [HttpGet("get-user-post-info")]

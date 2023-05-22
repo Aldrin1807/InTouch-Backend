@@ -13,6 +13,8 @@ namespace InTouch_Backend.Data.ViewModels
         public bool isPrivate { get; set; }
         public IFormFile Image{ get; set; }
         public int Role { get; set; } = 0;
+        public bool isLocked { get; set; }
+
     }
     public class UpdatePassword
     {
