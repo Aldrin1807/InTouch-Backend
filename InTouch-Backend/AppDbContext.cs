@@ -129,5 +129,6 @@ namespace InTouch_Backend
 
         public DbSet<FollowRequests> FollowRequests { get; set; }
 
+        public DbSet<SupportMessages> SupportMessages { get; set; }
     }
 }
