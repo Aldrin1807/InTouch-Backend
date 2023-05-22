@@ -263,6 +263,22 @@ namespace InTouch_Backend.Controllers
 
         }
 
+        [HttpPut("lock-account")]
+        public IActionResult lockUserAccount(int userId)
+        {
+            try
+            {
+                _service.lockUserAccount(userId);
+                return Ok(new Response
+                { Status = "Success", Message = "This account has been succesfully locked" });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Response
+                { Status = "Failed", Message = ex.Message });
+            }
+        }
+
 
     }
     }

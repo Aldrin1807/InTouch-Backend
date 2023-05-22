@@ -487,6 +487,21 @@ namespace InTouch_Backend.Data.Services
             _context.SaveChanges();
 
         }
+
+        public void lockUserAccount(int userId)
+        {
+            var user = _context.Users.FirstOrDefault(u=> u.Id== userId);
+            if(user==null)
+            {
+                throw new Exception("User does not exist");
+            }
+            if (user.isLocked)
+            {
+                throw new Exception("This account has already been locked.");
+            }
+            user.isLocked = true;
+            _context.SaveChanges();
+        }
     };
 }
 
