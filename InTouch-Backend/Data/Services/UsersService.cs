@@ -129,7 +129,7 @@ namespace InTouch_Backend.Data.Services
             if (_user.isLocked)
             {
               //  DeleteUser(_user.Id);
-                throw new Exception("This account has been locked. Please send a message to us by clicking the icon below. If the lock is lifted please don't post inappropriate content. Your account will be deleted.");
+                throw new DataException("This account has been locked. Please send a message to us by clicking anywhere on this text. If the lock is lifted please don't post inappropriate content. Your account will be deleted.");
 
             }
            

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace InTouch_Backend.Controllers
 {
@@ -45,6 +46,11 @@ namespace InTouch_Backend.Controllers
                 return Ok(new Response
                 { Status = "Success", Message = tokenString });
 
+            }
+            catch(DataException dx)
+            {
+                return Ok(new Response
+                { Status = "Locked", Message = dx.Message });
             }
             catch(Exception ex)
             {
