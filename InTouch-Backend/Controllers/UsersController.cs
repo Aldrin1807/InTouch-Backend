@@ -1,4 +1,5 @@
-﻿using InTouch_Backend.Data.Models;
+﻿using InTouch_Backend.Data.DTOs;
+using InTouch_Backend.Data.Models;
 using InTouch_Backend.Data.Services;
 using InTouch_Backend.Data.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -245,6 +246,22 @@ namespace InTouch_Backend.Controllers
             }
         }
 
+        [HttpPost("send-support-message")]
+        public IActionResult sendSupportMessage(SupportMessagesDTO messageDTO)
+        {
+            try
+            {
+                _service.sendSupportMessage(messageDTO);
+                return Ok(new Response
+                { Status = "Success", Message = "Message send succesfully.Our team will decide to unlock your account or not." });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Response
+                { Status = "Failed", Message = ex.Message });
+            }
+
+        }
 
 
     }

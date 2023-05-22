@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Microsoft.AspNetCore.Http.HttpResults;
+using InTouch_Backend.Data.DTOs;
 
 namespace InTouch_Backend.Data.Services
 {
@@ -464,6 +465,27 @@ namespace InTouch_Backend.Data.Services
 
             List<Post> savedPosts = _context.Posts.Where(sp => Ids.Contains(sp.Id)).ToList();
             return savedPosts;
+        }
+
+
+        public void sendSupportMessage(SupportMessagesDTO messageDTO)
+        {
+            var _user = _context.Users.FirstOrDefault(u => u.Email == messageDTO.UsernameOrEmail || u.Username == messageDTO.UsernameOrEmail);
+            if(_user== null)
+            {
+                throw new Exception("This user is not registered");
+            }
+            if(!_user.isLocked) {
+                throw new Exception("This user's account is not locked");
+            }
+            SupportMessages _message = new SupportMessages()
+            {
+                UserId=_user.Id,
+                message=messageDTO.message
+            };
+            _context.SupportMessages.Add(_message);
+            _context.SaveChanges();
+
         }
     };
 }
