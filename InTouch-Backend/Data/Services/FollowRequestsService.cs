@@ -42,6 +42,17 @@ namespace InTouch_Backend.Data.Services
 
         public List<User> getUserRequests (int userId)
         {
+            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+            if (!user.isPrivate)
+            {
+                List<FollowRequestsDTO> requests = _context.FollowRequests.Where(f => f.FollowRequestedId == userId)
+                    .Select(f => new FollowRequestsDTO { FollowRequestId = f.FollowRequestId, FollowRequestedId = f.FollowRequestedId }).ToList();
+                foreach(var f in requests)
+                {
+                    handleAccept(f);
+                }
+
+            }
             List<int> ids = _context.FollowRequests.Where(r => r.FollowRequestedId == userId)
                 .Select(r=> r.FollowRequestId).ToList();
             List<User> request = _context.Users.Where(u => ids.Contains(u.Id)).ToList();
