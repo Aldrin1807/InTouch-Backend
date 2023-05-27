@@ -59,5 +59,16 @@ namespace InTouch_Backend.Data.Services
             return count;
         }
 
+        public void deleteComment(int commentId)
+        {
+            var _comment = _context.Comments.FirstOrDefault(c => c.Id == commentId);
+            if (_comment == null)
+            {
+                throw new Exception("Comment doesnt exist");
+            }
+            _context.Comments.Remove(_comment);
+            _context.SaveChanges()
+;        }
+
     }
 }
