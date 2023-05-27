@@ -5,4 +5,9 @@
         public string UsernameOrEmail { get; set; }
         public string message { get; set; }
     }
+    public class DeleteSupportMessagesDTO
+    {
+        
+        public int Id { get; set; }
+    }
 }
