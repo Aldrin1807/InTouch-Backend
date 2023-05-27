@@ -284,6 +284,21 @@ namespace InTouch_Backend.Controllers
                 { Status = "Failed", Message = ex.Message });
             }
         }
+        [HttpPut("unlock-account")]
+        public IActionResult unlockUserAccount(int userId)
+        {
+            try
+            {
+                _service.unlockUserAccount(userId);
+                return Ok(new Response
+                { Status = "Success", Message = "This account has been succesfully unlocked" });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new Response
+                { Status = "Failed", Message = ex.Message });
+            }
+        }
 
 
     }
