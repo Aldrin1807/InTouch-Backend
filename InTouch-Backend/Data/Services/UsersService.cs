@@ -502,6 +502,22 @@ namespace InTouch_Backend.Data.Services
             user.isLocked = true;
             _context.SaveChanges();
         }
+
+        public void unlockUserAccount(int userId)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+            if (user == null)
+            {
+                throw new Exception("User does not exist");
+            }
+            if (!user.isLocked)
+            {
+                throw new Exception("This account is unlocked.");
+            }
+            user.isLocked = false;
+            _context.SaveChanges();
+        }
+
     };
 }
 
