@@ -39,6 +39,7 @@ namespace InTouch_Backend.Data.Services
                 .Include(c => c.User)
                 .Where(c => c.PostId == postId)
                 .Select(c => new {
+                    Id = c.Id,
                     userId = c.User.Id,
                     Username = c.User.Username,
                     ImagePath= c.User.ImagePath,
@@ -64,7 +65,7 @@ namespace InTouch_Backend.Data.Services
             var _comment = _context.Comments.FirstOrDefault(c => c.Id == commentId);
             if (_comment == null)
             {
-                throw new Exception("Comment doesnt exist");
+                throw new Exception("Comment doesn't exist");
             }
             _context.Comments.Remove(_comment);
             _context.SaveChanges()
