@@ -62,6 +62,7 @@ namespace InTouch_Backend
             builder.Services.AddTransient<CommentsService>();
             builder.Services.AddTransient<FollowRequestsService>();
             builder.Services.AddTransient<SavedPostServices>();
+            builder.Services.AddTransient<SupportMessageService>();
 
             builder.Services.Configure<ApiBehaviorOptions>(options =>
             {
