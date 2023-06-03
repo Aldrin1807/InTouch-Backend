@@ -224,6 +224,12 @@ namespace InTouch_Backend.Data.Services
 
             return null;
         }
+        public User getUser (string token)
+        {
+            string userId = GetUserIdFromToken(token);
+            var user = _context.Users.FirstOrDefault(u => u.Id.ToString() == userId);
+            return user;
+        }
 
         public List<User> getUsers() => _context.Users.ToList();
 

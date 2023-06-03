@@ -60,10 +60,10 @@ namespace InTouch_Backend.Controllers
             
         }
 
-        [HttpGet("get-user-id")]
-        public IActionResult getId(string token)
+        [HttpGet("get-user-from-token")]
+        public IActionResult getUser(string token)
         {
-            return Ok(_service.GetUserIdFromToken(token));
+            return Ok(_service.getUser(token));
         }
 
 
