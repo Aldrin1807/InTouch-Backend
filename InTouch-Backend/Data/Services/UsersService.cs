@@ -208,82 +208,11 @@ namespace InTouch_Backend.Data.Services
                 return false; // Token validation failed
             }
         }
-        public string GetUserIdFromToken(string token)
-        {
-            var handler = new JwtSecurityTokenHandler();
-            var jwtToken = handler.ReadJwtToken(token);
-
-            if (jwtToken != null)
-            {
-                var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-                if (userIdClaim != null)
-                {
-                    return userIdClaim.Value;
-                }
-            }
-
-            return null;
-        }
-        public User getUser (string token)
-        {
-            string userId = GetUserIdFromToken(token);
-            var user = _context.Users.FirstOrDefault(u => u.Id.ToString() == userId);
-            return user;
-        }
-
+       
+       
         public List<User> getUsers() => _context.Users.ToList();
 
-        public void updateProfile(int userId, UserDTO updatedUser = null)
-        {
-            var user = _context.Users.Find(userId);
-            if (user == null)
-            {
-                throw new Exception("User not found");
-            }
-
-            if (updatedUser.FirstName != null)
-            {
-                user.FirstName = updatedUser.FirstName;
-            }
-
-            if (updatedUser.LastName != null)
-            {
-                user.LastName = updatedUser.LastName;
-            }
-
-            if (updatedUser.Username != null)
-            {
-                user.Username = updatedUser.Username;
-            }
-
-            if (updatedUser.Email != null)
-            {
-                user.Email = updatedUser.Email;
-            }
-
-            if (updatedUser?.Image != null && updatedUser.Image.Length > 0)
-            {
-                string uniqueFileName = Guid.NewGuid().ToString() + "_" + updatedUser.Image.FileName;
-                string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "User Images");
-
-                if (!Directory.Exists(folderPath))
-                {
-                    Directory.CreateDirectory(folderPath);
-                }
-
-                string filePath = Path.Combine(folderPath, uniqueFileName);
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    updatedUser.Image.CopyTo(fileStream);
-                }
-
-                user.ImagePath = uniqueFileName;
-            }
-
-            _context.Users.Update(user);
-            _context.SaveChanges();
-        }
-        
+     
         public User getUserInfo(int id)
         {
             var user = _context.Users.FirstOrDefault(u => u.Id == id);
@@ -461,35 +390,6 @@ namespace InTouch_Backend.Data.Services
             _user.Email = user.Email;
             _user.isPrivate = user.isPrivate;
 
-            _context.SaveChanges();
-
-        }
-        public List<Post> GetSavedPosts(int id)
-        {
-            
-            List<int> Ids = _context.SavedPosts.Where(sp => sp.UserId == id).Select(sp => sp.PostId).ToList();
-
-            List<Post> savedPosts = _context.Posts.Where(sp => Ids.Contains(sp.Id)).ToList();
-            return savedPosts;
-        }
-
-
-        public void sendSupportMessage(SupportMessagesDTO messageDTO)
-        {
-            var _user = _context.Users.FirstOrDefault(u => u.Email == messageDTO.UsernameOrEmail || u.Username == messageDTO.UsernameOrEmail);
-            if(_user== null)
-            {
-                throw new Exception("This user is not registered");
-            }
-            if(!_user.isLocked) {
-                throw new Exception("This user's account is not locked");
-            }
-            SupportMessages _message = new SupportMessages()
-            {
-                UserId=_user.Id,
-                message=messageDTO.message
-            };
-            _context.SupportMessages.Add(_message);
             _context.SaveChanges();
 
         }

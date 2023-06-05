@@ -60,19 +60,7 @@ namespace InTouch_Backend.Controllers
             
         }
 
-        [HttpGet("get-user-from-token")]
-        public IActionResult getUser(string token)
-        {
-            return Ok(_service.getUser(token));
-        }
-
-
-        
-        [HttpGet("get-users") ,Authorize]
-        public IActionResult GetUsers()
-        {
-            return Ok(_service.getUsers());
-        }
+       
 
 
         [HttpGet("get-user-info"),Authorize]
@@ -87,24 +75,7 @@ namespace InTouch_Backend.Controllers
         {
             return Ok(_service.getFollows_and_Followers(userId));
         }
-        [HttpPut("Update-user{id}"), Authorize]
-        public IActionResult UpdateUser(int id, [FromForm] UserDTO updatedUser)
-        {
-            try
-            {
-                // Update user profile
-
-                _service.updateProfile(id, updatedUser);
-
-                // Return success response
-                return Ok(new { message = "User profile updated successfully" });
-            }
-            catch (Exception ex)
-            {
-                // Return error response
-                return BadRequest(new { message = ex.Message });
-            }
-        }
+       
         [HttpGet("{id}"), Authorize]
         public IActionResult GetUserById(int id)
         {
@@ -153,7 +124,7 @@ namespace InTouch_Backend.Controllers
         }
 
 
-        [HttpDelete("{id}"), Authorize]
+        [HttpDelete("{id}"), Authorize(Roles = "1")]
         public IActionResult DeleteUser(int id)
         {
             var deleted = _service.DeleteUser(id);
@@ -166,7 +137,11 @@ namespace InTouch_Backend.Controllers
                 return Ok(new Response { Status = "Error", Message = "User not found." });
             }
         }
-
+        [HttpGet("get-users"), Authorize(Roles = "1")]
+        public IActionResult GetUsers()
+        {
+            return Ok(_service.getUsers());
+        }
 
         [HttpGet("is-following"),Authorize]
 
@@ -234,42 +209,9 @@ namespace InTouch_Backend.Controllers
             }
         }
 
-        [HttpGet("users/{id}/savedposts")]
-        public IActionResult GetSavedPosts(int id)
-        {
-            try { 
-            List<Post> savedPosts = _service.GetSavedPosts(id);
+    
 
-            if (savedPosts == null || savedPosts.Count == 0)
-            {
-                return NotFound(); // No saved posts found, return a 404 Not Found status code
-            }
-
-            return Ok(savedPosts);} catch (Exception ex)
-            {// Return error response
-                return Ok(new Response
-                { Status = "Failed", Message = ex.Message });
-            }
-        }
-
-        [HttpPost("send-support-message")]
-        public IActionResult sendSupportMessage(SupportMessagesDTO messageDTO)
-        {
-            try
-            {
-                _service.sendSupportMessage(messageDTO);
-                return Ok(new Response
-                { Status = "Success", Message = "Message send succesfully.Our team will decide to unlock your account or not." });
-            }
-            catch (Exception ex)
-            {
-                return Ok(new Response
-                { Status = "Failed", Message = ex.Message });
-            }
-
-        }
-
-        [HttpPut("lock-account")]
+        [HttpPut("lock-account"), Authorize(Roles = "1")]
         public IActionResult lockUserAccount(int userId)
         {
             try
@@ -284,7 +226,7 @@ namespace InTouch_Backend.Controllers
                 { Status = "Failed", Message = ex.Message });
             }
         }
-        [HttpPut("unlock-account")]
+        [HttpPut("unlock-account"), Authorize(Roles = "1")]
         public IActionResult unlockUserAccount(int userId)
         {
             try

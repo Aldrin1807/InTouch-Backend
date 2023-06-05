@@ -30,5 +30,26 @@ namespace InTouch_Backend.Data.Services
             _context.SupportMessages.Remove(_supportMessage);
             _context.SaveChanges();
         }
+
+        public void sendSupportMessage(SupportMessagesDTO messageDTO)
+        {
+            var _user = _context.Users.FirstOrDefault(u => u.Email == messageDTO.UsernameOrEmail || u.Username == messageDTO.UsernameOrEmail);
+            if (_user == null)
+            {
+                throw new Exception("This user is not registered");
+            }
+            if (!_user.isLocked)
+            {
+                throw new Exception("This user's account is not locked");
+            }
+            SupportMessages _message = new SupportMessages()
+            {
+                UserId = _user.Id,
+                message = messageDTO.message
+            };
+            _context.SupportMessages.Add(_message);
+            _context.SaveChanges();
+
+        }
     }
 }

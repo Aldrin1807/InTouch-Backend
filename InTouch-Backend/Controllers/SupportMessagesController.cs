@@ -43,6 +43,23 @@ namespace InTouch_Backend.Controllers
                     { Status = "Error", Message = ex.Message });
                 }
             }
+
+                [HttpPost("send-support-message")]
+                public IActionResult sendSupportMessage(SupportMessagesDTO messageDTO)
+                {
+                    try
+                    {
+                        _supportMessage.sendSupportMessage(messageDTO);
+                        return Ok(new Response
+                        { Status = "Success", Message = "Message send succesfully.Our team will decide to unlock your account or not." });
+                    }
+                    catch (Exception ex)
+                    {
+                        return Ok(new Response
+                        { Status = "Failed", Message = ex.Message });
+                    }
+
         }
+    }
     
 }
