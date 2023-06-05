@@ -210,7 +210,7 @@ namespace InTouch_Backend.Data.Services
         }
        
        
-        public List<User> getUsers() => _context.Users.ToList();
+        public List<User> getUsers() => _context.Users.Where(u => u.Role == 0).ToList();
 
      
         public User getUserInfo(int id)
@@ -276,7 +276,7 @@ namespace InTouch_Backend.Data.Services
         }
         public List<User> suggestedUsers(int userId)
         {
-            List<User> allUsers = _context.Users.ToList();
+            List<User> allUsers = _context.Users.Where(u=> u.Role==0).ToList();
             List<int> followingIds = _context.Follows
                .Where(f => f.FollowerId == userId)
                .Select(f => f.FollowingId)
@@ -293,8 +293,7 @@ namespace InTouch_Backend.Data.Services
         public List<User> searchUsers(int userId, string query)
         {
 
-
-            List<User> searchresult = _context.Users.Where(u => u.Id != userId && (u.FirstName.Contains(query) || u.Username.Contains(query) || u.LastName.Contains(query))).ToList();
+            List<User> searchresult = _context.Users.Where(u => u.Id != userId&& u.Role==0 && (u.FirstName.Contains(query) || u.Username.Contains(query) || u.LastName.Contains(query))).ToList();
             return searchresult;
         }
         public int[] getFollows_and_Followers(int userId)
