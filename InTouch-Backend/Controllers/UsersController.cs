@@ -242,6 +242,11 @@ namespace InTouch_Backend.Controllers
             }
         }
 
+        [HttpGet("dashboard-analytics"),Authorize(Roles = "1")]
+        public IActionResult dashboardAnalytics()
+        {
+            return Ok(_service.dashboardAnalytics());
+        }
 
     }
     }

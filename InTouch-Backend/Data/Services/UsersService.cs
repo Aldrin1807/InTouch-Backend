@@ -423,6 +423,21 @@ namespace InTouch_Backend.Data.Services
             _context.SaveChanges();
         }
 
+        public List<int> dashboardAnalytics()
+        {
+            List<int> analytics = new List<int>();
+            int countUser = _context.Users.Where(u=>u.Role==0).Count();
+            int countPosts = _context.Posts.Count();
+            int countMessages = _context.SupportMessages.Count();
+            int countReports = _context.Reports.Count();
+
+            analytics.Add(countUser);
+            analytics.Add(countPosts);
+            analytics.Add(countMessages);
+            analytics.Add(countReports);
+
+            return analytics;
+        }
     };
 }
 
