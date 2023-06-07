@@ -113,7 +113,7 @@ namespace InTouch_Backend.Data.Services
             _context.SaveChanges();
                 
         }
-           
+         
         
 
 
@@ -238,6 +238,11 @@ namespace InTouch_Backend.Data.Services
             var user = _context.Users.FirstOrDefault(u => u.Id == id);
             if (user != null)
             {
+                string ImageFilePath = Path.Combine(Directory.GetCurrentDirectory(), "User Images", user.ImagePath);
+                if (File.Exists(ImageFilePath))
+                {
+                    File.Delete(ImageFilePath);
+                }
                 var userPosts = _context.Posts.Where(u => u.userID == id);
                 foreach (var item in userPosts)
                 {

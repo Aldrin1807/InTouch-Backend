@@ -145,7 +145,11 @@ namespace InTouch_Backend.Data.Services
             var post= _context.Posts.FirstOrDefault(p => p.Id == postId);
             if (post != null)
             {
-              
+                string ImageFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Post Images", post.ImagePath);
+                if (File.Exists(ImageFilePath))
+                {
+                    File.Delete(ImageFilePath);
+                }
                 var postComments = _context.Comments.Where(c => c.PostId == postId);
                 _context.Comments.RemoveRange(postComments);
 
