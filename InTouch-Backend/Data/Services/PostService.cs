@@ -155,6 +155,9 @@ namespace InTouch_Backend.Data.Services
                 var postReports = _context.Reports.Where(r => r.PostId == postId);
                 _context.Reports.RemoveRange(postReports);
 
+                var savedPosts = _context.SavedPosts.Where(p => p.PostId == postId);
+                _context.SavedPosts.RemoveRange(savedPosts);
+
                 _context.Posts.Remove(post);
             }
             _context.SaveChanges();

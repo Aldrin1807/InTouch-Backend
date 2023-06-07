@@ -149,7 +149,6 @@ namespace InTouch_Backend.Data.Services
             return null;
         }
 
-
         private string CreateToken(User _user)
         {
             if (_user == null)
