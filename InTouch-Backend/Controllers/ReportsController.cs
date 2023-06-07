@@ -3,6 +3,7 @@ using InTouch_Backend.Data.Services;
 using InTouch_Backend.Data.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace InTouch_Backend.Controllers
 {
@@ -17,7 +18,7 @@ namespace InTouch_Backend.Controllers
             _reportsService= reportsService;
         }
 
-        [HttpPost("make-report")]
+        [HttpPost("make-report"),Authorize]
         public IActionResult makeReport([FromBody]ReportsDTO report)
         {
             try
@@ -33,13 +34,13 @@ namespace InTouch_Backend.Controllers
             }
         }
 
-        [HttpGet("get-reports")]
+        [HttpGet("get-reports"), Authorize]
         public IActionResult getReports()
         {
             return Ok(_reportsService.getReports());
         }
 
-        [HttpDelete("delete-report")]
+        [HttpDelete("delete-report"), Authorize]
         public IActionResult deleteReport([FromBody] ReportsDTO report) {
             try
             {

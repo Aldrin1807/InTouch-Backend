@@ -3,6 +3,7 @@ using InTouch_Backend.Data.Services;
 using InTouch_Backend.Data.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace InTouch_Backend.Controllers
 {
@@ -17,13 +18,13 @@ namespace InTouch_Backend.Controllers
             _commentsService = commentsService;
         }
 
-        [HttpGet("get-post-comments")]
+        [HttpGet("get-post-comments"), Authorize]
         public IActionResult getComments(int postId)
         {
             return Ok(_commentsService.getComments(postId));
         }
 
-        [HttpPost("make-comment")]
+        [HttpPost("make-comment"), Authorize]
 
         public IActionResult makeComment(CommentsDTO comment)
         {
@@ -31,12 +32,12 @@ namespace InTouch_Backend.Controllers
             return Ok();
         }
 
-        [HttpGet("get-nr-comments")]
+        [HttpGet("get-nr-comments"), Authorize]
         public IActionResult getNrComments(int postId)
         {
             return Ok(_commentsService.getNrComments(postId));
         }
-        [HttpDelete("delete-comment")]
+        [HttpDelete("delete-comment"), Authorize]
         public IActionResult deleteComment(int id) {
             try
             {

@@ -1,6 +1,7 @@
 ﻿using InTouch_Backend.Data.Services;
 using InTouch_Backend.Data.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace InTouch_Backend.Controllers
 {
@@ -15,27 +16,27 @@ namespace InTouch_Backend.Controllers
             _likesService = likesService;   
         }
 
-        [HttpGet("get-post-likes")]
+        [HttpGet("get-post-likes"),Authorize]
         public IActionResult getPostLike(int id)
         {
             return Ok(_likesService.getPostLike(id));
         }
 
-        [HttpPost("like-post")]
+        [HttpPost("like-post"), Authorize]
         public IActionResult likePost([FromBody]LikesDTO likes)
         {
             _likesService.likePost(likes);
             return Ok();
         }
 
-        [HttpDelete("unlike-post")]
+        [HttpDelete("unlike-post"), Authorize]
 
         public IActionResult unLikePost([FromBody]LikesDTO likes) { 
             _likesService.unLikePost(likes);
             return Ok();
         }
 
-        [HttpGet("is-liked")]
+        [HttpGet("is-liked"), Authorize]
 
         public IActionResult isLiked(int userId,int postId)
         {

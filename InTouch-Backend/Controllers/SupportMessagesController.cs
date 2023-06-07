@@ -3,7 +3,7 @@ using InTouch_Backend.Data.Models;
 using InTouch_Backend.Data.Services;
 using InTouch_Backend.Data.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.AspNetCore.Authorization;
 namespace InTouch_Backend.Controllers
 {
     [Route("api/[controller]")]
@@ -22,13 +22,13 @@ namespace InTouch_Backend.Controllers
 
             
 
-            [HttpGet("get-support-messages")]
+            [HttpGet("get-support-messages"), Authorize(Roles = "1")]
             public IActionResult getSupportMessages()
             {
             return Ok(_supportMessage.getSupportMessages());
             }
 
-            [HttpDelete("delete-support-message")]
+            [HttpDelete("delete-support-message"),Authorize(Roles = "1")]
             public IActionResult deleteReport([FromBody] DeleteSupportMessagesDTO messages)
             {
                 try

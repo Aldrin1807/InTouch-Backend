@@ -1,6 +1,7 @@
 ﻿using InTouch_Backend.Data.DTOs;
 using InTouch_Backend.Data.Services;
 using InTouch_Backend.Data.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InTouch_Backend.Controllers
@@ -20,14 +21,14 @@ namespace InTouch_Backend.Controllers
 
 
 
-        [HttpPost("save-post")]
+        [HttpPost("save-post"),Authorize]
         public IActionResult SavePost([FromBody] SavedPostsDTO savePost)
         {
             _savedPostServices.SavePost(savePost);
                 return Ok();
         }
 
-            [HttpDelete("unsave-post")]
+            [HttpDelete("unsave-post"),Authorize]
 
             public IActionResult unSavePost([FromBody] SavedPostsDTO savePost)
             {
@@ -35,7 +36,7 @@ namespace InTouch_Backend.Controllers
                 return Ok();
             }
 
-            [HttpGet("is-liked")]
+            [HttpGet("is-saved"),Authorize]
 
             public IActionResult isSaved(int userId, int postId)
             {
@@ -47,7 +48,7 @@ namespace InTouch_Backend.Controllers
                 return Ok(_savedPostServices.isSaved(savePost));
             }
 
-        [HttpGet("get-saved-posts")]
+        [HttpGet("get-saved-posts"), Authorize]
         public IActionResult getSavedPosts(int userId)
         {
             return Ok(_savedPostServices.getSavedPosts(userId));

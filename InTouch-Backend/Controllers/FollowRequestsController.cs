@@ -2,6 +2,7 @@
 using InTouch_Backend.Data.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace InTouch_Backend.Controllers
 {
@@ -16,21 +17,21 @@ namespace InTouch_Backend.Controllers
             _service = service;
         }
 
-        [HttpPost("request-follow")]
+        [HttpPost("request-follow"),Authorize]
         public IActionResult requestFollow([FromBody] FollowRequestsDTO request)
         {
             _service.requestFollow(request);
             return Ok();
         }
 
-        [HttpDelete("unrequest-follow")]
+        [HttpDelete("unrequest-follow"), Authorize]
         public IActionResult unRequestFollow([FromBody] FollowRequestsDTO request)
         {
             _service.unRequestFollow(request);
             return Ok();
         }
 
-        [HttpGet("is-requested")]
+        [HttpGet("is-requested"), Authorize]
         public IActionResult isRequested(int userOne,int userTwo)
         {
             FollowRequestsDTO request = new FollowRequestsDTO()
@@ -41,18 +42,18 @@ namespace InTouch_Backend.Controllers
             return Ok(_service.isRequested(request));
         }
 
-        [HttpGet("get-requests")]
+        [HttpGet("get-requests"), Authorize]
         public IActionResult getUserRequests(int userId)
         {
             return Ok(_service.getUserRequests(userId));
         }
-        [HttpPost("handle-accept")]
+        [HttpPost("handle-accept"), Authorize]
         public IActionResult handleAccept([FromBody] FollowRequestsDTO request)
         {
             _service.handleAccept(request);
             return Ok();
         }
-        [HttpDelete("handle-decline")]
+        [HttpDelete("handle-decline"), Authorize]
         public IActionResult handleDecline([FromBody] FollowRequestsDTO request)
         {
             _service.handleDecline(request);

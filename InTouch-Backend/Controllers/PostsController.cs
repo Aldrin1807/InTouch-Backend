@@ -4,6 +4,7 @@ using InTouch_Backend.Data.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Authorization;
 
 namespace InTouch_Backend.Controllers
 {
@@ -16,7 +17,7 @@ namespace InTouch_Backend.Controllers
         {
             _service = service; 
         }
-        [HttpPost("make-post")]
+        [HttpPost("make-post"), Authorize]
         public IActionResult makePost([FromForm]PostDTO post)
         {
             try
@@ -32,7 +33,7 @@ namespace InTouch_Backend.Controllers
             }
             
         }
-        [HttpGet("get-posts")]
+        [HttpGet("get-posts"), Authorize]
         public IActionResult getFollowedPosts(int id)
         {
             List<Post> Posts = _service.getFollowedPosts(id);
@@ -40,7 +41,7 @@ namespace InTouch_Backend.Controllers
             return Ok(Posts);
         }
 
-        [HttpGet("check-deleted-post")]
+        [HttpGet("check-deleted-post"), Authorize]
         public IActionResult checkDeletedPosts(int userId)
         {
             try
@@ -55,21 +56,21 @@ namespace InTouch_Backend.Controllers
             }
         }
 
-        [HttpGet("get-user-post-info")]
+        [HttpGet("get-user-post-info"), Authorize]
 
         public IActionResult getUserPostInfo(int postId)
         {
             return Ok(_service.getUserPostInfo(postId));
         }
 
-        [HttpGet("get-user-post")]
+        [HttpGet("get-user-post"), Authorize]
 
         public IActionResult getUserPosts(int userId)
         {
             return Ok(_service.getUserPosts(userId));
         }
 
-        [HttpDelete("delete-post")]
+        [HttpDelete("delete-post"), Authorize]
 
         public IActionResult deletePost(int postId)
         {
@@ -78,13 +79,13 @@ namespace InTouch_Backend.Controllers
         }
 
 
-        [HttpGet("get-post-info")]
+        [HttpGet("get-post-info"), Authorize]
         public IActionResult getPostInfo(int postId)
         {
             return Ok(_service.getPostInfo(postId));
         }
 
-        [HttpPut("set-delete-attr")]
+        [HttpPut("set-delete-attr"), Authorize]
         public IActionResult setDeleteTrue(int postId)
         {
             try
