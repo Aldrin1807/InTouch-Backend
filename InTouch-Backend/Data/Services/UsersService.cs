@@ -247,27 +247,27 @@ namespace InTouch_Backend.Data.Services
                     }
                 }
 
-                var userPosts = _context.Posts.Where(u => u.userID == id);
+                var userPosts = _context.Posts.Where(u => u.userID == id).ToList();
                 foreach (var item in userPosts)
                 {
                     _postService.deletePost(item.Id);
                 }
-                var userFollows = _context.Follows.Where(u => u.FollowerId == id || u.FollowingId == id);
+                var userFollows = _context.Follows.Where(u => u.FollowerId == id || u.FollowingId == id).ToList();
                 _context.Follows.RemoveRange(userFollows);
 
-                var userRequest = _context.FollowRequests.Where(u => u.FollowRequestId== id || u.FollowRequestedId == id);
+                var userRequest = _context.FollowRequests.Where(u => u.FollowRequestId == id || u.FollowRequestedId == id).ToList();
                 _context.FollowRequests.RemoveRange(userRequest);
 
-                var userReports = _context.Reports.Where(r => r.UserId == id);
+                var userReports = _context.Reports.Where(r => r.UserId == id).ToList();
                 _context.Reports.RemoveRange(userReports);
 
-                var userLikes = _context.Likes.Where(l => l.UserId == id);
+                var userLikes = _context.Likes.Where(l => l.UserId == id).ToList();
                 _context.Likes.RemoveRange(userLikes);
 
-                var userComments = _context.Comments.Where(c => c.UserId == id);
+                var userComments = _context.Comments.Where(c => c.UserId == id).ToList();
                 _context.Comments.RemoveRange(userComments);
 
-                var userSavedPosts = _context.SavedPosts.Where(s => s.UserId == id);
+                var userSavedPosts = _context.SavedPosts.Where(s => s.UserId == id).ToList();
                 _context.SavedPosts.RemoveRange(userSavedPosts);
 
 
