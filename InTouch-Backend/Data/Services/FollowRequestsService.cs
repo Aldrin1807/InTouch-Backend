@@ -94,11 +94,12 @@ namespace InTouch_Backend.Data.Services
         }
         public void handleDecline(FollowRequestsDTO request)
         {
-            var _request = _context.FollowRequests.FirstOrDefault(r => r.FollowRequestedId == request.FollowRequestId && r.FollowRequestId == request.FollowRequestedId);
-            if (_request != null)
+            var _request = _context.FollowRequests.FirstOrDefault(r => r.FollowRequestedId == request.FollowRequestedId && r.FollowRequestId == request.FollowRequestId);
+            if (_request == null)
             {
-                _context.FollowRequests.Remove(_request);
+                throw new Exception("There is no request like this.");
             }
+            _context.FollowRequests.Remove(_request);
             _context.SaveChanges();
         }
     }

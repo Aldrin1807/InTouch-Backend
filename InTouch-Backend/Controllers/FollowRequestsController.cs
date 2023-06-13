@@ -56,8 +56,13 @@ namespace InTouch_Backend.Controllers
         [HttpDelete("handle-decline"), Authorize]
         public IActionResult handleDecline([FromBody] FollowRequestsDTO request)
         {
-            _service.handleDecline(request);
-            return Ok();
+            try { 
+                _service.handleDecline(request);
+                return Ok(new Response { Status = "Success", Message = "Request deleted successfully." });
+            } catch(Exception e)
+            {
+                return Ok(new Response { Status = "Error", Message = e.Message });
+            }
         }
     } 
 }
