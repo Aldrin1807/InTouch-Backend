@@ -23,7 +23,7 @@ namespace InTouch_Backend
             // Add services to the container.
             //Lidhja me Databaze
             builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(
-            builder.Configuration.GetConnectionString("DefaultConnectionString")));
+            builder.Configuration.GetConnectionString("AzureConnectionString")));
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -115,7 +115,7 @@ namespace InTouch_Backend
 
             app.UseHttpsRedirection();
 
-
+            /*
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
@@ -128,6 +128,7 @@ namespace InTouch_Backend
             Path.Combine(Directory.GetCurrentDirectory(), "Post Images")),
                 RequestPath = "/Post Images"
             });
+            */
             app.MapControllers();
 
             app.Run();
