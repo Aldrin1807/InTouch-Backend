@@ -13,27 +13,27 @@ namespace InTouch_Backend.Data.Services
             _context = context;
         }
 
-        public List<SupportMessages> getSupportMessages()
+        public async Task<List<SupportMessages>> getSupportMessages()
         {
-            List<SupportMessages> supportMessages = _context.SupportMessages.ToList();
+            List<SupportMessages> supportMessages =await _context.SupportMessages.ToListAsync();
             supportMessages.Reverse();
             return supportMessages;
         }
 
-        public void deleteSupportMessage(DeleteSupportMessagesDTO supportMessage)
+        public async Task deleteSupportMessage(DeleteSupportMessagesDTO supportMessage)
         {
-            var _supportMessage = _context.SupportMessages.FirstOrDefault(r => r.Id == supportMessage.Id);
+            var _supportMessage =await _context.SupportMessages.FirstOrDefaultAsync(r => r.Id == supportMessage.Id);
             if (_supportMessage == null)
             {
                 throw new Exception("Message does not exist.");
             }
             _context.SupportMessages.Remove(_supportMessage);
-            _context.SaveChanges();
+           await _context.SaveChangesAsync();
         }
 
-        public void sendSupportMessage(SupportMessagesDTO messageDTO)
+        public async Task sendSupportMessage(SupportMessagesDTO messageDTO)
         {
-            var _user = _context.Users.FirstOrDefault(u => u.Email == messageDTO.UsernameOrEmail || u.Username == messageDTO.UsernameOrEmail);
+            var _user =await _context.Users.FirstOrDefaultAsync(u => u.Email == messageDTO.UsernameOrEmail || u.Username == messageDTO.UsernameOrEmail);
             if (_user == null)
             {
                 throw new Exception("This user is not registered");
@@ -47,8 +47,8 @@ namespace InTouch_Backend.Data.Services
                 UserId = _user.Id,
                 message = messageDTO.message
             };
-            _context.SupportMessages.Add(_message);
-            _context.SaveChanges();
+           await _context.SupportMessages.AddAsync(_message);
+           await _context.SaveChangesAsync();
 
         }
     }
