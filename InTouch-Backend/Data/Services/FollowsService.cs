@@ -1,5 +1,6 @@
 ﻿using InTouch_Backend.Data.Models;
 using InTouch_Backend.Data.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace InTouch_Backend.Data.Services
 {
@@ -13,25 +14,25 @@ namespace InTouch_Backend.Data.Services
                 
         }
 
-        public void  followUser(FollowsDTO follow)
+        public async Task  followUser(FollowsDTO follow)
         {
             var _follow = new Follows()
             {
                 FollowerId = follow.FollowerId,
                 FollowingId = follow.FollowingId
             };
-            _context.Add(_follow);
-            _context.SaveChanges();
+           await _context.AddAsync(_follow);
+            await _context.SaveChangesAsync();
         }
 
-        public void unFollowUser(FollowsDTO follow)
+        public async Task unFollowUser(FollowsDTO follow)
         {
-            var _follow = _context.Follows.FirstOrDefault(f=> f.FollowerId==follow.FollowerId && f.FollowingId==follow.FollowingId);
+            var _follow =await _context.Follows.FirstOrDefaultAsync(f=> f.FollowerId==follow.FollowerId && f.FollowingId==follow.FollowingId);
 
             if(_follow!= null)
             {
                 _context.Remove(_follow);
-                _context.SaveChanges();
+               await _context.SaveChangesAsync();
             }
             
         }
