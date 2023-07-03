@@ -19,29 +19,29 @@ namespace InTouch_Backend.Controllers
         }
 
         [HttpGet("get-post-comments"), Authorize]
-        public IActionResult getComments(int postId)
+        public async Task<IActionResult> getComments(int postId)
         {
-            return Ok(_commentsService.getComments(postId));
+            return Ok(await _commentsService.getComments(postId));
         }
 
         [HttpPost("make-comment"), Authorize]
 
-        public IActionResult makeComment(CommentsDTO comment)
+        public async Task<IActionResult> makeComment(CommentsDTO comment)
         {
-            _commentsService.makeComment(comment);
+         await   _commentsService.makeComment(comment);
             return Ok();
         }
 
         [HttpGet("get-nr-comments"), Authorize]
-        public IActionResult getNrComments(int postId)
+        public async Task<IActionResult> getNrComments(int postId)
         {
             return Ok(_commentsService.getNrComments(postId));
         }
         [HttpDelete("delete-comment"), Authorize]
-        public IActionResult deleteComment(int id) {
+        public async Task<IActionResult> deleteComment(int id) {
             try
             {
-                _commentsService.deleteComment(id);
+               await _commentsService.deleteComment(id);
                 return Ok(new Response
                 { Status = "Success", Message = "Comment deleted successfully." });
             }

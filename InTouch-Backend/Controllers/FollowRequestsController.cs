@@ -18,46 +18,46 @@ namespace InTouch_Backend.Controllers
         }
 
         [HttpPost("request-follow"),Authorize]
-        public IActionResult requestFollow([FromBody] FollowRequestsDTO request)
+        public async Task<IActionResult> requestFollow([FromBody] FollowRequestsDTO request)
         {
-            _service.requestFollow(request);
+           await _service.requestFollow(request);
             return Ok();
         }
 
         [HttpDelete("unrequest-follow"), Authorize]
-        public IActionResult unRequestFollow([FromBody] FollowRequestsDTO request)
+        public async Task<IActionResult> unRequestFollow([FromBody] FollowRequestsDTO request)
         {
-            _service.unRequestFollow(request);
+           await _service.unRequestFollow(request);
             return Ok();
         }
 
         [HttpGet("is-requested"), Authorize]
-        public IActionResult isRequested(int userOne,int userTwo)
+        public async Task<IActionResult> isRequested(int userOne,int userTwo)
         {
             FollowRequestsDTO request = new FollowRequestsDTO()
             {
                 FollowRequestId = userOne,
                 FollowRequestedId = userTwo
             };
-            return Ok(_service.isRequested(request));
+            return Ok(await _service.isRequested(request));
         }
 
         [HttpGet("get-requests"), Authorize]
-        public IActionResult getUserRequests(int userId)
+        public async Task<IActionResult> getUserRequests(int userId)
         {
-            return Ok(_service.getUserRequests(userId));
+            return Ok(await _service.getUserRequests(userId));
         }
         [HttpPost("handle-accept"), Authorize]
-        public IActionResult handleAccept([FromBody] FollowRequestsDTO request)
+        public async Task<IActionResult> handleAccept([FromBody] FollowRequestsDTO request)
         {
-            _service.handleAccept(request);
+            await _service.handleAccept(request);
             return Ok();
         }
         [HttpDelete("handle-decline"), Authorize]
-        public IActionResult handleDecline([FromBody] FollowRequestsDTO request)
+        public async Task<IActionResult> handleDecline([FromBody] FollowRequestsDTO request)
         {
             try { 
-                _service.handleDecline(request);
+                await _service.handleDecline(request);
                 return Ok(new Response { Status = "Success", Message = "Request deleted successfully." });
             } catch(Exception e)
             {
