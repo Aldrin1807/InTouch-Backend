@@ -93,6 +93,32 @@ namespace InTouch_Backend.Migrations
                     b.ToTable("Likes");
                 });
 
+            modelBuilder.Entity("InTouch_Backend.Data.Models.Lojtari58914", b =>
+                {
+                    b.Property<int>("Id58914")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id58914"));
+
+                    b.Property<string>("Emri58914")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Mbiemri58914")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SkuadraId58914")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id58914");
+
+                    b.HasIndex("SkuadraId58914");
+
+                    b.ToTable("Lojtari58914");
+                });
+
             modelBuilder.Entity("InTouch_Backend.Data.Models.Post", b =>
                 {
                     b.Property<int>("Id")
@@ -153,6 +179,23 @@ namespace InTouch_Backend.Migrations
                     b.HasIndex("PostId");
 
                     b.ToTable("SavedPosts");
+                });
+
+            modelBuilder.Entity("InTouch_Backend.Data.Models.Skuadra58914", b =>
+                {
+                    b.Property<int>("Id58914")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id58914"));
+
+                    b.Property<string>("Emertimi58914")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id58914");
+
+                    b.ToTable("Skuadra58914");
                 });
 
             modelBuilder.Entity("InTouch_Backend.Data.Models.SupportMessages", b =>
@@ -297,6 +340,17 @@ namespace InTouch_Backend.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("InTouch_Backend.Data.Models.Lojtari58914", b =>
+                {
+                    b.HasOne("InTouch_Backend.Data.Models.Skuadra58914", "Skuadra58914")
+                        .WithMany("Lojtaret")
+                        .HasForeignKey("SkuadraId58914")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Skuadra58914");
+                });
+
             modelBuilder.Entity("InTouch_Backend.Data.Models.Post", b =>
                 {
                     b.HasOne("InTouch_Backend.Data.Models.User", "User")
@@ -362,6 +416,11 @@ namespace InTouch_Backend.Migrations
                     b.Navigation("Reports");
 
                     b.Navigation("SavedPosts");
+                });
+
+            modelBuilder.Entity("InTouch_Backend.Data.Models.Skuadra58914", b =>
+                {
+                    b.Navigation("Lojtaret");
                 });
 
             modelBuilder.Entity("InTouch_Backend.Data.Models.User", b =>

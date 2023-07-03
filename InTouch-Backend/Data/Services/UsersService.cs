@@ -29,11 +29,11 @@ namespace InTouch_Backend.Data.Services
             _configuration = configuration;
 
         }
-        public void register(UserDTO user)
+        public async Task register(UserDTO user)
         {
            
-                bool emailExists = _context.Users.Any(u => u.Email == user.Email);
-                bool usernameExists = _context.Users.Any(u => u.Username == user.Username);
+                bool emailExists = await _context.Users.AnyAsync(u => u.Email == user.Email);
+                bool usernameExists =await _context.Users.AnyAsync(u => u.Username == user.Username);
 
                 if (emailExists || usernameExists)
                 {
@@ -72,13 +72,13 @@ namespace InTouch_Backend.Data.Services
                     _user.ImagePath = uniqueFileName;
                 }
 
-                _context.Users.Add(_user);
-                _context.SaveChanges();
+              await  _context.Users.AddAsync(_user);
+              await  _context.SaveChangesAsync();
             }
 
-        public void updateProfilePicture (UpdateProfilePic newPic)
+        public async Task updateProfilePicture (UpdateProfilePic newPic)
         {
-            var _user = _context.Users.FirstOrDefault(u => u.Id == newPic.Id);
+            var _user =await _context.Users.FirstOrDefaultAsync(u => u.Id == newPic.Id);
             if (_user == null)
             {
                 throw new Exception("User not found");
@@ -110,16 +110,16 @@ namespace InTouch_Backend.Data.Services
                 _user.ImagePath = uniqueFileName;
             }
 
-            _context.SaveChanges();
+          await _context.SaveChangesAsync();
                 
         }
          
         
 
 
-        public string login(Login user)
+        public async Task<string?> login(Login user)
         {
-            var _user = _context.Users.FirstOrDefault(u => u.Email == user.EmailorUsername || u.Username == user.EmailorUsername);
+            var _user =await _context.Users.FirstOrDefaultAsync(u => u.Email == user.EmailorUsername || u.Username == user.EmailorUsername);
 
             if (_user == null)
             {
@@ -209,18 +209,18 @@ namespace InTouch_Backend.Data.Services
         }
        
        
-        public List<User> getUsers() => _context.Users.Where(u => u.Role == 0).ToList();
+        public async Task<List<User>> getUsers() =>await _context.Users.Where(u => u.Role == 0).ToListAsync();
 
      
-        public User getUserInfo(int id)
+        public async Task<User> getUserInfo(int id)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+            var user =await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
             return user;
         }
 
-        public User getUserById(int userId)
+        public async Task<User> getUserById(int userId)
         {
-            var user = _context.Users.Find(userId);
+            var user =await _context.Users.FindAsync(userId);
             /* if (user == null)
              {
                  throw new Exception("User no found");
@@ -228,14 +228,14 @@ namespace InTouch_Backend.Data.Services
             return user;
         }
 
-        public bool isFollowing(int userOne, int userTwo)
+        public async Task<bool> isFollowing(int userOne, int userTwo)
         {
-            bool temp = _context.Follows.Any(f => f.FollowerId == userOne && f.FollowingId == userTwo);
+            bool temp =await _context.Follows.AnyAsync(f => f.FollowerId == userOne && f.FollowingId == userTwo);
             return temp;
         }
-        public bool DeleteUser(int id)
+        public async Task<bool> DeleteUser(int id)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+            var user =await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
             if (user != null)
             {
                 if (!string.IsNullOrEmpty(user.ImagePath))
@@ -273,7 +273,7 @@ namespace InTouch_Backend.Data.Services
 
 
                 _context.Users.Remove(user);
-                _context.SaveChanges();
+              await _context.SaveChangesAsync();
                 return true;
             }
 
@@ -281,13 +281,13 @@ namespace InTouch_Backend.Data.Services
 
 
         }
-        public List<User> suggestedUsers(int userId)
+        public async Task<List<User>> suggestedUsers(int userId)
         {
-            List<User> allUsers = _context.Users.Where(u=> u.Role==0).ToList();
-            List<int> followingIds = _context.Follows
+            List<User> allUsers =await _context.Users.Where(u=> u.Role==0).ToListAsync();
+            List<int> followingIds =await _context.Follows
                .Where(f => f.FollowerId == userId)
                .Select(f => f.FollowingId)
-               .ToList();
+               .ToListAsync();
 
             List<User> suggestedUsers = allUsers
             .Where(u => u.Id != userId && !followingIds.Contains(u.Id))
@@ -297,16 +297,16 @@ namespace InTouch_Backend.Data.Services
             return suggestedUsers.Take(10).ToList();
 
         }
-        public List<User> searchUsers(int userId, string query)
+        public async Task<List<User>> searchUsers(int userId, string query)
         {
 
-            List<User> searchresult = _context.Users.Where(u => u.Id != userId&& u.Role==0 && (u.FirstName.Contains(query) || u.Username.Contains(query) || u.LastName.Contains(query))).ToList();
+            List<User> searchresult =await _context.Users.Where(u => u.Id != userId&& u.Role==0 && (u.FirstName.Contains(query) || u.Username.Contains(query) || u.LastName.Contains(query))).ToListAsync();
             return searchresult;
         }
-        public int[] getFollows_and_Followers(int userId)
+        public async Task<int[]> getFollows_and_Followers(int userId)
         {
-            var follows = _context.Follows.Where(f => f.FollowerId == userId).ToList();
-            var followers = _context.Follows.Where(f => f.FollowingId == userId).ToList();
+            var follows = await _context.Follows.Where(f => f.FollowerId == userId).ToListAsync();
+            var followers =await _context.Follows.Where(f => f.FollowingId == userId).ToListAsync();
 
             int countFollows = follows.Count;
             int countFollowers = followers.Count;
@@ -316,37 +316,37 @@ namespace InTouch_Backend.Data.Services
             return temp;
         }
 
-        public List<User> userFollowers(int userId)
+        public async Task<List<User>> userFollowers(int userId)
         {
-            List<int> followedUserIds = _context.Follows
+            List<int> followedUserIds = await _context.Follows
             .Where(f => f.FollowingId == userId)
             .Select(f => f.FollowerId)
-            .ToList();
+            .ToListAsync();
 
 
-            List<User> temp = _context.Users
+            List<User> temp =await _context.Users
                 .Where(u => followedUserIds.Contains(u.Id))
-                .ToList();
+                .ToListAsync();
 
             return temp;
         }
-        public List<User> userFollowing(int userId)
+        public async Task<List<User>> userFollowing(int userId)
         {
-            List<int> followingUserIds = _context.Follows
+            List<int> followingUserIds =await _context.Follows
            .Where(f => f.FollowerId == userId)
            .Select(f => f.FollowingId)
-           .ToList();
+           .ToListAsync();
 
 
-            List<User> temp = _context.Users
+            List<User> temp =await _context.Users
                 .Where(u => followingUserIds.Contains(u.Id))
-                .ToList();
+                .ToListAsync();
             return temp;
         }
 
-        public void updatePassword (UpdatePassword updatePassword)
+        public async Task updatePassword (UpdatePassword updatePassword)
         {
-            var _user = _context.Users.FirstOrDefault(u => u.Id == updatePassword.Id);
+            var _user =await _context.Users.FirstOrDefaultAsync(u => u.Id == updatePassword.Id);
 
             if (_user == null)
             {
@@ -364,17 +364,17 @@ namespace InTouch_Backend.Data.Services
             else
             {
                 _user.Password = passwordHasher.HashPassword(null, updatePassword.NewPassword);
-                _context.SaveChanges();
+              await _context.SaveChangesAsync();
 
             }
 
         }
 
-        public void updateUserInfo (UpdateUserInfo user)
+        public async Task updateUserInfo (UpdateUserInfo user)
         {
-            var _user = _context.Users.FirstOrDefault(u => u.Id == user.Id);
-            bool emailExist = _context.Users.Any(u => u.Id!=user.Id && u.Email.Equals(user.Email));
-            bool usernameExist = _context.Users.Any(u => u.Id != user.Id && u.Username.Equals(user.Username));
+            var _user = await _context.Users.FirstOrDefaultAsync(u => u.Id == user.Id);
+            bool emailExist =await _context.Users.AnyAsync(u => u.Id!=user.Id && u.Email.Equals(user.Email));
+            bool usernameExist =await _context.Users.AnyAsync(u => u.Id != user.Id && u.Username.Equals(user.Username));
 
             if (emailExist)
             {
@@ -396,13 +396,13 @@ namespace InTouch_Backend.Data.Services
             _user.Email = user.Email;
             _user.isPrivate = user.isPrivate;
 
-            _context.SaveChanges();
+          await _context.SaveChangesAsync();
 
         }
 
-        public void lockUserAccount(int userId)
+        public async Task lockUserAccount(int userId)
         {
-            var user = _context.Users.FirstOrDefault(u=> u.Id== userId);
+            var user =await _context.Users.FirstOrDefaultAsync(u=> u.Id== userId);
             if(user==null)
             {
                 throw new Exception("User does not exist");
@@ -412,12 +412,12 @@ namespace InTouch_Backend.Data.Services
                 throw new Exception("This account has already been locked.");
             }
             user.isLocked = true;
-            _context.SaveChanges();
+           await _context.SaveChangesAsync();
         }
 
-        public void unlockUserAccount(int userId)
+        public async Task unlockUserAccount(int userId)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
             if (user == null)
             {
                 throw new Exception("User does not exist");
@@ -427,16 +427,16 @@ namespace InTouch_Backend.Data.Services
                 throw new Exception("This account is unlocked.");
             }
             user.isLocked = false;
-            _context.SaveChanges();
+           await _context.SaveChangesAsync();
         }
 
-        public List<int> dashboardAnalytics()
+        public async Task<List<int>> dashboardAnalytics()
         {
             List<int> analytics = new List<int>();
-            int countUser = _context.Users.Where(u=>u.Role==0).Count();
-            int countPosts = _context.Posts.Count();
-            int countMessages = _context.SupportMessages.Count();
-            int countReports = _context.Reports.Count();
+            int countUser =await _context.Users.Where(u=>u.Role==0).CountAsync();
+            int countPosts =await _context.Posts.CountAsync();
+            int countMessages =await _context.SupportMessages.CountAsync();
+            int countReports =await _context.Reports.CountAsync();
 
             analytics.Add(countUser);
             analytics.Add(countPosts);

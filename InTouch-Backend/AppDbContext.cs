@@ -116,6 +116,10 @@ namespace InTouch_Backend
                 .HasForeignKey(u => u.PostId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
+
+            //
+           
+
         }
         public DbSet<User> Users { get; set; }
         public DbSet<Post> Posts { get;set; }  
@@ -130,5 +134,6 @@ namespace InTouch_Backend
         public DbSet<FollowRequests> FollowRequests { get; set; }
 
         public DbSet<SupportMessages> SupportMessages { get; set; }
+
     }
 }

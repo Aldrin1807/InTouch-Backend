@@ -18,11 +18,11 @@ namespace InTouch_Backend.Controllers
         }
 
         [HttpPost("register")]
-        public IActionResult register([FromForm] UserDTO user)
+        public async Task<IActionResult> register([FromForm] UserDTO user)
         {
             try
             {
-                _service.register(user);
+               await _service.register(user);
                 return Ok(new Response
                 { Status = "Success", Message = "User Successfully registered." });
             }
@@ -35,11 +35,11 @@ namespace InTouch_Backend.Controllers
 
 
         [HttpPost("login")]
-        public IActionResult login([FromBody] Login user)
+        public async Task<IActionResult> login([FromBody] Login user)
         {
             try
             {
-                var tokenString = _service.login(user);
+                var tokenString = await _service.login(user);
                 return Ok(new Response
                 { Status = "Success", Message = tokenString });
 
