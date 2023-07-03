@@ -36,7 +36,7 @@ namespace InTouch_Backend.Data.Services
         }
         public async Task<bool> isSaved(SavedPostsDTO like)
         {
-            return _context.SavedPosts.AnyAsync(l => l.UserId == like.UserId && l.PostId == like.PostId);
+            return await _context.SavedPosts.AnyAsync(l => l.UserId == like.UserId && l.PostId == like.PostId);
         }
 
         public async Task<List<Post>> getSavedPosts(int userId)
