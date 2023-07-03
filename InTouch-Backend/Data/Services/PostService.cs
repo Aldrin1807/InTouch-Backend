@@ -15,7 +15,7 @@ namespace InTouch_Backend.Data.Services
             _context = context;
         }
 
-         public void makePost(PostDTO post)
+         public async Task makePost(PostDTO post)
          {
              var _post = new Post()
              {
@@ -49,8 +49,8 @@ namespace InTouch_Backend.Data.Services
              }
 
 
-             _context.Posts.Add(_post);
-             _context.SaveChanges();
+           await  _context.Posts.AddAsync(_post);
+             await _context.SaveChangesAsync();
          } 
 
         
@@ -98,9 +98,9 @@ namespace InTouch_Backend.Data.Services
 
         }*/
 
-        public void checkDeletedPosts (int userId)
+        public async Task checkDeletedPosts (int userId)
         {
-            List<int> userPosts = _context.Posts.Where(p => p.userID == userId && p.isDeleted).Select(p=>p.Id).ToList();
+            List<int> userPosts =await _context.Posts.Where(p => p.userID == userId && p.isDeleted).Select(p=>p.Id).ToListAsync();
             if (userPosts.Count>0)
             {
                foreach(int id in userPosts)
@@ -110,39 +110,39 @@ namespace InTouch_Backend.Data.Services
                 throw new Exception("Please don't use harmful words on your posts, it may cause your account to be locked or deleted.");
             }
         }
-        public List<Post> getFollowedPosts(int userId)
+        public async Task<List<Post>> getFollowedPosts(int userId)
             {
-                var followedUserIds = _context.Follows
+                var followedUserIds =await _context.Follows
                     .Where(f => f.FollowerId == userId || f.FollowingId == userId)
                     .Select(f => f.FollowerId == userId ? f.FollowingId : f.FollowerId)
-                    .ToList();
+                    .ToListAsync();
 
-                var posts = _context.Posts
+                var posts =await _context.Posts
                     .Where(p => followedUserIds.Contains(p.userID))
-                    .ToList();
+                    .ToListAsync();
                 return posts;
             }
 
-        public User getUserPostInfo(int postId)
+        public async Task<User> getUserPostInfo(int postId)
         {
 
-            var PostInfo = _context.Posts.FirstOrDefault(u => u.Id == postId);
-            var UserInfo = _context.Users.FirstOrDefault(u => u.Id == PostInfo.userID);
+            var PostInfo =await _context.Posts.FirstOrDefaultAsync(u => u.Id == postId);
+            var UserInfo =await _context.Users.FirstOrDefaultAsync(u => u.Id == PostInfo.userID);
 
             return UserInfo;
         }
 
-        public List<Post> getUserPosts(int userId)
+        public async Task<List<Post>> getUserPosts(int userId)
         {
 
-            var posts = _context.Posts.Where(p=> p.userID==userId).ToList();
+            var posts =await _context.Posts.Where(p=> p.userID==userId).ToListAsync();
             posts.Reverse();
             return posts;
         }
 
-        public void deletePost(int postId)
+        public async Task deletePost(int postId)
         {
-            var post= _context.Posts.FirstOrDefault(p => p.Id == postId);
+            var post=await _context.Posts.FirstOrDefaultAsync(p => p.Id == postId);
             if (post != null)
             {
                 string ImageFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Post Images", post.ImagePath);
@@ -164,17 +164,17 @@ namespace InTouch_Backend.Data.Services
 
                 _context.Posts.Remove(post);
             }
-            _context.SaveChanges();
+          await _context.SaveChangesAsync();
         }
 
-        public Post getPostInfo(int postId)
+        public async Task<Post> getPostInfo(int postId)
         {
-            return (_context.Posts.FirstOrDefault(p => p.Id == postId));
+            return await _context.Posts.FirstOrDefaultAsync(p => p.Id == postId);
         }
 
-        public void setDeleteTrue(int postId)
+        public async Task setDeleteTrue(int postId)
         {
-            var post = _context.Posts.FirstOrDefault(p => p.Id == postId);
+            var post =await _context.Posts.FirstOrDefaultAsync(p => p.Id == postId);
             if(post == null)
             {
                 throw new Exception("There is no post with this id");
@@ -182,7 +182,7 @@ namespace InTouch_Backend.Data.Services
             post.isDeleted = true;
             var _report = _context.Reports.Where(Reports => Reports.PostId == post.Id).ToList();
             _context.RemoveRange(_report);
-            _context.SaveChanges();
+           await _context.SaveChangesAsync();
         }
 
     }
