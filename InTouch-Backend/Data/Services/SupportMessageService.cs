@@ -1,6 +1,7 @@
 ﻿using InTouch_Backend.Data.DTOs;
 using InTouch_Backend.Data.Models;
 using InTouch_Backend.Data.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace InTouch_Backend.Data.Services
 {
