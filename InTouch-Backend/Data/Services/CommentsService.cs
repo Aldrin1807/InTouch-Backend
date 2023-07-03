@@ -14,7 +14,7 @@ namespace InTouch_Backend.Data.Services
             _context = context;
         }
 
-        public void makeComment(CommentsDTO comment)
+        public async Task makeComment(CommentsDTO comment)
         {
             var _comment = new Comments()
             {
@@ -24,18 +24,18 @@ namespace InTouch_Backend.Data.Services
             };
             try
             {
-                _context.Comments.Add(_comment);
+              await  _context.Comments.AddAsync(_comment);
             }catch(Exception ex)
             {
                 Console.WriteLine(ex.ToString());   
             }
-            _context.SaveChanges();
+          await  _context.SaveChangesAsync();
 
         }
 
-        public List<object> getComments(int postId)
+        public async Task<List<object>> getComments(int postId)
         {
-            var comments = _context.Comments
+            var comments =await _context.Comments
                 .Include(c => c.User)
                 .Where(c => c.PostId == postId)
                 .Select(c => new {
@@ -45,14 +45,14 @@ namespace InTouch_Backend.Data.Services
                     ImagePath= c.User.ImagePath,
                     Comment = c.comment
                 })
-                .ToList();
+                .ToListAsync();
 
             return comments.Cast<object>().ToList();
         }
-        public int getNrComments(int postId)
+        public async Task<int> getNrComments(int postId)
         {
             int count = 0;
-            List<Comments> comments = _context.Comments.Where(p => p.PostId == postId).ToList();
+            List<Comments> comments =await _context.Comments.Where(p => p.PostId == postId).ToListAsync();
             for (int i = 0; i < comments.Count; i++)
             {
                 count++;
@@ -60,15 +60,15 @@ namespace InTouch_Backend.Data.Services
             return count;
         }
 
-        public void deleteComment(int commentId)
+        public async Task deleteComment(int commentId)
         {
-            var _comment = _context.Comments.FirstOrDefault(c => c.Id == commentId);
+            var _comment =await _context.Comments.FirstOrDefaultAsync(c => c.Id == commentId);
             if (_comment == null)
             {
                 throw new Exception("Comment doesn't exist");
             }
             _context.Comments.Remove(_comment);
-            _context.SaveChanges()
+            await _context.SaveChangesAsync()
 ;        }
 
     }

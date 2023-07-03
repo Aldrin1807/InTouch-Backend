@@ -64,6 +64,8 @@ namespace InTouch_Backend
             builder.Services.AddTransient<SavedPostServices>();
             builder.Services.AddTransient<SupportMessageService>();
 
+          
+
             builder.Services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;

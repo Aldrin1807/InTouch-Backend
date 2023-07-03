@@ -22,36 +22,36 @@ namespace InTouch_Backend.Controllers
 
 
         [HttpPost("save-post"),Authorize]
-        public IActionResult SavePost([FromBody] SavedPostsDTO savePost)
+        public async Task<IActionResult> SavePost([FromBody] SavedPostsDTO savePost)
         {
-            _savedPostServices.SavePost(savePost);
+          await _savedPostServices.SavePost(savePost);
                 return Ok();
         }
 
             [HttpDelete("unsave-post"),Authorize]
 
-            public IActionResult unSavePost([FromBody] SavedPostsDTO savePost)
+            public async Task<IActionResult> unSavePost([FromBody] SavedPostsDTO savePost)
             {
-            _savedPostServices.unSavePost(savePost);
+            await _savedPostServices.unSavePost(savePost);
                 return Ok();
             }
 
             [HttpGet("is-saved"),Authorize]
 
-            public IActionResult isSaved(int userId, int postId)
+            public async Task<IActionResult> isSaved(int userId, int postId)
             {
                 var savePost = new SavedPostsDTO()
                 {
                     PostId = postId,
                     UserId = userId
                 };
-                return Ok(_savedPostServices.isSaved(savePost));
+                return Ok(await _savedPostServices.isSaved(savePost));
             }
 
         [HttpGet("get-saved-posts"), Authorize]
-        public IActionResult getSavedPosts(int userId)
+        public async Task<IActionResult> getSavedPosts(int userId)
         {
-            return Ok(_savedPostServices.getSavedPosts(userId));
+            return Ok(await _savedPostServices.getSavedPosts(userId));
         }
         }
 

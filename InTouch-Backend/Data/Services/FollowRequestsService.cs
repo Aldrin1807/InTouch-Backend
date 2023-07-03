@@ -1,5 +1,6 @@
 ﻿using InTouch_Backend.Data.DTOs;
 using InTouch_Backend.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace InTouch_Backend.Data.Services
 {
@@ -12,75 +13,75 @@ namespace InTouch_Backend.Data.Services
             _context = context; 
         }
 
-        public void requestFollow(FollowRequestsDTO request)
+        public async Task requestFollow(FollowRequestsDTO request)
         {
             var _request = new FollowRequests()
             {
                 FollowRequestId = request.FollowRequestId,
                 FollowRequestedId = request.FollowRequestedId
             };
-            _context.Add(_request);
-            _context.SaveChanges();
+           await _context.AddAsync(_request);
+           await _context.SaveChangesAsync();
         }
 
-        public void unRequestFollow(FollowRequestsDTO request)
+        public async Task unRequestFollow(FollowRequestsDTO request)
         {
-            var _request = _context.FollowRequests.FirstOrDefault(f => f.FollowRequestId == request.FollowRequestId && f.FollowRequestedId == request.FollowRequestedId);
+            var _request = _context.FollowRequests.FirstOrDefaultAsync(f => f.FollowRequestId == request.FollowRequestId && f.FollowRequestedId == request.FollowRequestedId);
 
             if (_request != null)
             {
                 _context.Remove(_request);
-                _context.SaveChanges();
+              await  _context.SaveChangesAsync();
             }
 
         }
         
-        public bool isRequested(FollowRequestsDTO request)
+        public async Task<bool> isRequested(FollowRequestsDTO request)
         {
-            return _context.FollowRequests.Any(f => f.FollowRequestId == request.FollowRequestId && f.FollowRequestedId == request.FollowRequestedId);
+            return await _context.FollowRequests.AnyAsync(f => f.FollowRequestId == request.FollowRequestId && f.FollowRequestedId == request.FollowRequestedId);
         }
 
         
-        public List<User> getUserRequests(int userId)
+        public async Task<List<User>> getUserRequests(int userId)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+            var user =await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
             if (user != null && !user.isPrivate)
             {
-                List<FollowRequestsDTO> requests = _context.FollowRequests
+                List<FollowRequestsDTO> requests =await _context.FollowRequests
                     .Where(f => f.FollowRequestedId == userId)
                     .Select(f => new FollowRequestsDTO
                     {
                         FollowRequestId = f.FollowRequestId,
                         FollowRequestedId = f.FollowRequestedId
                     })
-                    .ToList();
+                    .ToListAsync();
 
                 foreach (var f in requests)
                 {
-                    handleAccept(f);
+                  await handleAccept(f);
                 }
             }
 
-            List<int> ids = _context.FollowRequests
+            List<int> ids =await _context.FollowRequests
                 .Where(r => r.FollowRequestedId == userId)
                 .Select(r => r.FollowRequestId)
-                .ToList();
+                .ToListAsync();
 
-            List<User> request = _context.Users
+            List<User> request =await _context.Users
                 .Where(u => ids.Contains(u.Id))
-                .ToList();
+                .ToListAsync();
 
             request.Reverse();
             return request;
         }
 
-        public void handleAccept(FollowRequestsDTO request)
+        public async Task handleAccept(FollowRequestsDTO request)
         {
-            var _request = _context.FollowRequests.SingleOrDefault(r => r.FollowRequestId == request.FollowRequestId && r.FollowRequestedId == request.FollowRequestedId);
+            var _request =await _context.FollowRequests.SingleOrDefaultAsync(r => r.FollowRequestId == request.FollowRequestId && r.FollowRequestedId == request.FollowRequestedId);
             if (_request != null)
             {
                 _context.FollowRequests.Remove(_request);
-                _context.SaveChanges();
+               await _context.SaveChangesAsync();
             }
             
             Follows _follow = new Follows()
@@ -88,19 +89,19 @@ namespace InTouch_Backend.Data.Services
                     FollowerId = _request.FollowRequestId,
                     FollowingId = _request.FollowRequestedId
                 };
-                _context.Follows.Add(_follow);
+              await  _context.Follows.AddAsync(_follow);
           
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
-        public void handleDecline(FollowRequestsDTO request)
+        public async Task handleDecline(FollowRequestsDTO request)
         {
-            var _request = _context.FollowRequests.FirstOrDefault(r => r.FollowRequestedId == request.FollowRequestedId && r.FollowRequestId == request.FollowRequestId);
+            var _request =await _context.FollowRequests.FirstOrDefaultAsync(r => r.FollowRequestedId == request.FollowRequestedId && r.FollowRequestId == request.FollowRequestId);
             if (_request == null)
             {
                 throw new Exception("There is no request like this.");
             }
             _context.FollowRequests.Remove(_request);
-            _context.SaveChanges();
+            _context.SaveChangesAsync();
         }
     }
 }

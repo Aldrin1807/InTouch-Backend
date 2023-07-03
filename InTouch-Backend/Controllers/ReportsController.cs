@@ -19,11 +19,11 @@ namespace InTouch_Backend.Controllers
         }
 
         [HttpPost("make-report"),Authorize]
-        public IActionResult makeReport([FromBody]ReportsDTO report)
+        public async Task<IActionResult> makeReport([FromBody]ReportsDTO report)
         {
             try
             {
-                _reportsService.makeReport(report);
+               await _reportsService.makeReport(report);
                 return Ok(new Response
                 { Status = "Success", Message = "Post reported succesfully." });
             }
@@ -35,16 +35,16 @@ namespace InTouch_Backend.Controllers
         }
 
         [HttpGet("get-reports"), Authorize]
-        public IActionResult getReports()
+        public async Task<IActionResult> getReports()
         {
-            return Ok(_reportsService.getReports());
+            return Ok(await _reportsService.getReports());
         }
 
         [HttpDelete("delete-report"), Authorize]
-        public IActionResult deleteReport([FromBody] ReportsDTO report) {
+        public async Task<IActionResult> deleteReport([FromBody] ReportsDTO report) {
             try
             {
-                _reportsService.deleteReport(report);
+               await _reportsService.deleteReport(report);
                 return Ok(new Response
                 { Status = "Success", Message = "Report deleted succesfully." });
             }

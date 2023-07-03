@@ -22,24 +22,24 @@ namespace InTouch_Backend.Controllers
         }
 
         [HttpGet("get-user-info"),Authorize]
-        public IActionResult GetUserInfo(int id)
+        public async Task<IActionResult> GetUserInfo(int id)
         {
-            return Ok(_service.getUserInfo(id));
+            return Ok( await _service.getUserInfo(id));
         }
 
         [HttpGet("get-user-followers-follows"), Authorize]
 
-        public IActionResult getFollows_and_Followers(int userId)
+        public async Task<IActionResult> getFollows_and_Followers(int userId)
         {
-            return Ok(_service.getFollows_and_Followers(userId));
+            return Ok(await _service.getFollows_and_Followers(userId));
         }
        
         [HttpGet("{id}"), Authorize]
-        public IActionResult GetUserById(int id)
+        public async Task<IActionResult> GetUserById(int id)
         {
             try
             {
-                var user = _service.getUserById(id);
+                var user = await _service.getUserById(id);
 
                 if (user == null)
                 {
@@ -57,35 +57,35 @@ namespace InTouch_Backend.Controllers
         }
 
         [HttpGet("suggested-users"), Authorize]
-        public IActionResult suggestedUsers(int userId)
+        public async Task<IActionResult> suggestedUsers(int userId)
         {
-            return Ok(_service.suggestedUsers(userId));
+            return Ok(await _service.suggestedUsers(userId));
         }
 
         [HttpGet("search"), Authorize]
-        public IActionResult searchUsers(int userId, string query)
+        public async Task<IActionResult> searchUsers(int userId, string query)
         {
-            return Ok(_service.searchUsers(userId, query));
+            return Ok(await _service.searchUsers(userId, query));
         }
 
         [HttpGet("user-followers"), Authorize]
 
-        public IActionResult userFollowers(int userId)
+        public async Task<IActionResult> userFollowers(int userId)
         {
-            return Ok(_service.userFollowers(userId));
+            return Ok(await _service.userFollowers(userId));
         }
         [HttpGet("user-following"), Authorize]
 
-        public IActionResult userFollowing(int userId)
+        public async Task<IActionResult> userFollowing(int userId)
         {
-            return Ok(_service.userFollowing(userId));
+            return Ok(await _service.userFollowing(userId));
         }
 
 
         [HttpDelete("{id}"), Authorize(Roles = "1")]
-        public IActionResult DeleteUser(int id)
+        public async Task<IActionResult> DeleteUser(int id)
         {
-            var deleted = _service.DeleteUser(id);
+            var deleted = await _service.DeleteUser(id);
             if (deleted)
             {
                 return Ok(new Response { Status = "Success", Message = "User deleted successfully." });
@@ -96,30 +96,30 @@ namespace InTouch_Backend.Controllers
             }
         }
         [HttpGet("get-users"), Authorize(Roles = "1")]
-        public IActionResult GetUsers()
+        public async Task<IActionResult> GetUsers()
         {
-            return Ok(_service.getUsers());
+            return Ok(await _service.getUsers());
         }
 
         [HttpGet("is-following"),Authorize]
 
-        public IActionResult isFollowing(int userOne, int userTwo)
+        public async Task<IActionResult> isFollowing(int userOne, int userTwo)
         {
-            return Ok(_service.isFollowing(userOne, userTwo));
+            return Ok(await _service.isFollowing(userOne, userTwo));
         }
 
         [HttpGet("is-token-available")]
-        public IActionResult isTokenAvailable(string token)
+        public async Task<IActionResult> isTokenAvailable(string token)
         {
             return Ok(_service.isTokenAvailable(token));
         }
 
         [HttpPut("update-password"),Authorize]
-        public IActionResult updatePassword([FromBody] UpdatePassword updatePassword)
+        public async Task<IActionResult> updatePassword([FromBody] UpdatePassword updatePassword)
         {
             try
             {
-                _service.updatePassword(updatePassword);
+                await _service.updatePassword(updatePassword);
                 return Ok(new Response
                 { Status = "Success", Message = "Password updated succesfully." });
             }
@@ -134,11 +134,11 @@ namespace InTouch_Backend.Controllers
         }
 
         [HttpPut("update-user-info"),Authorize]
-        public IActionResult updateUserInfo([FromBody] UpdateUserInfo user)
+        public async Task<IActionResult> updateUserInfo([FromBody] UpdateUserInfo user)
         {
             try
             {
-                _service.updateUserInfo(user);
+                await _service.updateUserInfo(user);
                 return Ok(new Response
                 { Status = "Success", Message = "Personal info updated succesfully." });
             }
@@ -151,11 +151,11 @@ namespace InTouch_Backend.Controllers
         }
 
         [HttpPut("update-profile-pic"),Authorize]
-        public IActionResult updateProfilePicture([FromForm] UpdateProfilePic newPic)
+        public async Task<IActionResult> updateProfilePicture([FromForm] UpdateProfilePic newPic)
         {
             try
             {
-                _service.updateProfilePicture(newPic);
+                await _service.updateProfilePicture(newPic);
                 return Ok(new Response
                 { Status = "Success", Message = "Profile Picture updated succesfully." });
             }
@@ -170,11 +170,11 @@ namespace InTouch_Backend.Controllers
     
 
         [HttpPut("lock-account"), Authorize(Roles = "1")]
-        public IActionResult lockUserAccount(int userId)
+        public async Task<IActionResult> lockUserAccount(int userId)
         {
             try
             {
-                _service.lockUserAccount(userId);
+                await _service.lockUserAccount(userId);
                 return Ok(new Response
                 { Status = "Success", Message = "This account has been succesfully locked" });
             }
@@ -185,11 +185,11 @@ namespace InTouch_Backend.Controllers
             }
         }
         [HttpPut("unlock-account"), Authorize(Roles = "1")]
-        public IActionResult unlockUserAccount(int userId)
+        public async Task<IActionResult> unlockUserAccount(int userId)
         {
             try
             {
-                _service.unlockUserAccount(userId);
+                await _service.unlockUserAccount(userId);
                 return Ok(new Response
                 { Status = "Success", Message = "This account has been succesfully unlocked" });
             }
@@ -201,9 +201,9 @@ namespace InTouch_Backend.Controllers
         }
 
         [HttpGet("dashboard-analytics"),Authorize(Roles = "1")]
-        public IActionResult dashboardAnalytics()
+        public async Task<IActionResult> dashboardAnalytics()
         {
-            return Ok(_service.dashboardAnalytics());
+            return Ok(await _service.dashboardAnalytics());
         }
 
     }

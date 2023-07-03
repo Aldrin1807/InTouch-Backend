@@ -23,17 +23,17 @@ namespace InTouch_Backend.Controllers
             
 
             [HttpGet("get-support-messages"), Authorize(Roles = "1")]
-            public IActionResult getSupportMessages()
+            public async Task<IActionResult> getSupportMessages()
             {
-            return Ok(_supportMessage.getSupportMessages());
+            return Ok(await _supportMessage.getSupportMessages());
             }
 
             [HttpDelete("delete-support-message"),Authorize(Roles = "1")]
-            public IActionResult deleteReport([FromBody] DeleteSupportMessagesDTO messages)
+            public async Task<IActionResult> deleteReport([FromBody] DeleteSupportMessagesDTO messages)
             {
                 try
                 {
-                    _supportMessage.deleteSupportMessage(messages);
+                    await _supportMessage.deleteSupportMessage(messages);
                     return Ok(new Response
                     { Status = "Success", Message = "Message deleted succesfully." });
                 }
@@ -45,11 +45,11 @@ namespace InTouch_Backend.Controllers
             }
 
                 [HttpPost("send-support-message")]
-                public IActionResult sendSupportMessage(SupportMessagesDTO messageDTO)
+                public async Task<IActionResult> sendSupportMessage(SupportMessagesDTO messageDTO)
                 {
                     try
                     {
-                        _supportMessage.sendSupportMessage(messageDTO);
+                        await _supportMessage.sendSupportMessage(messageDTO);
                         return Ok(new Response
                         { Status = "Success", Message = "Message send succesfully.Our team will decide to unlock your account or not." });
                     }

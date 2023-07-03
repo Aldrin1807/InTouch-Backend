@@ -18,11 +18,11 @@ namespace InTouch_Backend.Controllers
             _service = service; 
         }
         [HttpPost("make-post"), Authorize]
-        public IActionResult makePost([FromForm]PostDTO post)
+        public async Task<IActionResult> makePost([FromForm]PostDTO post)
         {
             try
             {
-                _service.makePost(post);
+               await _service.makePost(post);
                 return Ok(new Response
                 { Status = "Success", Message = "Post made succesfully." });
             }
@@ -34,19 +34,19 @@ namespace InTouch_Backend.Controllers
             
         }
         [HttpGet("get-posts"), Authorize]
-        public IActionResult getFollowedPosts(int id)
+        public async Task<IActionResult> getFollowedPosts(int id)
         {
-            List<Post> Posts = _service.getFollowedPosts(id);
+            List<Post> Posts =await _service.getFollowedPosts(id);
             Posts.Reverse();
             return Ok(Posts);
         }
 
         [HttpGet("check-deleted-post"), Authorize]
-        public IActionResult checkDeletedPosts(int userId)
+        public async Task<IActionResult> checkDeletedPosts(int userId)
         {
             try
             {
-                _service.checkDeletedPosts(userId);
+               await _service.checkDeletedPosts(userId);
                 return Ok();
             }
             catch (Exception ex)
@@ -58,39 +58,39 @@ namespace InTouch_Backend.Controllers
 
         [HttpGet("get-user-post-info"), Authorize]
 
-        public IActionResult getUserPostInfo(int postId)
+        public async Task<IActionResult> getUserPostInfo(int postId)
         {
-            return Ok(_service.getUserPostInfo(postId));
+            return Ok(await _service.getUserPostInfo(postId));
         }
 
         [HttpGet("get-user-post"), Authorize]
 
-        public IActionResult getUserPosts(int userId)
+        public async Task<IActionResult> getUserPosts(int userId)
         {
-            return Ok(_service.getUserPosts(userId));
+            return Ok(await _service.getUserPosts(userId));
         }
 
         [HttpDelete("delete-post"), Authorize]
 
-        public IActionResult deletePost(int postId)
+        public async Task<IActionResult> deletePost(int postId)
         {
-            _service.deletePost(postId);
+          await  _service.deletePost(postId);
             return Ok();
         }
 
 
         [HttpGet("get-post-info"), Authorize]
-        public IActionResult getPostInfo(int postId)
+        public async Task<IActionResult> getPostInfo(int postId)
         {
             return Ok(_service.getPostInfo(postId));
         }
 
         [HttpPut("set-delete-attr"), Authorize]
-        public IActionResult setDeleteTrue(int postId)
+        public async Task<IActionResult> setDeleteTrue(int postId)
         {
             try
             {
-                _service.setDeleteTrue(postId);
+                await _service.setDeleteTrue(postId);
                 return Ok(new Response
                 { Status = "Success", Message = "The post will be deleted when the user is logged in." });
             }

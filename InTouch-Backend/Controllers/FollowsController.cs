@@ -17,16 +17,16 @@ namespace InTouch_Backend.Controllers
         }
 
         [HttpPost("follow-user"), Authorize]
-        public IActionResult followUser([FromBody]FollowsDTO follow)
+        public async Task<IActionResult> followUser([FromBody]FollowsDTO follow)
         {
-            _service.followUser(follow);
+          await  _service.followUser(follow);
             return Ok();
         }
 
         [HttpDelete("unfollow-user"), Authorize]
-        public IActionResult unFollowUser([FromBody] FollowsDTO follow)
+        public async Task<IActionResult> unFollowUser([FromBody] FollowsDTO follow)
         {
-            _service.unFollowUser(follow);
+           await _service.unFollowUser(follow);
             return Ok();
         }
 

@@ -1,5 +1,6 @@
 ﻿using InTouch_Backend.Data.Models;
 using InTouch_Backend.Data.ViewModels;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace InTouch_Backend.Data.Services
@@ -25,28 +26,28 @@ namespace InTouch_Backend.Data.Services
             return likes;
         }
 
-        public bool isLiked(LikesDTO like)
+        public async Task<bool> isLiked(LikesDTO like)
         {
-            return _context.Likes.Any(l => l.UserId == like.UserId && l.PostId == like.PostId);
+            return await _context.Likes.AnyAsync(l => l.UserId == like.UserId && l.PostId == like.PostId);
         }
 
-        public void likePost(LikesDTO like) {
+        public async Task likePost(LikesDTO like) {
             var _like = new Likes()
             {
                 UserId= like.UserId,
                 PostId = like.PostId
             };
-            _context.Likes.Add(_like);
-            _context.SaveChanges();
+           await _context.Likes.AddAsync(_like);
+           await _context.SaveChangesAsync();
         }
 
-        public void unLikePost(LikesDTO like)
+        public async Task unLikePost(LikesDTO like)
         {
-            var _like = _context.Likes.FirstOrDefault(l => l.UserId == like.UserId && l.PostId == like.PostId);
+            var _like =await _context.Likes.FirstOrDefaultAsync(l => l.UserId == like.UserId && l.PostId == like.PostId);
             if (_like != null)
             {
                 _context.Remove(_like);
-                _context.SaveChanges();
+               await _context.SaveChangesAsync();
             }
         }
 
