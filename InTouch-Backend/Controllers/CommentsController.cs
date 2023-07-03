@@ -35,7 +35,7 @@ namespace InTouch_Backend.Controllers
         [HttpGet("get-nr-comments"), Authorize]
         public async Task<IActionResult> getNrComments(int postId)
         {
-            return Ok(_commentsService.getNrComments(postId));
+            return Ok(await _commentsService.getNrComments(postId));
         }
         [HttpDelete("delete-comment"), Authorize]
         public async Task<IActionResult> deleteComment(int id) {

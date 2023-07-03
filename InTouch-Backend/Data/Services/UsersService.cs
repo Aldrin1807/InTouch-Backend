@@ -13,6 +13,7 @@ using System.Text;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Microsoft.AspNetCore.Http.HttpResults;
 using InTouch_Backend.Data.DTOs;
+using Azure.Storage.Blobs;
 
 namespace InTouch_Backend.Data.Services
 {
@@ -53,24 +54,25 @@ namespace InTouch_Backend.Data.Services
                 var passwordHasher = new PasswordHasher<string>();
                 _user.Password = passwordHasher.HashPassword(null, user.Password);
 
-                if (user.Image != null && user.Image.Length > 0)
+            if (user.Image != null && user.Image.Length > 0)
+            {
+                string uniqueFileName = Guid.NewGuid().ToString() + "_" + user.Image.FileName;
+
+                // Create a BlobServiceClient instance using the SAS token
+                BlobServiceClient blobServiceClient = new BlobServiceClient("BlobEndpoint=https://intouchimages.blob.core.windows.net/;QueueEndpoint=https://intouchimages.queue.core.windows.net/;FileEndpoint=https://intouchimages.file.core.windows.net/;TableEndpoint=https://intouchimages.table.core.windows.net/;SharedAccessSignature=sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2023-12-04T07:41:45Z&st=2023-07-03T22:41:45Z&spr=https&sig=FbwCGBBhHqxzyLsI8%2BZE7zkPFz9%2B0mlKT8a0vD0ucBs%3D");
+                // Get a reference to the container where you want to save the user images
+                BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient("user-images");
+
+                // Upload the user image to the container
+                BlobClient blobClient = containerClient.GetBlobClient(uniqueFileName);
+                using (var stream = user.Image.OpenReadStream())
                 {
-                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + user.Image.FileName;
-                    string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "User Images");
 
-                    if (!Directory.Exists(folderPath))
-                    {
-                        Directory.CreateDirectory(folderPath);
-                    }
-
-                    string filePath = Path.Combine(folderPath, uniqueFileName);
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        user.Image.CopyTo(fileStream);
-                    }
-
-                    _user.ImagePath = uniqueFileName;
+                    await blobClient.UploadAsync(stream, overwrite: true);
                 }
+
+                _user.ImagePath = uniqueFileName;
+            }
 
               await  _context.Users.AddAsync(_user);
               await  _context.SaveChangesAsync();
@@ -83,34 +85,38 @@ namespace InTouch_Backend.Data.Services
             {
                 throw new Exception("User not found");
             }
-            if(newPic.Image!=null && newPic.Image.Length > 0)
+            if (newPic.Image != null && newPic.Image.Length > 0)
             {
+                BlobServiceClient blobServiceClient = new BlobServiceClient("BlobEndpoint=https://intouchimages.blob.core.windows.net/;QueueEndpoint=https://intouchimages.queue.core.windows.net/;FileEndpoint=https://intouchimages.file.core.windows.net/;TableEndpoint=https://intouchimages.table.core.windows.net/;SharedAccessSignature=sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2023-12-04T07:41:45Z&st=2023-07-03T22:41:45Z&spr=https&sig=FbwCGBBhHqxzyLsI8%2BZE7zkPFz9%2B0mlKT8a0vD0ucBs%3D");
+
+                // Get a reference to the container where you want to save the user images
+                BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient("user-images");
+
+                // Upload the user image to the container
+
                 if (!string.IsNullOrEmpty(_user.ImagePath))
                 {
-                    string ImageFilePath = Path.Combine(Directory.GetCurrentDirectory(), "User Images", _user.ImagePath);
-                    if (File.Exists(ImageFilePath))
-                    {
-                        File.Delete(ImageFilePath);
-                    }
+                    // Delete the previous profile picture from Azure Blob Storage
+                    BlobClient blobClientDel = containerClient.GetBlobClient(_user.ImagePath);
+                    await blobClientDel.DeleteIfExistsAsync();
                 }
+
+                // Upload the new profile picture to Azure Blob Storage
                 string uniqueFileName = Guid.NewGuid().ToString() + "_" + newPic.Image.FileName;
-                string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "User Images");
+                BlobClient blobClient = containerClient.GetBlobClient(uniqueFileName);
 
-                if (!Directory.Exists(folderPath))
-                {
-                    Directory.CreateDirectory(folderPath);
-                }
+                // Create a BlobServiceClient instance using the SAS token
 
-                string filePath = Path.Combine(folderPath, uniqueFileName);
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                using (var stream = newPic.Image.OpenReadStream())
                 {
-                    newPic.Image.CopyTo(fileStream);
+
+
+                    await blobClient.UploadAsync(stream, overwrite: true);
                 }
 
                 _user.ImagePath = uniqueFileName;
             }
-
-          await _context.SaveChangesAsync();
+            _context.SaveChanges();
                 
         }
          
