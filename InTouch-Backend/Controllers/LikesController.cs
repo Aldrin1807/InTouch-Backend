@@ -17,35 +17,35 @@ namespace InTouch_Backend.Controllers
         }
 
         [HttpGet("get-post-likes"),Authorize]
-        public IActionResult getPostLike(int id)
+        public async Task<IActionResult> getPostLike(int id)
         {
             return Ok(_likesService.getPostLike(id));
         }
 
         [HttpPost("like-post"), Authorize]
-        public IActionResult likePost([FromBody]LikesDTO likes)
+        public async Task<IActionResult> likePost([FromBody]LikesDTO likes)
         {
-            _likesService.likePost(likes);
+            await _likesService.likePost(likes);
             return Ok();
         }
 
         [HttpDelete("unlike-post"), Authorize]
 
-        public IActionResult unLikePost([FromBody]LikesDTO likes) { 
-            _likesService.unLikePost(likes);
+        public async Task<IActionResult> unLikePost([FromBody]LikesDTO likes) { 
+          await  _likesService.unLikePost(likes);
             return Ok();
         }
 
         [HttpGet("is-liked"), Authorize]
 
-        public IActionResult isLiked(int userId,int postId)
+        public async Task<IActionResult> isLiked(int userId,int postId)
         {
             var likes = new LikesDTO()
             {
                 PostId = postId,
                 UserId = userId
             };
-            return Ok(_likesService.isLiked(likes));
+            return Ok(await _likesService.isLiked(likes));
         }
     }
 }
