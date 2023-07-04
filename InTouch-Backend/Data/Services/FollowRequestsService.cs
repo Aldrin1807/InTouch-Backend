@@ -30,7 +30,7 @@ namespace InTouch_Backend.Data.Services
 
             if (_request != null)
             {
-                _context.Remove(_request);
+              _context.FollowRequests.Remove(_request);
               await  _context.SaveChangesAsync();
             }
 

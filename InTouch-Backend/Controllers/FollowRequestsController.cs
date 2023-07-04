@@ -27,8 +27,17 @@ namespace InTouch_Backend.Controllers
         [HttpDelete("unrequest-follow"), Authorize]
         public async Task<IActionResult> unRequestFollow([FromBody] FollowRequestsDTO request)
         {
-           await _service.unRequestFollow(request);
-            return Ok();
+            try
+            {
+                await _service.unRequestFollow(request);
+                return Ok(new Response
+                { Status = "Success", Message = "success." });
+            }
+            catch(Exception e)
+            {
+                return Ok(new Response
+                { Status = "Error", Message = e.Message });
+            }
         }
 
         [HttpGet("is-requested"), Authorize]
