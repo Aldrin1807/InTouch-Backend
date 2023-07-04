@@ -26,7 +26,7 @@ namespace InTouch_Backend.Data.Services
 
         public async Task unRequestFollow(FollowRequestsDTO request)
         {
-            var _request = _context.FollowRequests.FirstOrDefaultAsync(f => f.FollowRequestId == request.FollowRequestId && f.FollowRequestedId == request.FollowRequestedId);
+            var _request =await _context.FollowRequests.FirstOrDefaultAsync(f => f.FollowRequestId == request.FollowRequestId && f.FollowRequestedId == request.FollowRequestedId);
 
             if (_request != null)
             {
