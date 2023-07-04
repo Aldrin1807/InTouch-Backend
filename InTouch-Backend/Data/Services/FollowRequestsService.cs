@@ -77,7 +77,7 @@ namespace InTouch_Backend.Data.Services
 
         public async Task handleAccept(FollowRequestsDTO request)
         {
-            var _request =await _context.FollowRequests.SingleOrDefaultAsync(r => r.FollowRequestId == request.FollowRequestId && r.FollowRequestedId == request.FollowRequestedId);
+            var _request =await _context.FollowRequests.FirstOrDefaultAsync(r => r.FollowRequestId == request.FollowRequestId && r.FollowRequestedId == request.FollowRequestedId);
             if (_request != null)
             {
                 _context.FollowRequests.Remove(_request);
