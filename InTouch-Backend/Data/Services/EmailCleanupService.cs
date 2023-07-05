@@ -29,7 +29,7 @@ namespace InTouch_Backend.Data.Services
                     await DeleteUnconfirmedUsers(dbContext, service);
                 }
 
-                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                await Task.Delay(TimeSpan.FromMinutes(21), stoppingToken);
             }
         }
 

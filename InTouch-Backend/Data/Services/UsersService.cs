@@ -85,7 +85,7 @@ namespace InTouch_Backend.Data.Services
                     {
                        userId = _user.Id,
                        ConfirmationToken = CreateToken(_user),
-                       ExpirationDate = DateTime.Now.AddMinutes(5).ToString()
+                       ExpirationDate = DateTime.Now.AddMinutes(21).ToString()
                     };
 
                     await _context.Confirmations.AddAsync(confirmationRecord);
