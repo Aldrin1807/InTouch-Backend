@@ -459,13 +459,8 @@ namespace InTouch_Backend.Data.Services
         public async Task updateUserInfo (UpdateUserInfo user)
         {
             var _user = await _context.Users.FirstOrDefaultAsync(u => u.Id == user.Id);
-            bool emailExist =await _context.Users.AnyAsync(u => u.Id!=user.Id && u.Email.Equals(user.Email));
             bool usernameExist =await _context.Users.AnyAsync(u => u.Id != user.Id && u.Username.Equals(user.Username));
 
-            if (emailExist)
-            {
-                throw new Exception("The email you are trying to use already exist.");
-            }
             if(usernameExist)
             {
                 throw new Exception("The username you are trying to use already exist");
@@ -479,7 +474,6 @@ namespace InTouch_Backend.Data.Services
             _user.FirstName = user.FirstName;
             _user.LastName = user.LastName;
             _user.Username = user.Username;
-            _user.Email = user.Email;
             _user.isPrivate = user.isPrivate;
 
           await _context.SaveChangesAsync();
