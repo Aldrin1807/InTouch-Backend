@@ -378,7 +378,7 @@ namespace InTouch_Backend.Data.Services
         public async Task<List<User>> searchUsers(int userId, string query)
         {
 
-            List<User> searchresult =await _context.Users.Where(u => u.Id != userId&& u.Role==0 && u.emailConfirmed(u.FirstName.Contains(query) || u.Username.Contains(query) || u.LastName.Contains(query))).ToListAsync();
+            List<User> searchresult =await _context.Users.Where(u => u.Id != userId&& u.Role==0 && u.emailConfirmed && (u.FirstName.Contains(query) || u.Username.Contains(query) || u.LastName.Contains(query))).ToListAsync();
             return searchresult;
         }
         public async Task<int[]> getFollows_and_Followers(int userId)
