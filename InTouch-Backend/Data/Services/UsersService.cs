@@ -18,6 +18,7 @@ using MailKit.Security;
 using MimeKit;
 using System.Net;
 using NuGet.Protocol.Plugins;
+using Microsoft.Extensions.Hosting;
 
 namespace InTouch_Backend.Data.Services
 {
@@ -62,12 +63,11 @@ namespace InTouch_Backend.Data.Services
             {
                 string uniqueFileName = Guid.NewGuid().ToString() + "_" + user.Image.FileName;
 
-                // Create a BlobServiceClient instance using the SAS token
+               
                 BlobServiceClient blobServiceClient = new BlobServiceClient("BlobEndpoint=https://intouchimages.blob.core.windows.net/;QueueEndpoint=https://intouchimages.queue.core.windows.net/;FileEndpoint=https://intouchimages.file.core.windows.net/;TableEndpoint=https://intouchimages.table.core.windows.net/;SharedAccessSignature=sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2023-12-04T07:41:45Z&st=2023-07-03T22:41:45Z&spr=https&sig=FbwCGBBhHqxzyLsI8%2BZE7zkPFz9%2B0mlKT8a0vD0ucBs%3D");
-                // Get a reference to the container where you want to save the user images
+               
                 BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient("user-images");
 
-                // Upload the user image to the container
                 BlobClient blobClient = containerClient.GetBlobClient(uniqueFileName);
                 using (var stream = user.Image.OpenReadStream())
                 {
@@ -96,22 +96,22 @@ namespace InTouch_Backend.Data.Services
         }
         async Task SendConfirmationEmailAsync(string email, string confirmationToken)
         {
-            // Create the email message
+         
             var message = new MailMessage
             {
                 From = new MailAddress("intouchsm2023@gmail.com", "intouchsm2023@gmail.com"),
                 Subject = "Confirmation Email",
-                Body = $"<html><body><p>Please confirm your registration by clicking the following link:</p><a href=\"https://intouch-socialmedia.netlify.app/confirm?token={confirmationToken}\">Click Here</a></body></html>",
+                Body = $"<html><body><h1>One step closer</h1 <br> ><p>Please confirm your registration by clicking the following link:</p><a href=\"https://intouch-socialmedia.netlify.app/confirm?token={confirmationToken}\">Click Here</a></body></html>",
                 IsBodyHtml = true
             };
             message.To.Add(new MailAddress(email));
 
-            // Configure the SMTP client
+           
             using (var client = new SmtpClient("smtp.gmail.com", 587))
             {
                 client.UseDefaultCredentials = false;
                 client.EnableSsl = true;
-                client.Credentials = new NetworkCredential("intouchsm2023@gmail.com", "yafnjthflcnyjycf"); // Replace with your Gmail email address and password
+                client.Credentials = new NetworkCredential("intouchsm2023@gmail.com", "yafnjthflcnyjycf");
 
                 try
                 {
@@ -120,8 +120,7 @@ namespace InTouch_Backend.Data.Services
                 }
                 catch (SmtpException ex)
                 {
-                    // Handle any exceptions that occurred during sending
-                    // For example, log the exception or throw a custom exception
+                  
                     throw new Exception("Failed to send confirmation email", ex);
                 }
             }
@@ -162,24 +161,22 @@ namespace InTouch_Backend.Data.Services
             {
                 BlobServiceClient blobServiceClient = new BlobServiceClient("BlobEndpoint=https://intouchimages.blob.core.windows.net/;QueueEndpoint=https://intouchimages.queue.core.windows.net/;FileEndpoint=https://intouchimages.file.core.windows.net/;TableEndpoint=https://intouchimages.table.core.windows.net/;SharedAccessSignature=sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2023-12-04T07:41:45Z&st=2023-07-03T22:41:45Z&spr=https&sig=FbwCGBBhHqxzyLsI8%2BZE7zkPFz9%2B0mlKT8a0vD0ucBs%3D");
 
-                // Get a reference to the container where you want to save the user images
                 BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient("user-images");
 
-                // Upload the user image to the container
+           
 
                 if (!string.IsNullOrEmpty(_user.ImagePath))
                 {
-                    // Delete the previous profile picture from Azure Blob Storage
+                  
                     BlobClient blobClientDel = containerClient.GetBlobClient(_user.ImagePath);
                     await blobClientDel.DeleteIfExistsAsync();
                 }
 
-                // Upload the new profile picture to Azure Blob Storage
+              
                 string uniqueFileName = Guid.NewGuid().ToString() + "_" + newPic.Image.FileName;
                 BlobClient blobClient = containerClient.GetBlobClient(uniqueFileName);
 
-                // Create a BlobServiceClient instance using the SAS token
-
+               
                 using (var stream = newPic.Image.OpenReadStream())
                 {
 
@@ -320,39 +317,17 @@ namespace InTouch_Backend.Data.Services
             var user =await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
             if (user != null)
             {
+                BlobServiceClient blobServiceClient = new BlobServiceClient("BlobEndpoint=https://intouchimages.blob.core.windows.net/;QueueEndpoint=https://intouchimages.queue.core.windows.net/;FileEndpoint=https://intouchimages.file.core.windows.net/;TableEndpoint=https://intouchimages.table.core.windows.net/;SharedAccessSignature=sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2023-12-04T07:41:45Z&st=2023-07-03T22:41:45Z&spr=https&sig=FbwCGBBhHqxzyLsI8%2BZE7zkPFz9%2B0mlKT8a0vD0ucBs%3D");
+
+              
+                BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient("user-images");
+
                 if (!string.IsNullOrEmpty(user.ImagePath))
                 {
-                    string ImageFilePath = Path.Combine(Directory.GetCurrentDirectory(), "User Images", user.ImagePath);
-                    if (File.Exists(ImageFilePath))
-                    {
-                        File.Delete(ImageFilePath);
-                    }
+                   
+                    BlobClient blobClientDel = containerClient.GetBlobClient(user.ImagePath);
+                    await blobClientDel.DeleteIfExistsAsync();
                 }
-
-                var userPosts = _context.Posts.Where(u => u.userID == id).ToList();
-                foreach (var item in userPosts)
-                {
-                  await _postService.deletePost(item.Id);
-                }
-                var userFollows = _context.Follows.Where(u => u.FollowerId == id || u.FollowingId == id).ToList();
-                _context.Follows.RemoveRange(userFollows);
-
-                var userRequest = _context.FollowRequests.Where(u => u.FollowRequestId == id || u.FollowRequestedId == id).ToList();
-                _context.FollowRequests.RemoveRange(userRequest);
-
-                var userReports = _context.Reports.Where(r => r.UserId == id).ToList();
-                _context.Reports.RemoveRange(userReports);
-
-                var userLikes = _context.Likes.Where(l => l.UserId == id).ToList();
-                _context.Likes.RemoveRange(userLikes);
-
-                var userComments = _context.Comments.Where(c => c.UserId == id).ToList();
-                _context.Comments.RemoveRange(userComments);
-
-                var userSavedPosts = _context.SavedPosts.Where(s => s.UserId == id).ToList();
-                _context.SavedPosts.RemoveRange(userSavedPosts);
-
-
 
                 _context.Users.Remove(user);
               await _context.SaveChangesAsync();

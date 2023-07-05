@@ -29,12 +29,12 @@ namespace InTouch_Backend.Data.Services
             {
                 string uniqueFileName = Guid.NewGuid().ToString() + "_" + post.Image.FileName;
 
-                // Create a BlobServiceClient instance using the SAS token
+              
                 BlobServiceClient blobServiceClient = new BlobServiceClient("BlobEndpoint=https://intouchimages.blob.core.windows.net/;QueueEndpoint=https://intouchimages.queue.core.windows.net/;FileEndpoint=https://intouchimages.file.core.windows.net/;TableEndpoint=https://intouchimages.table.core.windows.net/;SharedAccessSignature=sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2023-12-04T07:41:45Z&st=2023-07-03T22:41:45Z&spr=https&sig=FbwCGBBhHqxzyLsI8%2BZE7zkPFz9%2B0mlKT8a0vD0ucBs%3D");
-                // Get a reference to the container where you want to save the user images
+                
                 BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient("post-images");
 
-                // Upload the user image to the container
+              
                 BlobClient blobClient = containerClient.GetBlobClient(uniqueFileName);
                 using (var stream = post.Image.OpenReadStream())
                 {
@@ -149,29 +149,16 @@ namespace InTouch_Backend.Data.Services
 
                 BlobServiceClient blobServiceClient = new BlobServiceClient("BlobEndpoint=https://intouchimages.blob.core.windows.net/;QueueEndpoint=https://intouchimages.queue.core.windows.net/;FileEndpoint=https://intouchimages.file.core.windows.net/;TableEndpoint=https://intouchimages.table.core.windows.net/;SharedAccessSignature=sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2023-12-04T07:41:45Z&st=2023-07-03T22:41:45Z&spr=https&sig=FbwCGBBhHqxzyLsI8%2BZE7zkPFz9%2B0mlKT8a0vD0ucBs%3D");
 
-                // Get a reference to the container where you want to save the user images
                 BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient("post-images");
 
-                // Upload the user image to the container
+               
 
                 if (!string.IsNullOrEmpty(post.ImagePath))
                 {
-                    // Delete the previous profile picture from Azure Blob Storage
+               
                     BlobClient blobClientDel = containerClient.GetBlobClient(post.ImagePath);
                     await blobClientDel.DeleteIfExistsAsync();
                 }
-                var postComments = _context.Comments.Where(c => c.PostId == postId);
-                _context.Comments.RemoveRange(postComments);
-
-                var postLikes = _context.Likes.Where(l => l.PostId == postId);
-                _context.Likes.RemoveRange(postLikes);
-
-                var postReports = _context.Reports.Where(r => r.PostId == postId);
-                _context.Reports.RemoveRange(postReports);
-
-                var savedPosts = _context.SavedPosts.Where(p => p.PostId == postId);
-                _context.SavedPosts.RemoveRange(savedPosts);
-
                 _context.Posts.Remove(post);
             }
             await _context.SaveChangesAsync();
@@ -179,7 +166,8 @@ namespace InTouch_Backend.Data.Services
 
         public async Task<Post> getPostInfo(int postId)
         {
-            return await _context.Posts.FirstOrDefaultAsync(p => p.Id == postId);
+            var post = await _context.Posts.FirstOrDefaultAsync(p => p.Id == postId);
+                return post;
         }
 
         public async Task setDeleteTrue(int postId)
