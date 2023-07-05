@@ -1,4 +1,4 @@
-﻿namespace InTouch_Backend.Data.ViewModels
+﻿namespace InTouch_Backend.Data.DTOs
 {
     public class LikesDTO
     {

@@ -1,9 +1,9 @@
 ﻿using InTouch_Backend.Data.Models;
 using InTouch_Backend.Data.Services;
-using InTouch_Backend.Data.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using InTouch_Backend.Data.DTOs;
 
 namespace InTouch_Backend.Controllers
 {

@@ -1,5 +1,5 @@
-﻿using InTouch_Backend.Data.Services;
-using InTouch_Backend.Data.ViewModels;
+﻿using InTouch_Backend.Data.DTOs;
+using InTouch_Backend.Data.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

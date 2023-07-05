@@ -1,6 +1,6 @@
 ﻿using InTouch_Backend.Data.DTOs;
 using InTouch_Backend.Data.Services;
-using InTouch_Backend.Data.ViewModels;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

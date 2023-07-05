@@ -1,5 +1,4 @@
 ﻿using InTouch_Backend.Data.Models;
-using InTouch_Backend.Data.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting.Internal;
@@ -14,6 +13,11 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Microsoft.AspNetCore.Http.HttpResults;
 using InTouch_Backend.Data.DTOs;
 using Azure.Storage.Blobs;
+using System.Net.Mail;
+using MailKit.Security;
+using MimeKit;
+using System.Net;
+using NuGet.Protocol.Plugins;
 
 namespace InTouch_Backend.Data.Services
 {
@@ -76,7 +80,75 @@ namespace InTouch_Backend.Data.Services
 
               await  _context.Users.AddAsync(_user);
               await  _context.SaveChangesAsync();
+
+                    var confirmationRecord = new Confirmations()
+                    {
+                       userId = _user.Id,
+                       ConfirmationToken = CreateToken(_user),
+                       ExpirationDate = DateTime.Now.AddDays(1).ToString()
+                    };
+
+                    await _context.Confirmations.AddAsync(confirmationRecord);
+                    await _context.SaveChangesAsync();
+
+                    // Send the confirmation email
+                  await SendConfirmationEmailAsync(user.Email, confirmationRecord.ConfirmationToken);
+        }
+        async Task SendConfirmationEmailAsync(string email, string confirmationToken)
+        {
+            // Create the email message
+            var message = new MailMessage
+            {
+                From = new MailAddress("intouchsm2023@gmail.com", "intouchsm2023@gmail.com"),
+                Subject = "Confirmation Email",
+                Body = $"Please confirm your registration by clicking the following link: https://intouch-socialmedia.netlify.app/confirm?token={confirmationToken}"
+            };
+            message.To.Add(new MailAddress(email));
+
+            // Configure the SMTP client
+            using (var client = new SmtpClient("smtp.gmail.com", 587))
+            {
+                client.UseDefaultCredentials = false;
+                client.EnableSsl = true;
+                client.Credentials = new NetworkCredential("intouchsm2023@gmail.com", "yafnjthflcnyjycf"); // Replace with your Gmail email address and password
+
+                try
+                {
+                    // Send the email
+                    await client.SendMailAsync(message);
+                }
+                catch (SmtpException ex)
+                {
+                    // Handle any exceptions that occurred during sending
+                    // For example, log the exception or throw a custom exception
+                    throw new Exception("Failed to send confirmation email", ex);
+                }
             }
+        }
+
+        public async Task ConfirmEmail(string token)
+        {
+            bool isAvailable = await _context.Confirmations.AnyAsync(c => c.ConfirmationToken == token);
+            bool isTokenValid = await isTokenAvailable(token);
+
+            if (!isAvailable || !isTokenValid)
+            {
+                throw new Exception("The link for confirmation has expired or not valid!");
+            }
+            var confirmation = await _context.Confirmations.FirstOrDefaultAsync(c => c.ConfirmationToken == token);
+            if (confirmation != null)
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == confirmation.userId);
+                if (user != null)
+                {
+                    user.emailConfirmed = true;
+                    _context.Confirmations.Remove(confirmation);
+                    await _context.SaveChangesAsync();
+
+                }
+            }
+
+        }
 
         public async Task updateProfilePicture (UpdateProfilePic newPic)
         {
@@ -127,7 +199,7 @@ namespace InTouch_Backend.Data.Services
         {
             var _user =await _context.Users.FirstOrDefaultAsync(u => u.Email == user.EmailorUsername || u.Username == user.EmailorUsername);
 
-            if (_user == null)
+            if (_user == null || !_user.emailConfirmed)
             {
                 throw new Exception("User not found");
 
@@ -184,7 +256,7 @@ namespace InTouch_Backend.Data.Services
                 return tokenString;
            
         }
-        public bool isTokenAvailable(string token)
+        public async Task<bool> isTokenAvailable(string token)
         {
             if (string.IsNullOrEmpty(token))
             {
@@ -220,7 +292,7 @@ namespace InTouch_Backend.Data.Services
      
         public async Task<User> getUserInfo(int id)
         {
-            var user =await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+            var user =await _context.Users.FirstOrDefaultAsync(u => u.Id == id && u.emailConfirmed);
             return user;
         }
 
@@ -289,7 +361,7 @@ namespace InTouch_Backend.Data.Services
         }
         public async Task<List<User>> suggestedUsers(int userId)
         {
-            List<User> allUsers =await _context.Users.Where(u=> u.Role==0).ToListAsync();
+            List<User> allUsers =await _context.Users.Where(u=> u.Role==0 && u.emailConfirmed).ToListAsync();
             List<int> followingIds =await _context.Follows
                .Where(f => f.FollowerId == userId)
                .Select(f => f.FollowingId)
@@ -306,7 +378,7 @@ namespace InTouch_Backend.Data.Services
         public async Task<List<User>> searchUsers(int userId, string query)
         {
 
-            List<User> searchresult =await _context.Users.Where(u => u.Id != userId&& u.Role==0 && (u.FirstName.Contains(query) || u.Username.Contains(query) || u.LastName.Contains(query))).ToListAsync();
+            List<User> searchresult =await _context.Users.Where(u => u.Id != userId&& u.Role==0 && u.emailConfirmed(u.FirstName.Contains(query) || u.Username.Contains(query) || u.LastName.Contains(query))).ToListAsync();
             return searchresult;
         }
         public async Task<int[]> getFollows_and_Followers(int userId)

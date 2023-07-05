@@ -116,7 +116,10 @@ namespace InTouch_Backend
                 .HasForeignKey(u => u.PostId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
-
+            modelBuilder.Entity<Confirmations>()
+                .HasOne(u => u.User)
+                .WithOne(p => p.Confirmations)
+                .HasForeignKey<Confirmations>(u => u.userId);
             //
            
 
@@ -134,6 +137,8 @@ namespace InTouch_Backend
         public DbSet<FollowRequests> FollowRequests { get; set; }
 
         public DbSet<SupportMessages> SupportMessages { get; set; }
+
+        public DbSet<Confirmations> Confirmations { get; set; }
 
     }
 }

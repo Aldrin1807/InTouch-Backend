@@ -3,6 +3,7 @@ using InTouch_Backend;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InTouch_Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230705150829_emailConfirmation")]
+    partial class emailConfirmation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,13 +67,7 @@ namespace InTouch_Backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("userId")
-                        .HasColumnType("int");
-
                     b.HasKey("ID");
-
-                    b.HasIndex("userId")
-                        .IsUnique();
 
                     b.ToTable("Confirmations");
                 });
@@ -276,17 +273,6 @@ namespace InTouch_Backend.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("InTouch_Backend.Data.Models.Confirmations", b =>
-                {
-                    b.HasOne("InTouch_Backend.Data.Models.User", "User")
-                        .WithOne("Confirmations")
-                        .HasForeignKey("InTouch_Backend.Data.Models.Confirmations", "userId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("InTouch_Backend.Data.Models.FollowRequests", b =>
                 {
                     b.HasOne("InTouch_Backend.Data.Models.User", "FollowRequest")
@@ -408,9 +394,6 @@ namespace InTouch_Backend.Migrations
             modelBuilder.Entity("InTouch_Backend.Data.Models.User", b =>
                 {
                     b.Navigation("Comments");
-
-                    b.Navigation("Confirmations")
-                        .IsRequired();
 
                     b.Navigation("FollowRequest");
 

@@ -1,6 +1,6 @@
 ﻿using Azure.Storage.Blobs;
+using InTouch_Backend.Data.DTOs;
 using InTouch_Backend.Data.Models;
-using InTouch_Backend.Data.ViewModels;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using NLog.Fluent;

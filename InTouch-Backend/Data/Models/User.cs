@@ -21,8 +21,16 @@ namespace InTouch_Backend.Data.Models
 
         public bool isLocked { get; set; }
 
+        public bool emailConfirmed { get; set; } = false;
+
+
+
 
         //Navigation Properties
+
+        [JsonIgnore]
+        public Confirmations Confirmations { get; set; }
+
         [JsonIgnore]
         public List<Post> Posts { get; set; }
         [JsonIgnore]

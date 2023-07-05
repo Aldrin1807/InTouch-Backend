@@ -1,6 +1,6 @@
 
 using InTouch_Backend.Data.Services;
-using InTouch_Backend.Data.ViewModels;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

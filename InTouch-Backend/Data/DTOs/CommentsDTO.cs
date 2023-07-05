@@ -1,6 +1,6 @@
 ﻿using InTouch_Backend.Data.Models;
 
-namespace InTouch_Backend.Data.ViewModels
+namespace InTouch_Backend.Data.DTOs
 {
     public class CommentsDTO
     {

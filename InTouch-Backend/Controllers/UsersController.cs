@@ -1,7 +1,6 @@
 ﻿using InTouch_Backend.Data.DTOs;
 using InTouch_Backend.Data.Models;
 using InTouch_Backend.Data.Services;
-using InTouch_Backend.Data.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -111,7 +110,7 @@ namespace InTouch_Backend.Controllers
         [HttpGet("is-token-available")]
         public async Task<IActionResult> isTokenAvailable(string token)
         {
-            return Ok(_service.isTokenAvailable(token));
+            return Ok(await _service.isTokenAvailable(token));
         }
 
         [HttpPut("update-password"),Authorize]
@@ -204,6 +203,23 @@ namespace InTouch_Backend.Controllers
         public async Task<IActionResult> dashboardAnalytics()
         {
             return Ok(await _service.dashboardAnalytics());
+        }
+
+        [HttpGet("confirm-email")]
+        public async Task<IActionResult> confirmEmail(string token)
+        {
+            try
+            {
+                await _service.ConfirmEmail(token);
+                return Ok(new Response
+                { Status = "Success", Message = "Email confirmed succesfully." });
+            }
+            catch (Exception ex)
+            {
+                // Return error response
+                return Ok(new Response
+                { Status = "Failed", Message = ex.Message });
+            }
         }
 
     }
