@@ -101,7 +101,8 @@ namespace InTouch_Backend.Data.Services
             {
                 From = new MailAddress("intouchsm2023@gmail.com", "intouchsm2023@gmail.com"),
                 Subject = "Confirmation Email",
-                Body = $"Please confirm your registration by clicking the following link: https://intouch-socialmedia.netlify.app/confirm?token={confirmationToken}"
+                Body = $"<html><body><p>Please confirm your registration by clicking the following link:</p><a href=\"https://intouch-socialmedia.netlify.app/confirm?token={confirmationToken}\">Click Here</a></body></html>",
+                IsBodyHtml = true
             };
             message.To.Add(new MailAddress(email));
 
@@ -199,11 +200,14 @@ namespace InTouch_Backend.Data.Services
         {
             var _user =await _context.Users.FirstOrDefaultAsync(u => u.Email == user.EmailorUsername || u.Username == user.EmailorUsername);
 
-            if (_user == null || !_user.emailConfirmed)
+            if (_user == null)
             {
                 throw new Exception("User not found");
 
-            };
+            }else if (!_user.emailConfirmed)
+            {
+                throw new Exception("You need to confirm your email before logging in");
+            } ;
             if (_user.isLocked)
             {
               //  DeleteUser(_user.Id);
@@ -293,16 +297,20 @@ namespace InTouch_Backend.Data.Services
         public async Task<User> getUserInfo(int id)
         {
             var user =await _context.Users.FirstOrDefaultAsync(u => u.Id == id && u.emailConfirmed);
+            if (user == null)
+            {
+                throw new Exception("User no found");
+            }
             return user;
         }
 
         public async Task<User> getUserById(int userId)
         {
-            var user =await _context.Users.FindAsync(userId);
-            /* if (user == null)
+            var user =await _context.Users.FirstOrDefaultAsync(u=> u.Id==userId && u.emailConfirmed);
+             if (user == null)
              {
                  throw new Exception("User no found");
-             }*/
+             }
             return user;
         }
 
