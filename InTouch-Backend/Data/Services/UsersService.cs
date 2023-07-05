@@ -85,7 +85,7 @@ namespace InTouch_Backend.Data.Services
                     {
                        userId = _user.Id,
                        ConfirmationToken = CreateToken(_user),
-                       ExpirationDate = DateTime.Now.AddDays(1).ToString()
+                       ExpirationDate = DateTime.Now.AddMinutes(5).ToString()
                     };
 
                     await _context.Confirmations.AddAsync(confirmationRecord);
@@ -101,8 +101,17 @@ namespace InTouch_Backend.Data.Services
             {
                 From = new MailAddress("intouchsm2023@gmail.com", "intouchsm2023@gmail.com"),
                 Subject = "Confirmation Email",
-                Body = $"<html><body><h1>One step closer</h1 <br> ><p>Please confirm your registration by clicking the following link:</p><a href=\"https://intouch-socialmedia.netlify.app/confirm?token={confirmationToken}\">Click Here</a></body></html>",
-                IsBodyHtml = true
+                Body = $@"
+                    <html>
+                      <body>
+                       <p>Thank you for registering with our service.</p>
+                        <p>Please confirm your registration by clicking the following link:</p>
+                        <a href=""https://intouch-socialmedia.netlify.app/confirm?token={confirmationToken}"">Click Here</a>
+                        <br>
+                        <p><strong>Note:</strong> The link is only valid for 20 minutes. If you fail to confirm within this time frame, your account will not be created, and your credentials will be deleted.</p>
+                      </body>
+                    </html>",
+            IsBodyHtml = true
             };
             message.To.Add(new MailAddress(email));
 

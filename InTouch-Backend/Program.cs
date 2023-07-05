@@ -23,7 +23,7 @@ namespace InTouch_Backend
             // Add services to the container.
             //Lidhja me Databaze
             builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(
-            builder.Configuration.GetConnectionString("AzureConnectionString")),ServiceLifetime.Singleton);
+            builder.Configuration.GetConnectionString("AzureConnectionString")));
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -64,9 +64,11 @@ namespace InTouch_Backend
             builder.Services.AddTransient<SavedPostServices>();
             builder.Services.AddTransient<SupportMessageService>();
 
-          //  builder.Services.AddSingleton<EmailCleanupService>();
+
             builder.Services.AddHostedService<EmailCleanupService>();
-          
+
+
+
 
             builder.Services.Configure<ApiBehaviorOptions>(options =>
             {

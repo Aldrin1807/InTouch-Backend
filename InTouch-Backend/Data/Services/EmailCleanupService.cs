@@ -1,37 +1,52 @@
-﻿namespace InTouch_Backend.Data.Services
-{
-    public class EmailCleanupService:BackgroundService
-    {
-        private readonly AppDbContext _context;
-        private readonly UsersService _service;
-        public EmailCleanupService(AppDbContext context, UsersService service)
-        {
-            _context = context;
-            _service = service;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System;
+using System.Globalization;
+using System.Threading;
+using System.Threading.Tasks;
 
+namespace InTouch_Backend.Data.Services
+{
+    public class EmailCleanupService : BackgroundService
+    {
+        private readonly IServiceScopeFactory _scopeFactory;
+
+        public EmailCleanupService(IServiceScopeFactory scopeFactory)
+        {
+            _scopeFactory = scopeFactory;
         }
+
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
             {
+                using (var scope = _scopeFactory.CreateScope())
+                {
+                    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                    var service = scope.ServiceProvider.GetRequiredService<UsersService>();
 
-                await DeleteUnconfirmedUsers();
+                    await DeleteUnconfirmedUsers(dbContext, service);
+                }
 
-                await Task.Delay(TimeSpan.FromMinutes(20), stoppingToken);
+                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
             }
         }
 
-
-        private async Task DeleteUnconfirmedUsers()
+        private async Task DeleteUnconfirmedUsers(AppDbContext dbContext, UsersService service)
         {
-            var usersNotConfirmed = _context.Users.Where(u => u.emailConfirmed == false).ToList();
+            var expirationTime = DateTime.UtcNow;
 
-            foreach(var user in usersNotConfirmed)
+            var usersNotConfirmed = await dbContext.Users
+                .Where(u => !u.emailConfirmed)
+                .ToListAsync();
+
+            foreach (var user in usersNotConfirmed)
             {
-              await _service.DeleteUser(user.Id);
+                await service.DeleteUser(user.Id);
             }
-           
-        }
 
-    }
+        }
+      }
+            
 }
