@@ -296,11 +296,7 @@ namespace InTouch_Backend.Data.Services
      
         public async Task<User> getUserInfo(int id)
         {
-            var user =await _context.Users.FirstOrDefaultAsync(u => u.Id == id && u.emailConfirmed);
-            if (user == null)
-            {
-                throw new Exception("User no found");
-            }
+            var user =await _context.Users.FirstOrDefaultAsync(u => u.Id == id && u.emailConfirmed  && u.Role==0);
             return user;
         }
 

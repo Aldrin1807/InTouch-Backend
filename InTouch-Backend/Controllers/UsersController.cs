@@ -23,7 +23,15 @@ namespace InTouch_Backend.Controllers
         [HttpGet("get-user-info"),Authorize]
         public async Task<IActionResult> GetUserInfo(int id)
         {
-            return Ok( await _service.getUserInfo(id));
+            
+           var userInfo = await _service.getUserInfo(id);
+    
+            if (userInfo == null)
+            {
+                return Ok(new Response { Status = "Error", Message = "User not found." });
+            }
+    
+            return Ok(userInfo);
         }
 
         [HttpGet("get-user-followers-follows"), Authorize]
