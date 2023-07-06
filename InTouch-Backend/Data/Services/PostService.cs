@@ -107,7 +107,7 @@ namespace InTouch_Backend.Data.Services
             {
                foreach(int id in userPosts)
                 {
-                    deletePost(id);
+                  await deletePost(id);
                 }
                 throw new Exception("Please don't use harmful words on your posts, it may cause your account to be locked or deleted.");
             }
