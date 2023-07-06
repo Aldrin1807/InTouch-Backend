@@ -21,7 +21,6 @@ namespace InTouch_Backend.Data.Services
              var _post = new Post()
              {
                  Content = post.Content,
-                 PostDate=DateTime.Now.ToString("dddd, dd MMMM yyyy hh:mm tt"),
                  userID=post.userID
              };
 
@@ -48,9 +47,11 @@ namespace InTouch_Backend.Data.Services
              {
                  _post.ImagePath = "";
              }
+            TimeZoneInfo kosovoTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
+            DateTime kosovoDateTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, kosovoTimeZone);
+            _post.PostDate = kosovoDateTime.ToString("dddd, dd MMMM yyyy hh:mm tt");
 
-
-           await  _context.Posts.AddAsync(_post);
+            await  _context.Posts.AddAsync(_post);
              await _context.SaveChangesAsync();
          } 
 

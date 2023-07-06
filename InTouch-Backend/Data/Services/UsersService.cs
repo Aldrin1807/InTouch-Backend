@@ -84,11 +84,14 @@ namespace InTouch_Backend.Data.Services
                     var confirmationRecord = new Confirmations()
                     {
                        userId = _user.Id,
-                       ConfirmationToken = CreateToken(_user),
-                       ExpirationDate = DateTime.Now.AddMinutes(21).ToString()
+                       ConfirmationToken = CreateToken(_user)
                     };
+                    TimeZoneInfo kosovoTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
+                    DateTime kosovoDateTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, kosovoTimeZone);
+                    confirmationRecord.ExpirationDate = kosovoDateTime.AddMinutes(21).ToString();
 
-                    await _context.Confirmations.AddAsync(confirmationRecord);
+
+            await _context.Confirmations.AddAsync(confirmationRecord);
                     await _context.SaveChangesAsync();
 
                     // Send the confirmation email

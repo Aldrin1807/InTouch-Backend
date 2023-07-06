@@ -35,8 +35,10 @@ namespace InTouch_Backend.Data.Services
 
         private async Task DeleteUnconfirmedUsers(AppDbContext dbContext, UsersService service)
         {
-            var expirationTime = DateTime.UtcNow;
-            
+            TimeZoneInfo kosovoTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
+            DateTime expirationTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, kosovoTimeZone);
+
+
 
             var confirmations =await dbContext.Confirmations.ToListAsync();
 
