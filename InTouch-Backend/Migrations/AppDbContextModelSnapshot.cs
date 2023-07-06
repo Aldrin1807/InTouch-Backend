@@ -264,11 +264,13 @@ namespace InTouch_Backend.Migrations
                     b.HasOne("InTouch_Backend.Data.Models.Post", "Post")
                         .WithMany("Comments")
                         .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("InTouch_Backend.Data.Models.User", "User")
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Post");
@@ -292,11 +294,13 @@ namespace InTouch_Backend.Migrations
                     b.HasOne("InTouch_Backend.Data.Models.User", "FollowRequest")
                         .WithMany("FollowRequested")
                         .HasForeignKey("FollowRequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("InTouch_Backend.Data.Models.User", "FollowRequested")
                         .WithMany("FollowRequest")
                         .HasForeignKey("FollowRequestedId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("FollowRequest");
@@ -309,11 +313,13 @@ namespace InTouch_Backend.Migrations
                     b.HasOne("InTouch_Backend.Data.Models.User", "Follower")
                         .WithMany("Following")
                         .HasForeignKey("FollowerId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("InTouch_Backend.Data.Models.User", "Following")
                         .WithMany("Followers")
                         .HasForeignKey("FollowingId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Follower");
@@ -326,11 +332,13 @@ namespace InTouch_Backend.Migrations
                     b.HasOne("InTouch_Backend.Data.Models.Post", "Post")
                         .WithMany("Likes")
                         .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("InTouch_Backend.Data.Models.User", "User")
                         .WithMany("Likes")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Post");
@@ -354,11 +362,13 @@ namespace InTouch_Backend.Migrations
                     b.HasOne("InTouch_Backend.Data.Models.Post", "Post")
                         .WithMany("Reports")
                         .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("InTouch_Backend.Data.Models.User", "User")
                         .WithMany("Reports")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Post");
@@ -371,11 +381,13 @@ namespace InTouch_Backend.Migrations
                     b.HasOne("InTouch_Backend.Data.Models.Post", "Post")
                         .WithMany("SavedPosts")
                         .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("InTouch_Backend.Data.Models.User", "User")
                         .WithMany("SavedPosts")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Post");

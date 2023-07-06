@@ -159,6 +159,17 @@ namespace InTouch_Backend.Data.Services
                     BlobClient blobClientDel = containerClient.GetBlobClient(post.ImagePath);
                     await blobClientDel.DeleteIfExistsAsync();
                 }
+                var postComments = _context.Comments.Where(c => c.PostId == postId);
+                _context.Comments.RemoveRange(postComments);
+
+                var postLikes = _context.Likes.Where(l => l.PostId == postId);
+                _context.Likes.RemoveRange(postLikes);
+
+                var postReports = _context.Reports.Where(r => r.PostId == postId);
+                _context.Reports.RemoveRange(postReports);
+
+                var savedPosts = _context.SavedPosts.Where(p => p.PostId == postId);
+                _context.SavedPosts.RemoveRange(savedPosts);
                 _context.Posts.Remove(post);
             }
             await _context.SaveChangesAsync();

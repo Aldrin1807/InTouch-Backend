@@ -104,7 +104,7 @@ namespace InTouch_Backend.Data.Services
                 Body = $@"
                     <html>
                       <body>
-                       <p>Thank you for registering with our service.</p>
+                       <p>Thank you for registering.</p>
                         <p>Please confirm your registration by clicking the following link:</p>
                         <a href=""https://intouch-socialmedia.netlify.app/confirm?token={confirmationToken}"">Click Here</a>
                         <br>
@@ -337,9 +337,26 @@ namespace InTouch_Backend.Data.Services
                     BlobClient blobClientDel = containerClient.GetBlobClient(user.ImagePath);
                     await blobClientDel.DeleteIfExistsAsync();
                 }
+                var userFollows =await _context.Follows.Where(u => u.FollowerId == id || u.FollowingId == id).ToListAsync();
+                _context.Follows.RemoveRange(userFollows);
+
+                var userRequest = await _context.FollowRequests.Where(u => u.FollowRequestId == id || u.FollowRequestedId == id).ToListAsync();
+                _context.FollowRequests.RemoveRange(userRequest);
+
+                var userReports = await _context.Reports.Where(r => r.UserId == id).ToListAsync();
+                _context.Reports.RemoveRange(userReports);
+
+                var userLikes = await _context.Likes.Where(l => l.UserId == id).ToListAsync();
+                _context.Likes.RemoveRange(userLikes);
+
+                var userComments = await _context.Comments.Where(c => c.UserId == id).ToListAsync();
+                _context.Comments.RemoveRange(userComments);
+
+                var userSavedPosts = await _context.SavedPosts.Where(s => s.UserId == id).ToListAsync();
+                _context.SavedPosts.RemoveRange(userSavedPosts);
 
                 _context.Users.Remove(user);
-              await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
                 return true;
             }
 

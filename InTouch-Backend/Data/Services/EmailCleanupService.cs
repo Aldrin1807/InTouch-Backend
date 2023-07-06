@@ -36,14 +36,16 @@ namespace InTouch_Backend.Data.Services
         private async Task DeleteUnconfirmedUsers(AppDbContext dbContext, UsersService service)
         {
             var expirationTime = DateTime.UtcNow;
+            
 
-            var usersNotConfirmed = await dbContext.Users
-                .Where(u => !u.emailConfirmed)
-                .ToListAsync();
+            var confirmations =await dbContext.Confirmations.ToListAsync();
 
-            foreach (var user in usersNotConfirmed)
+            var expired = confirmations.Where(c=> DateTime.Parse(c.ExpirationDate) < expirationTime);
+
+
+            foreach (var user in expired)
             {
-                await service.DeleteUser(user.Id);
+                await service.DeleteUser(user.userId);
             }
 
         }
