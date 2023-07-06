@@ -82,7 +82,7 @@ namespace InTouch_Backend.Controllers
         [HttpGet("get-post-info"), Authorize]
         public async Task<IActionResult> getPostInfo(int postId)
         {
-            return Ok(_service.getPostInfo(postId));
+            return Ok(await _service.getPostInfo(postId));
         }
 
         [HttpPut("set-delete-attr"), Authorize]
