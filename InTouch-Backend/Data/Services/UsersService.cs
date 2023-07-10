@@ -27,12 +27,14 @@ namespace InTouch_Backend.Data.Services
         public AppDbContext _context;
         private readonly IConfiguration _configuration;
         private readonly PostService _postService;
+        private readonly FollowRequestsService _followRequestsService;
 
-        public UsersService(AppDbContext context,PostService postService, IConfiguration configuration)
+        public UsersService(AppDbContext context,PostService postService, IConfiguration configuration,FollowRequestsService followRequestsService)
         {
             _context = context;
             _postService = postService;
             _configuration = configuration;
+            _followRequestsService = followRequestsService;
 
         }
         public async Task register(UserDTO user)
@@ -475,6 +477,23 @@ namespace InTouch_Backend.Data.Services
             _user.LastName = user.LastName;
             _user.Username = user.Username;
             _user.isPrivate = user.isPrivate;
+
+            // If user is public then, accept all follow requests
+            if (!_user.isPrivate)
+            {
+                List<FollowRequestsDTO> requests = await _context.FollowRequests
+                                    .Where(f => f.FollowRequestedId == _user.Id)
+                                    .Select(f => new FollowRequestsDTO
+                                    {
+                                        FollowRequestId = f.FollowRequestId,
+                                        FollowRequestedId = f.FollowRequestedId
+                                    })
+                                    .ToListAsync();
+                foreach (var r in requests)
+                {
+                    await _followRequestsService.handleAccept(r);
+                }
+            }
 
           await _context.SaveChangesAsync();
 

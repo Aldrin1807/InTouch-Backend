@@ -44,24 +44,6 @@ namespace InTouch_Backend.Data.Services
         
         public async Task<List<User>> getUserRequests(int userId)
         {
-            var user =await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
-            if (user != null && !user.isPrivate)
-            {
-                List<FollowRequestsDTO> requests =await _context.FollowRequests
-                    .Where(f => f.FollowRequestedId == userId)
-                    .Select(f => new FollowRequestsDTO
-                    {
-                        FollowRequestId = f.FollowRequestId,
-                        FollowRequestedId = f.FollowRequestedId
-                    })
-                    .ToListAsync();
-
-                foreach (var f in requests)
-                {
-                  await handleAccept(f);
-                }
-            }
-
             List<int> ids =await _context.FollowRequests
                 .Where(r => r.FollowRequestedId == userId)
                 .Select(r => r.FollowRequestId)
@@ -82,16 +64,17 @@ namespace InTouch_Backend.Data.Services
             {
                 _context.FollowRequests.Remove(_request);
                await _context.SaveChangesAsync();
-            }
-            
-            Follows _follow = new Follows()
+                Follows _follow = new Follows()
                 {
                     FollowerId = _request.FollowRequestId,
                     FollowingId = _request.FollowRequestedId
                 };
-              await  _context.Follows.AddAsync(_follow);
-          
-            await _context.SaveChangesAsync();
+                await _context.Follows.AddAsync(_follow);
+
+                await _context.SaveChangesAsync();
+            }
+            
+            
         }
         public async Task handleDecline(FollowRequestsDTO request)
         {
